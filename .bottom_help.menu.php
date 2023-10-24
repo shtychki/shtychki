@@ -1,0 +1,39 @@
+<?
+$aMenuLinks = Array(
+	Array(
+		"Защитные стекла для телефона", 
+		"/catalog/zashchitnye-stekla-dlya-telefona/", 
+		Array(), 
+		Array(), 
+		"" 
+	),
+	Array(
+		"Samsung", 
+		"/catalog/zashchitnye-stekla-dlya-telefona-samsung/", 
+		Array(), 
+		Array(), 
+		"" 
+	),
+	Array(
+		"Apple", 
+		"/catalog/zashchitnye-stekla-dlya-telefona-apple/", 
+		Array(), 
+		Array(), 
+		"" 
+	),
+	Array(
+		"Huawei", 
+		"/catalog/zashchitnye-stekla-dlya-telefona-huawei/", 
+		Array(), 
+		Array(), 
+		"" 
+	),
+	Array(
+		"Xiaomi", 
+		"/catalog/zashchitnye-stekla-dlya-telefona-xiaomi/", 
+		Array(), 
+		Array(), 
+		"" 
+	)
+);
+?>

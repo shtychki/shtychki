@@ -1,0 +1,36 @@
+<?
+require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
+$APPLICATION->SetTitle("Тестовая");
+use Bitrix\Iblock;
+use Bitrix\Highloadblock;
+?>
+
+<?
+	$countElement = "";
+	$rsData = \Bitrix\Highloadblock\HighloadBlockTable::getList(array('filter'=>array('=TABLE_NAME'=>'b_catalog_element_count')));
+	if ($arData = $rsData->fetch()){
+		$entity = \Bitrix\Highloadblock\HighloadBlockTable::compileEntity($arData);
+		$entityDataClass = $entity->getDataClass();
+		$arFilter = array(
+			'limit' => 1,
+			'filter' => array(
+				'=UF_ACTIVE' => 1,
+				'=UF_PAGE_URL' => str_replace(' ','%20',$APPLICATION->GetCurPage()),
+			)
+		);
+		//$fieldsList = $entityDataClass::getMap();
+		//$hiddenClone = count($fieldsList) > 0;
+		$rsValues = $entityDataClass::getList($arFilter);
+		while($arValue = $rsValues->fetch())
+		{
+			$countElement = intval($arValue["UF_COUNT_ELEMENT"]);
+			break;
+		}
+	}
+	$countElement = ($countElement > 0 ? $countElement : 10);
+	echo '<pre>'; print_r($countElement); echo '</pre>';
+	
+	?>
+
+
+<?require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");?>

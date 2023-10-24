@@ -1,0 +1,10 @@
+<i title="Belkart" class="belkart_big"></i>
+<i title="MasterCard" class="mastercard_big"></i>
+<i title="Visa" class="visa_big"></i>
+<i title="Cash" class="cacsh"></i>
+<i title="MasterCard" class="mastercard"></i>
+<i title="Visa" class="visa"></i>
+<i title="Maestro" class="maestro"></i>
+<i title="Erip" class="erip"></i>
+<i title="Belkart" class="belkart"></i>
+<i title="Halva" class="halva"></i>

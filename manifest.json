@@ -1,0 +1,10 @@
+{
+"name": "\u041c\u043e\u0431\u0438\u043b\u044c\u043d\u044b\u0435 \u0448\u0442\u0443\u0447\u043a\u0438",
+"short_name": "\u041c\u043e\u0431\u0438\u043b\u044c\u043d\u044b\u0435 \u0448\u0442\u0443\u0447\u043a\u0438",
+"start_url": "\/",
+"display": "browser",
+"background_color": "#0088cc",
+"theme_color": "#0088cc",
+"orientation": "natural",
+"lang": "ru"
+}

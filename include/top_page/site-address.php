@@ -1,0 +1,1 @@
+<a href="https://shtychki.by/contacts/">Адреса магазинов</a>
