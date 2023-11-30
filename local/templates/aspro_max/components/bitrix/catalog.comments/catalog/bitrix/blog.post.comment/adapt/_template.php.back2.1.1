@@ -201,7 +201,7 @@ else
 									<div class="form-group animated-labels <?=($_SESSION["blog_user_name"] ? 'input-filed' : '');?>">
 										<label for="user_name"><?=GetMessage("B_B_MS_NAME")?> <span class="required-star">*</span></label>
 										<div class="input">
-										<input maxlength="255" size="30" class="form-control" required tabindex="3" type="text" name="user_name" id="user_name" value="<?=htmlspecialcharsEx($_SESSION["blog_user_name"])?>">
+										<input maxlength="255" size="30" class="form-control" tabindex="3" type="text" name="user_name" id="user_name" value="<?=htmlspecialcharsEx($_SESSION["blog_user_name"])?>">
 										</div>
 									</div>
 								</div>
@@ -234,26 +234,20 @@ else
 						<?
 					}?>
 
-					<div class="row form">
-						<div class="col-md-12">
-							<div class="form-group">
-								<label class="rating_label"><?=GetMessage("BPC_RATING")?> <span class="required-star">*</span></label>
-								<div class="votes_block nstar big with-text">
-									<div class="ratings">
-										<div class="inner_rating">
-											<?for($i=1;$i<=5;$i++):?>
-												<div class="item-rating" data-message="<?=GetMessage('RATING_MESSAGE_'.$i)?>"><?=CMax::showIconSvg("star", SITE_TEMPLATE_PATH."/images/svg/star_lg.svg");?></div>
-											<?endfor;?>
-										</div>
-									</div>
-									<div class="rating_message muted" data-message="<?=GetMessage('RATING_MESSAGE_0')?>"><?=GetMessage('RATING_MESSAGE_0')?></div>
-									<input class="hidden" name="rating" required>
-								</div>
+					<label class="rating_label"><?=GetMessage("BPC_RATING")?> <span class="required-star">*</span></label>
+					<div class="votes_block nstar big with-text">
+						<div class="ratings">
+							<div class="inner_rating">
+								<?for($i=1;$i<=5;$i++):?>
+									<div class="item-rating" data-message="<?=GetMessage('RATING_MESSAGE_'.$i)?>"><?=CMax::showIconSvg("star", SITE_TEMPLATE_PATH."/images/svg/star_lg.svg");?></div>
+								<?endfor;?>
 							</div>
 						</div>
+						<div class="rating_message muted" data-message="<?=GetMessage('RATING_MESSAGE_0')?>"><?=GetMessage('RATING_MESSAGE_0')?></div>
+						<input class="hidden" name="rating">
 					</div>
 
-					<div class="row form virtues form__text-field">
+					<div class="row form virtues">
 						<div class="col-md-12">
 							<div class="form-group animated-labels">
 								<label for="virtues"><?=GetMessage("BPC_VIRTUES")?></label>
@@ -264,7 +258,7 @@ else
 						</div>
 					</div>
 
-					<div class="row form limitations form__text-field">
+					<div class="row form limitations">
 						<div class="col-md-12">
 							<div class="form-group animated-labels">
 								<label for="limitations"><?=GetMessage("BPC_LIMITATIONS")?></label>
@@ -275,7 +269,7 @@ else
 						</div>
 					</div>
 
-					<div class="row form comment form__text-field">
+					<div class="row form comment">
 						<div class="col-md-12">
 							<div class="form-group animated-labels">
 								<label for="comment"><?=GetMessage("BPC_MESSAGE")?></label>
@@ -291,15 +285,13 @@ else
 
 						</div>
 					</div>
-					<?if($arParams['NO_USE_IMAGE'] == 'N'):?>
-						<div class="drop-zone bordered rounded3">							
-							<div class ="drop-zone__wrapper rounded3">
-								<input type="file" id="comment_images" multiple="multiple" name="comment_images[]" accept="image/*" title="" class="drop-zone__wrapper-input uniform-ignore">
-							</div>
+					<div class="drop-zone bordered rounded3">							
+						<div class ="drop-zone__wrapper rounded3">
+							<input type="file" id="comment_images" multiple="multiple" name="comment_images[]" accept="image/*" title="" class="drop-zone__wrapper-input uniform-ignore">
 						</div>
-
-						<script>var dropZone = new DropZone('.drop-zone', {maxImageCount:<?=$arParams['MAX_IMAGE_COUNT']?>});</script>
-					<?endif;?>
+					</div>
+					
+					<script>let dropZone = new DropZone('.drop-zone');</script>
 					<?
 					//include($_SERVER["DOCUMENT_ROOT"].$templateFolder."/lhe.php");
 
@@ -375,10 +367,6 @@ else
 		$prevTab = 0;
 		function ShowComment($comment, $tabCount=0, $tabSize=2.5, $canModerate=false, $User=Array(), $use_captcha=false, $bCanUserComment=false, $errorComment=false, $arParams = array())
 		{
-			if (!isset($application) && !isset($request)) {
-				$application = \Bitrix\Main\Application::getInstance();
-				$request = $application->getContext()->getRequest();
-			}
 			$comment["urlToAuthor"] = "";
 			$comment["urlToBlog"] = "";
 			$comment["urlToApprove"] = "";
@@ -706,120 +694,102 @@ else
 						}
 						?>
 						<div class="blog-comment-meta">
-							<?// answer button?>
-							<?if ($bCanUserComment === true):?>
-								<span class="blog-comment-answer blog-comment-action color_222">
-									<a href="javascript:void(0)" 
-										class="blog-comment-action__link muted" 
-										onclick="commentAction('<?=$comment['ID'];?>', this, 'showComment');"
-										data-type='showComment'
-									><?=GetMessage("B_B_MS_REPLY");?></a>
-								</span>
-								<span class="blog-vert-separator"></span>
-							<?endif;?>
-														
-							<?// edit comment button?>
-							<?if ($comment["CAN_EDIT"] == "Y"):?>
-								<script>
-									top.text<?=$comment["ID"];?> = text<?=$comment["ID"];?> = '<?=CUtil::JSEscape($comment["~POST_TEXT"]);?>';
-									top.title<?=$comment["ID"];?> = title<?=$comment["ID"];?> = '<?=CUtil::JSEscape($comment["TITLE"]);?>';
-								</script>
-								<span class="blog-comment-edit blog-comment-action color_222">
-									<a href="javascript:void(0)" 
-										class="blog-comment-action__link muted" 
-										onclick="commentAction('<?=$comment['ID'];?>', this, 'editComment');"
-										data-type='editComment'
-									><?=GetMessage("BPC_MES_EDIT");?></a>
-								</span>
-								<span class="blog-vert-separator"></span>
-							<?endif;?>
-							
-							<?// hide comment button?>
-							<?if (strlen($comment["urlToShow"])>0):?>
-								<span class="blog-comment-show blog-comment-action color_222">
-									<a class="blog-comment-action__link muted"
-									title="<?=GetMessage('BPC_MES_SHOW');?>"
-										<?if ($arParams["AJAX_POST"] == "Y"):?>
-											href="javascript:void(0)" 
-											onclick="return hideShowComment('<?=$comment['urlToShow'] . '&' . bitrix_sessid_get();?>', '<?=$comment['ID'];?>');" 
-										<?else:?>
-											href="<?=$comment["urlToShow"] . "&" . bitrix_sessid_get();?>" 
-										<?endif;?>
-									><?=GetMessage("BPC_MES_SHOW");?></a>
-								</span>
-								<span class="blog-vert-separator"></span>
-							<?endif;?>
-								
-							<?// show comment button?>
-							<?if (strlen($comment["urlToHide"])>0):?>
-								<?$targetURL = $comment['urlToHide'].'&'.bitrix_sessid_get();?>
-								<span class="blog-comment-show blog-comment-action color_222">
-									<a class="blog-comment-action__link muted" 
-									title="<?=GetMessage('BPC_MES_HIDE');?>"
-										<?if($arParams["AJAX_POST"] == "Y"):?>
-											href="javascript:void(0)" 
-											onclick="return hideShowComment('<?=$targetURL;?>', '<?=$comment['ID'];?>');"
-										<?else:?>
-											href="<?=$targetURL;?>"
-										<?endif;?>
-									><?=GetMessage("BPC_MES_HIDE");?></a>
-								</span>
-								<span class="blog-vert-separator"></span>
-							<?endif;?>
+						<?
+						if($bCanUserComment===true)
+						{
+							?>
+							<span class="blog-comment-answer"><a href="javascript:void(0)" class="muted" onclick="answerComment('<?=$comment["ID"]?>', this)"><?=GetMessage("B_B_MS_REPLY")?></a></span>
+							<?
+						}
 
-							<?// approve comment button?>
-							<?if (strlen($comment["urlToApprove"])>0):?>
-								<?
-								$bpcMessage = $comment['UF_ASPRO_COM_APPROVE'] ? "BPC_MES_UNAPPROVE" : "BPC_MES_APPROVE";
-								$targetURL = $comment['urlToApprove'].'&'.bitrix_sessid_get();
-								?>
-								<span class="blog-comment-approve blog-comment-action color_222">
-									<a 
-										class="blog-comment-action__link muted" title="<?=GetMessage($bpcMessage);?>" 
-										<?if($arParams["AJAX_POST"] == "Y"):?>
-											href="javascript:void(0)"
-											onclick="return hideShowComment('<?=$targetURL;?>', '<?=$comment['ID'];?>');" 
-										<?else:?>
-											href="<?=$targetURL;?>" 
-										<?endif;?>
-									><?=GetMessage($bpcMessage);?></a>
-								</span>
-								<span class="blog-vert-separator"></span>
-							<?endif;?>
-
-							<?// delete comment button?>
-							<?if (strlen($comment["urlToDelete"])>0):?>
-								<?
-								$targetURL = $comment['urlToDelete'].'&'.bitrix_sessid_get().'&IBLOCK_ID='.$request['IBLOCK_ID'].'&ELEMENT_ID='.$request['ELEMENT_ID'];
-								?>
-								<span class="blog-comment-delete blog-comment-action color_222">
-									<a class="blog-comment-action__link muted"
-										<?if($arParams["AJAX_POST"] == "Y"):?>
-											href="javascript:void(0)" 
-											onclick="if(confirm('<?=GetMessage('BPC_MES_DELETE_POST_CONFIRM');?>')) deleteComment('<?=$targetURL;?>', '<?=$comment['ID'];?>');" title="<?=GetMessage("BPC_MES_DELETE");?>"
-										<?else:?>
-											href="javascript:if(confirm('<?=GetMessage("BPC_MES_DELETE_POST_CONFIRM");?>')) window.location='<?=$targetURL;?>'" class="blog-comment-action__link muted" title="<?=GetMessage("BPC_MES_DELETE");?>"
-										<?endif;?>
-									><?=GetMessage("BPC_MES_DELETE");?></a>
-								</span>
-								<span class="blog-vert-separator"></span>
-							<?endif;?>
-							
-							<?// mark comment as spam button?>
-							<?if (strlen($comment["urlToSpam"])>0):?>
-								<span class="blog-comment-delete blog-comment-action blog-comment-spam color_222">
-									<a href="<?=$comment["urlToSpam"];?>" 
-										class="blog-comment-action__link muted" 
-										title="<?=GetMessage("BPC_MES_SPAM_TITLE");?>"><?=GetMessage("BPC_MES_SPAM");?></a>
-								</span>
-							<?endif;?>
-							
-							<?// like buttons?>
-							<?if ($arParams["SHOW_RATING"] === "Y"):?>
-								<span class="rating_vote_text pull-right" style="display:inline-block !important;">
-									<?include('like.php');?>
-								</span>
-							<?endif;?>
+						?>
+						<?/*<span class="blog-comment-link"><a href="#<?=$comment["ID"]?>"><?=GetMessage("B_B_MS_LINK")?></a></span>*/?>
+						<?
+						if($comment["CAN_EDIT"] == "Y")
+						{
+							?>
+							<script>
+								top.text<?=$comment["ID"]?> = text<?=$comment["ID"]?> = '<?=CUtil::JSEscape($comment["~POST_TEXT"])?>';
+								top.title<?=$comment["ID"]?> = title<?=$comment["ID"]?> = '<?=CUtil::JSEscape($comment["TITLE"])?>';
+							</script>
+							<span class="blog-vert-separator"></span>
+							<span class="blog-comment-edit font_upper"><a href="javascript:void(0)" class="muted" onclick="return editComment('<?=$comment["ID"]?>')"><?=GetMessage("BPC_MES_EDIT")?></a></span>
+							<?
+						}
+						if(strlen($comment["urlToShow"])>0)
+						{
+							?>
+							<span class="blog-vert-separator"></span>
+							<span class="blog-comment-show font_upper">
+								<?if($arParams["AJAX_POST"] == "Y"):?>
+									<a href="javascript:void(0)" class="muted" onclick="return hideShowComment('<?=$comment["urlToShow"]."&".bitrix_sessid_get()?>', '<?=$comment["ID"]?>');" title="<?=GetMessage("BPC_MES_SHOW")?>">
+								<?else:?>
+									<a href="<?=$comment["urlToShow"]."&".bitrix_sessid_get()?>" class="muted" title="<?=GetMessage("BPC_MES_SHOW")?>">
+								<?endif;?>
+								<?=GetMessage("BPC_MES_SHOW")?></a></span>
+							<?
+						}
+						if(strlen($comment["urlToHide"])>0)
+						{
+							?>
+							<span class="blog-vert-separator"></span>
+							<span class="blog-comment-show font_upper">
+								<?if($arParams["AJAX_POST"] == "Y"):?>
+									<a href="javascript:void(0)" class="muted" onclick="return hideShowComment('<?=$comment["urlToHide"]."&".bitrix_sessid_get()?>&IBLOCK_ID=<?=$_REQUEST["IBLOCK_ID"]?>&ELEMENT_ID=<?=$_REQUEST["ELEMENT_ID"]?>', '<?=$comment["ID"]?>');" title="<?=GetMessage("BPC_MES_HIDE")?>">
+								<?else:?>
+									<a href="<?=$comment["urlToHide"]."&".bitrix_sessid_get()?>&IBLOCK_ID=<?=$_REQUEST["IBLOCK_ID"]?>&ELEMENT_ID=<?=$_REQUEST["ELEMENT_ID"]?>" class="muted" title="<?=GetMessage("BPC_MES_HIDE")?>">
+								<?endif;?>
+								<?=GetMessage("BPC_MES_HIDE")?></a></span>
+							<?
+						}
+						if(strlen($comment["urlToApprove"])>0)
+						{
+							$bpcMessage = $comment['UF_ASPRO_COM_APPROVE'] ? "BPC_MES_UNAPPROVE" : "BPC_MES_APPROVE";
+							$targetURL = $comment['urlToApprove'].'&'.bitrix_sessid_get().'&IBLOCK_ID='.$_REQUEST['IBLOCK_ID'].'&ELEMENT_ID='.$_REQUEST['ELEMENT_ID'];
+							?>
+							<span class="blog-vert-separator"></span>
+							<span class="blog-comment-approve font_upper">
+								<a 
+									class="muted" title="<?= GetMessage($bpcMessage); ?>" 
+									<? if($arParams["AJAX_POST"] == "Y"): ?>
+										href="javascript:void(0)"
+										onclick="return hideShowComment('<?= $targetURL; ?>', '<?= $comment['ID']; ?>');" 
+									<? else: ?>
+										href="<?= $targetURL; ?>" 
+									<? endif; ?>
+								><?= GetMessage($bpcMessage); ?></a>
+							</span>
+							<?
+						}
+						if(strlen($comment["urlToDelete"])>0)
+						{
+							?>
+							<span class="blog-vert-separator"></span>
+							<span class="blog-comment-delete font_upper">
+								<?if($arParams["AJAX_POST"] == "Y"):?>
+									<a href="javascript:void(0)" class="muted" onclick="if(confirm('<?=GetMessage("BPC_MES_DELETE_POST_CONFIRM")?>')) deleteComment('<?=$comment["urlToDelete"]."&".bitrix_sessid_get()?>&IBLOCK_ID=<?=$_REQUEST["IBLOCK_ID"]?>&ELEMENT_ID=<?=$_REQUEST["ELEMENT_ID"]?>', '<?=$comment["ID"]?>');" title="<?=GetMessage("BPC_MES_DELETE")?>">
+								<?else:?>
+									<a href="javascript:if(confirm('<?=GetMessage("BPC_MES_DELETE_POST_CONFIRM")?>')) window.location='<?=$comment["urlToDelete"]."&".bitrix_sessid_get()?>&IBLOCK_ID=<?=$_REQUEST["IBLOCK_ID"]?>&ELEMENT_ID=<?=$_REQUEST["ELEMENT_ID"]?>'" class="muted" title="<?=GetMessage("BPC_MES_DELETE")?>">
+								<?endif;?>
+								<?=GetMessage("BPC_MES_DELETE")?></a></span>
+							<?
+						}
+						if(strlen($comment["urlToSpam"])>0)
+						{
+							?>
+							<span class="blog-vert-separator"></span>
+							<span class="blog-comment-delete blog-comment-spam font_upper"><a href="<?=$comment["urlToSpam"]?>" class="muted" title="<?=GetMessage("BPC_MES_SPAM_TITLE")?>"><?=GetMessage("BPC_MES_SPAM")?></a></span>
+							<?
+						}
+						if ($arParams["SHOW_RATING"] == "Y")
+						{
+							?>
+							<span class="rating_vote_text pull-right" style="display:inline-block !important;">
+								<?include('like.php');?>
+							</span>
+							<?
+						}
+						?>
 						</div>
 
 					</div>

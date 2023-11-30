@@ -375,10 +375,6 @@ else
 		$prevTab = 0;
 		function ShowComment($comment, $tabCount=0, $tabSize=2.5, $canModerate=false, $User=Array(), $use_captcha=false, $bCanUserComment=false, $errorComment=false, $arParams = array())
 		{
-			if (!isset($application) && !isset($request)) {
-				$application = \Bitrix\Main\Application::getInstance();
-				$request = $application->getContext()->getRequest();
-			}
 			$comment["urlToAuthor"] = "";
 			$comment["urlToBlog"] = "";
 			$comment["urlToApprove"] = "";

@@ -70,8 +70,6 @@ $templateData = array(
 			"REVIEW_COMMENT_REQUIRED" => $arParams["REVIEW_COMMENT_REQUIRED"],
 			"REVIEW_FILTER_BUTTONS" => $arParams["REVIEW_FILTER_BUTTONS"],
 			"REAL_CUSTOMER_TEXT" => $arParams["REAL_CUSTOMER_TEXT"],
-			"MAX_IMAGE_COUNT" => $arParams['MAX_IMAGE_COUNT'],
-			"NO_USE_IMAGE" => $arParams['NO_USE_IMAGE'],
 		);
 		$arJSParams['serviceList']['blog'] = true;
 		$arJSParams['settings']['blog'] = array(
@@ -127,8 +125,12 @@ $templateData = array(
 		</div>
 		<script type="text/javascript">
 		var obCatalogComments_<? echo $arResult['ELEMENT']['ID']; ?> = new JCCatalogSocnetsComments(<? echo CUtil::PhpToJSObject($arJSParams, false, true); ?>);
-		
 		$(document).on('click', '.show-comment.btn', function() {
+			const $imagesDrop = document.getElementsByClassName(dropZone.option.className.images)[0];
+			if($imagesDrop){
+				$imagesDrop.remove();
+			}
+
 			commentAction('0', this, 'showComment');
 		})
 		</script>

@@ -258,7 +258,10 @@ function editComment(key)
 
 	BX('form_comment_' + key).appendChild(pFormCont); // Move form
 
-	typeof dropZone === 'object'  && dropZone.drawImagesFromColection(document.querySelectorAll('[rel="reviews-gallery_' + key + '"] img'));
+	const $images = document.querySelectorAll('[rel="reviews-gallery_' + key + '"] img');
+	if (document.form_comment.edit_id.value !== key) {
+		dropZone.drawImagesFromColection(document.querySelectorAll('[rel="reviews-gallery_' + key + '"] img'));
+	}
 
 	pFormCont.style.display = "block";
 
@@ -688,8 +691,6 @@ function clearForm(pFormCont) {
 	$(pFormCont).find('input[type=file]').val('');
 	$(pFormCont).find('input[name=rating]').val('');
 	$(pFormCont).find("input[type=file]").uniform.update();
-
-	typeof dropZone === 'object' && dropZone.removeAllFiles();
 }
 
 <?if($arResult["NEED_NAV"] == "Y"):?>

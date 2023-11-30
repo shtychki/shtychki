@@ -1,5 +1,8 @@
 <?
 global $USER, $pathForAjax;
+
+use CMax as Solution;
+
 if($USER->IsAuthorized()) {
 	$userId = $USER->GetID();
 }
@@ -9,7 +12,7 @@ if($userId) {
 	$ufId = ($userId % 1000).($comment['ID'] % 1000);
 	$fields = $USER_FIELD_MANAGER->GetUserFields("BLOG_COMMENT_ID", $ufId);
 	$fieldValueLike = $fields['UF_LIKE_ID']['VALUE'];
-	$fieldValueLike = unserialize($fieldValueLike);
+	$fieldValueLike = Solution::unserialize($fieldValueLike);
 
 	if( isset($fieldValueLike[$userId]) ) {
 		$valuelike = $fieldValueLike[$userId];
@@ -20,7 +23,7 @@ if($userId) {
 	$bActiveLike = $valuelike == 'Y';
 
 	$fieldValueDisLike = $fields['UF_DISLIKE_ID']['VALUE'];
-	$fieldValueDisLike = unserialize($fieldValueDisLike);
+	$fieldValueDisLike = Solution::unserialize($fieldValueDisLike);
 
 	if( isset($fieldValueDisLike[$userId]) ) {
 		$valuedislike = $fieldValueDisLike[$userId];

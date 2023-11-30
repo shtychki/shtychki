@@ -1,9 +1,7 @@
 <?if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();?>
 
 <script>
-fileInputInit("<?=GetMessage('INPUT_FILE_DEFAULT');?>", 'Y');
-
-let lastCommentID = '';
+fileInputInit("<?=GetMessage('INPUT_FILE_DEFAULT')?>", 'Y');
 
 var rating_value = <?=CUtil::PhpToJSObject($arResult['ALL_RATING_VALUE'])?>;
 if(!isNaN(rating_value) && rating_value !== undefined && rating_value) {
@@ -56,53 +54,6 @@ function onLightEditorShow(content)
 	oBlogComLHE.SetFocus();
 }
 
-function commentAction(key, el, type) {
-	const $this = $(el);
-	const $comment = $('#form_comment_' + key);
-	const $commentsContainer = $('.blog-comments');
-	const currentCommentType = $comment.data('type');
-	const currentKey = $commentsContainer.data('key');
-	const $errorNode = $commentsContainer[0].querySelectorAll('.error');
-	
-	$('.js-form-comment').hide();
-	$('.blog-comment-action__link').not($this).removeClass('clicked');
-
-	if (!currentKey) {
-		$comment.data('key', key);
-	}
-
-	if ($errorNode.length) {
-		$errorNode.forEach(node => node.remove());
-	}
-	
-
-	if ((type !== currentCommentType && typeof window[type] !== 'undefined') || currentKey !== key) {
-		window[type](key);
-		$comment.data('type', type);
-		$comment.data('key', key);
-	}
-
-	if ((type !== currentCommentType && !$this.hasClass('clicked')) || type === currentCommentType) {
-		toggleComment($this, $comment);
-	}
-}
-
-function toggleComment($el, $comment,) {
-	if (!$el.hasClass('show-comment')) {
-		$('.show-comment.btn').removeClass('clicked');
-	}
-	
-	if ($el.hasClass('clicked')) {
-		$comment.slideUp();
-		$el.removeClass('clicked');
-		$el.closest('.blog-comment-content__item').find('.blog-comment-action__link').removeClass('clicked');
-	}
-	else{ 
-		$comment.slideDown();
-		$el.addClass('clicked');
-	}
-}
-
 function answerComment(key, el) {
 	var _this = $(el);
 	var comment = $('#form_comment_' + key);
@@ -150,13 +101,6 @@ function showComment(key, error, userName, userEmail, needData)
 	document.form_comment.act.value = 'add';
 	document.form_comment.post.value = '<?=GetMessageJS("B_B_MS_SEND")?>';
 	document.form_comment.action = document.form_comment.action + "#" + key;
-
-	if (key > 0) {
-		BX.addClass(pFormCont, 'answer-form');
-	}
-	else {
-		BX.removeClass(pFormCont, 'answer-form');
-	}
 
 	if(error == "Y")
 	{
@@ -258,7 +202,10 @@ function editComment(key)
 
 	BX('form_comment_' + key).appendChild(pFormCont); // Move form
 
-	typeof dropZone === 'object'  && dropZone.drawImagesFromColection(document.querySelectorAll('[rel="reviews-gallery_' + key + '"] img'));
+	const $images = document.querySelectorAll('[rel="reviews-gallery_' + key + '"] img');
+	if (document.form_comment.edit_id.value !== key) {
+		dropZone.drawImagesFromColection(document.querySelectorAll('[rel="reviews-gallery_' + key + '"] img'));
+	}
 
 	pFormCont.style.display = "block";
 
@@ -453,15 +400,8 @@ function prepareFormInfo(obForm, bCommentRequired)
 		rating.val(ratingVal);
 	}
 
-	const bAnswerComment = parent_id;
-
 	for (let i = 0, c = form.find('input[required]').length; i < c; ++i) {
 		$input = form.find('input[required]').eq(i);
-
-		if ($input[0] === rating[0] && bAnswerComment) {
-			continue;
-		}
-
 		if (!$input.val().length) {
 			isValid = false;
 
@@ -470,7 +410,7 @@ function prepareFormInfo(obForm, bCommentRequired)
 			if ($label.length && !$error.length) {
 				let error = BX.create({
 					tag: 'label',
-					text: (bAnswerComment ? '<?=GetMessage('NO_COMMENT_TEXT_ANSWER');?>' : BX.message('JS_REQUIRED')),
+					text: BX.message('JS_REQUIRED'),
 					attrs: {
 						class: 'error',
 					},
@@ -481,40 +421,23 @@ function prepareFormInfo(obForm, bCommentRequired)
 		}
 	}
 
-	let resultCommentText = '';
-	if (virtues.val()) {
-		resultCommentText += `<virtues>${virtues.val().replace(/(<([^>]+)>)/gi, "")}</virtues>\n`;
-	}
-	if (limitations.val()) {
-		resultCommentText += `<limitations>${limitations.val().replace(/(<([^>]+)>)/gi, "")}</limitations>\n`;
-	}
-	if (comment.val()) {
-		resultCommentText += `<comment>${comment.val().replace(/(<([^>]+)>)/gi, "")}</comment>`;
-	} 
-	else if ((!bCommentRequired || edit_id) && !parent_id) {
-		resultCommentText += '<comment></comment>';
-	}
-
-	if ((bCommentRequired || bAnswerComment) && !resultCommentText) {
-		const $label = form.find('.form__text-field:visible:first label:not(.error)');
-		const $error = form.find('.comments-error');
-		if (!$error.length) {
-			const error = BX.create({
-				tag: 'label',
-				text: (bAnswerComment ? '<?=GetMessage('NO_COMMENT_TEXT_ANSWER');?>' : '<?=GetMessage('NO_COMMENT_TEXT');?>'),
-				attrs: {
-					class: 'error comments-error',
-					for: 'virtues'
-				},
-			});
-			BX.insertAfter(error, $label[0]);
-		}
-		isValid = false;
-	}
-
 	if (!isValid) {
-		scroll_block($('label.error'));
 		return false;
+	}
+
+	var resultCommentText = '';
+	if(virtues.val()) {
+		resultCommentText += '<virtues>'+virtues.val()+'</virtues>'+'\n';
+	}
+
+	if(limitations.val()) {
+		resultCommentText += '<limitations>'+limitations.val()+'</limitations>'+'\n';
+	}
+
+	if(comment.val()) {
+		resultCommentText += '<comment>'+comment.val()+'</comment>';
+	} else if ((!bCommentRequired || edit_id) && !parent_id) {
+		resultCommentText += '<comment></comment>';
 	}
 
 	window.commentOr = comment.val();
@@ -688,8 +611,6 @@ function clearForm(pFormCont) {
 	$(pFormCont).find('input[type=file]').val('');
 	$(pFormCont).find('input[name=rating]').val('');
 	$(pFormCont).find("input[type=file]").uniform.update();
-
-	typeof dropZone === 'object' && dropZone.removeAllFiles();
 }
 
 <?if($arResult["NEED_NAV"] == "Y"):?>

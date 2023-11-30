@@ -11,8 +11,7 @@ if (!$ajaxMode)
 {
 	CJSCore::Init(array('window', 'ajax'));
 }
-if($arParams['NO_USE_IMAGE'] == 'N') Extensions::init('drop');
-
+Extensions::init('drop');
 
 
 global $BLOG_DATA;
@@ -48,8 +47,6 @@ if (isset($templateData['BLOG_USE']) && $templateData['BLOG_USE'] == 'Y')
 			"XML_ID" => (array_key_exists('AJAX_PARAMS', $templateData['BLOG']) && array_key_exists('XML_ID', $templateData['BLOG']['AJAX_PARAMS']) && $templateData['BLOG']['AJAX_PARAMS']['XML_ID'] ? $templateData['BLOG']['AJAX_PARAMS']['XML_ID'] : $_REQUEST['XML_ID']),
 			"NO_URL_IN_COMMENTS" => "",
 			"USE_FILTER" => $arParams["USE_FILTER"],
-			"MAX_IMAGE_COUNT" => $arParams['MAX_IMAGE_COUNT'],
-			"NO_USE_IMAGE" => $arParams['NO_USE_IMAGE'],
 		);
 
 		$APPLICATION->IncludeComponent(

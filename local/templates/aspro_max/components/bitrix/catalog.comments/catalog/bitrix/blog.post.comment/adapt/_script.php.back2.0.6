@@ -1,9 +1,7 @@
 <?if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();?>
 
 <script>
-fileInputInit("<?=GetMessage('INPUT_FILE_DEFAULT');?>", 'Y');
-
-let lastCommentID = '';
+fileInputInit("<?=GetMessage('INPUT_FILE_DEFAULT')?>", 'Y');
 
 var rating_value = <?=CUtil::PhpToJSObject($arResult['ALL_RATING_VALUE'])?>;
 if(!isNaN(rating_value) && rating_value !== undefined && rating_value) {
@@ -34,10 +32,9 @@ if(!isNaN(reviews_count) && reviews_count !== undefined && reviews_count) {
 
 <?if($arResult['REVIEWS_COUNT']):?>
 	var tabReviews = $('a[href="#reviews"]');
-
 	tabReviews.each(function(){
 		if(!$(this).hasClass('counted')) {
-				$(this).addClass('counted');
+			$(this).text( $(this).text()+'(<?=$arResult['REVIEWS_COUNT']?>)' ).addClass('counted');
 		}
 	});
 	if (tabReviews.parent().hasClass('active')) {
@@ -54,53 +51,6 @@ function onLightEditorShow(content)
 	oBlogComLHE.CreateFrame(); // We need to recreate editable frame after reappending editor container
 	oBlogComLHE.SetEditorContent(oBlogComLHE.content);
 	oBlogComLHE.SetFocus();
-}
-
-function commentAction(key, el, type) {
-	const $this = $(el);
-	const $comment = $('#form_comment_' + key);
-	const $commentsContainer = $('.blog-comments');
-	const currentCommentType = $comment.data('type');
-	const currentKey = $commentsContainer.data('key');
-	const $errorNode = $commentsContainer[0].querySelectorAll('.error');
-	
-	$('.js-form-comment').hide();
-	$('.blog-comment-action__link').not($this).removeClass('clicked');
-
-	if (!currentKey) {
-		$comment.data('key', key);
-	}
-
-	if ($errorNode.length) {
-		$errorNode.forEach(node => node.remove());
-	}
-	
-
-	if ((type !== currentCommentType && typeof window[type] !== 'undefined') || currentKey !== key) {
-		window[type](key);
-		$comment.data('type', type);
-		$comment.data('key', key);
-	}
-
-	if ((type !== currentCommentType && !$this.hasClass('clicked')) || type === currentCommentType) {
-		toggleComment($this, $comment);
-	}
-}
-
-function toggleComment($el, $comment,) {
-	if (!$el.hasClass('show-comment')) {
-		$('.show-comment.btn').removeClass('clicked');
-	}
-	
-	if ($el.hasClass('clicked')) {
-		$comment.slideUp();
-		$el.removeClass('clicked');
-		$el.closest('.blog-comment-content__item').find('.blog-comment-action__link').removeClass('clicked');
-	}
-	else{ 
-		$comment.slideDown();
-		$el.addClass('clicked');
-	}
 }
 
 function answerComment(key, el) {
@@ -150,13 +100,6 @@ function showComment(key, error, userName, userEmail, needData)
 	document.form_comment.act.value = 'add';
 	document.form_comment.post.value = '<?=GetMessageJS("B_B_MS_SEND")?>';
 	document.form_comment.action = document.form_comment.action + "#" + key;
-
-	if (key > 0) {
-		BX.addClass(pFormCont, 'answer-form');
-	}
-	else {
-		BX.removeClass(pFormCont, 'answer-form');
-	}
 
 	if(error == "Y")
 	{
@@ -258,7 +201,61 @@ function editComment(key)
 
 	BX('form_comment_' + key).appendChild(pFormCont); // Move form
 
-	typeof dropZone === 'object'  && dropZone.drawImagesFromColection(document.querySelectorAll('[rel="reviews-gallery_' + key + '"] img'));
+	const $filesContainer = document.querySelector('.blog-comment-form__existing-files');
+	const $images = document.querySelectorAll('[rel="reviews-gallery_' + key + '"] img');
+	const deletedImagesCount = $filesContainer.querySelectorAll('img').length;
+
+	if (document.form_comment.edit_id.value !== key || !deletedImagesCount) {
+		$filesContainer.innerHTML = '';
+
+		if ($images.length) {
+			for (let i = 0; i < $images.length; i++) {
+				const $block = BX.create('div', {
+					attrs: {
+						className: 'image-block',
+					},
+					children: [
+						BX.create('input', {
+							attrs: {
+								type: 'checkbox',
+								name: 'deleted_images[]',
+								value: $images[i].dataset.id,
+								id: 'del-image-' + $images[i].dataset.id
+							},
+						}),
+						BX.create('label', {
+							attrs: {
+								className: 'image-block__wrapper',
+								for: 'del-image-' + $images[i].dataset.id
+							},
+							children: [
+								BX.create('div', {
+									attrs: {
+										className: 'image-block__inner',
+									},
+									children: [
+										BX.create('img', {
+											attrs: {
+												src: $images[i].getAttribute('src')
+											},
+										}),
+										BX.create('i', {
+											attrs: {
+												className: 'close',
+												title: BX.message('BPC_MES_DELETE'),
+											},
+										}),
+									]
+								}),
+							]
+						}),
+					]
+				});
+
+				$filesContainer.appendChild($block);
+			}
+		}
+	}
 
 	pFormCont.style.display = "block";
 
@@ -327,7 +324,6 @@ function waitResult(id)
 		{
 			BX('err_comment_'+id).innerHTML = ob.innerHTML;
 			ob.innerHTML = '';
-			scroll_block($('.blog-comments'));
 		}
 		else
 		{
@@ -412,12 +408,11 @@ function submitComment()
 		if(BX('err_comment_'+val))
 			BX('err_comment_'+val).innerHTML = '';
 
-		if (!prepareFormInfo(obForm, bCommentRequired)) {
-			BX('post-button').disabled = false;
-			return false;
-		}
+		prepareFormInfo(obForm, bCommentRequired);
 
 		BX.ajax.submitComponentForm(obForm, id);
+		var comment = $(obForm).find('[name=comment]');
+		setTimeout(function(){comment.css('color', '');}, 1500);
 
 		setTimeout("waitResult('"+val+"')", 100);
 		<?
@@ -430,13 +425,7 @@ function submitComment()
 
 function prepareFormInfo(obForm, bCommentRequired)
 {
-	let isValid = true;
-
 	var form = $(obForm);
-
-	// remove hidden comment field
-	form.find('input[type=hidden][name=comment]').remove();
-
 	var comment = form.find('[name=comment]');
 	var limitations = form.find('[name=limitations]');
 	var virtues = form.find('[name=virtues]');
@@ -448,92 +437,32 @@ function prepareFormInfo(obForm, bCommentRequired)
 		? parseInt(form.find('[name=parentId]').val())
 		: false;
 
-	var ratingVal = rating.closest('.votes_block').data('rating');
-	if (ratingVal) {
-		rating.val(ratingVal);
+	var resultCommentText = '';
+	if(virtues.val()) {
+		resultCommentText += '<virtues>'+virtues.val()+'</virtues>'+'\n';
 	}
 
-	const bAnswerComment = parent_id;
-
-	for (let i = 0, c = form.find('input[required]').length; i < c; ++i) {
-		$input = form.find('input[required]').eq(i);
-
-		if ($input[0] === rating[0] && bAnswerComment) {
-			continue;
-		}
-
-		if (!$input.val().length) {
-			isValid = false;
-
-			let $label = $input.closest('.form-group').find('label:not(.error)');
-			let $error = $input.closest('.form-group').find('label.error');
-			if ($label.length && !$error.length) {
-				let error = BX.create({
-					tag: 'label',
-					text: (bAnswerComment ? '<?=GetMessage('NO_COMMENT_TEXT_ANSWER');?>' : BX.message('JS_REQUIRED')),
-					attrs: {
-						class: 'error',
-					},
-				});
-				
-				BX.insertAfter(error, $label[0]);
-			}
-		}
+	if(limitations.val()) {
+		resultCommentText += '<limitations>'+limitations.val()+'</limitations>'+'\n';
 	}
 
-	let resultCommentText = '';
-	if (virtues.val()) {
-		resultCommentText += `<virtues>${virtues.val().replace(/(<([^>]+)>)/gi, "")}</virtues>\n`;
-	}
-	if (limitations.val()) {
-		resultCommentText += `<limitations>${limitations.val().replace(/(<([^>]+)>)/gi, "")}</limitations>\n`;
-	}
-	if (comment.val()) {
-		resultCommentText += `<comment>${comment.val().replace(/(<([^>]+)>)/gi, "")}</comment>`;
-	} 
-	else if ((!bCommentRequired || edit_id) && !parent_id) {
+	if(comment.val()) {
+		resultCommentText += '<comment>'+comment.val()+'</comment>';
+	} else if ((!bCommentRequired || edit_id) && !parent_id) {
 		resultCommentText += '<comment></comment>';
 	}
 
-	if ((bCommentRequired || bAnswerComment) && !resultCommentText) {
-		const $label = form.find('.form__text-field:visible:first label:not(.error)');
-		const $error = form.find('.comments-error');
-		if (!$error.length) {
-			const error = BX.create({
-				tag: 'label',
-				text: (bAnswerComment ? '<?=GetMessage('NO_COMMENT_TEXT_ANSWER');?>' : '<?=GetMessage('NO_COMMENT_TEXT');?>'),
-				attrs: {
-					class: 'error comments-error',
-					for: 'virtues'
-				},
-			});
-			BX.insertAfter(error, $label[0]);
-		}
-		isValid = false;
-	}
-
-	if (!isValid) {
-		scroll_block($('label.error'));
-		return false;
-	}
+	comment.css('color', '#fafafa');
 
 	window.commentOr = comment.val();
-
-	// add hidden comment field
 	if(resultCommentText) {
-		let commentHidden = BX.create({
-			tag: 'input',
-			attrs: {
-				type: 'hidden',
-				name: comment.attr('name'),
-				value: resultCommentText,
-			},
-		});
-
-		BX.insertAfter(commentHidden, comment[0]);
+		comment.val(resultCommentText);
 	}
 
-	return isValid;
+	var ratingVal = rating.closest('.votes_block').data('rating');
+	if(ratingVal) {
+		rating.val(ratingVal);
+	}
 }
 
 function hideShowComment(url, id)
@@ -688,8 +617,6 @@ function clearForm(pFormCont) {
 	$(pFormCont).find('input[type=file]').val('');
 	$(pFormCont).find('input[name=rating]').val('');
 	$(pFormCont).find("input[type=file]").uniform.update();
-
-	typeof dropZone === 'object' && dropZone.removeAllFiles();
 }
 
 <?if($arResult["NEED_NAV"] == "Y"):?>

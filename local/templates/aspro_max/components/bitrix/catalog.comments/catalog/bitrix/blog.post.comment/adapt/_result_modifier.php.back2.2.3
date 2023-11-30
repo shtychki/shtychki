@@ -180,6 +180,9 @@ if($arResult["PagesComment"]) {
 	}
 
 	if($arCommentsSort) {
+
+		$arResult['REVIEWS_COUNT'] = count($arCommentsSort);
+
 		if($arParams['SORT_PROP'] == 'DateFormated') {
 			if($arParams['SORT_ORDER'] != 'SORT_DESC') {
 				function sortByDate($a, $b) {
@@ -289,6 +292,9 @@ if($arResult["PagesComment"]) {
 	}
 
 	if($arCommentsSort) {
+
+		$arResult['REVIEWS_COUNT'] = count($arCommentsSort);
+
 		if($arParams['SORT_PROP'] == 'DateFormated') {
 			if($arParams['SORT_ORDER'] != 'SORT_DESC') {
 				function sortByDate($a, $b) {

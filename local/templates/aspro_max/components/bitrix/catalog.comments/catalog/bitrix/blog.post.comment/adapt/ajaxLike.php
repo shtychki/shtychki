@@ -2,6 +2,8 @@
 require($_SERVER['DOCUMENT_ROOT'].'/bitrix/modules/main/include/prolog_before.php');
 include('functions.php');
 
+use CMax as Solution;
+
 global $USER_FIELD_MANAGER; 
 
 createField("BLOG_COMMENT", 'UF_ASPRO_COM_LIKE', 'integer');
@@ -17,7 +19,7 @@ $fieldValueId = $USER_FIELD_MANAGER->GetUserFields("BLOG_COMMENT_ID", $ufId);
 /* LIKE */
 $likeValue = ($fields['UF_ASPRO_COM_LIKE']['VALUE'] ? $fields['UF_ASPRO_COM_LIKE']['VALUE'] : 0);
 $likeId = $fieldValueId['UF_LIKE_ID']['VALUE'];
-$likeId = unserialize($likeId);
+$likeId = Solution::unserialize($likeId);
 
 if( isset($likeId[$_REQUEST['userId']]) ) {
 	$valueLike = $likeId[$_REQUEST['userId']];
@@ -33,7 +35,7 @@ $bCancelLike = $valueLike == 'Y';
 /* DISLIKE */
 $dislikeValue = ($fields['UF_ASPRO_COM_DISLIKE']['VALUE'] ? $fields['UF_ASPRO_COM_DISLIKE']['VALUE'] : 0);
 $dislikeId = $fieldValueId['UF_DISLIKE_ID']['VALUE'];
-$dislikeId = unserialize($dislikeId);
+$dislikeId = Solution::unserialize($dislikeId);
 
 if( isset($dislikeId[$_REQUEST['userId']]) ) {
 	$valueDisLike = $dislikeId[$_REQUEST['userId']];

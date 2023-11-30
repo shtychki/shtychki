@@ -291,15 +291,13 @@ else
 
 						</div>
 					</div>
-					<?if($arParams['NO_USE_IMAGE'] == 'N'):?>
-						<div class="drop-zone bordered rounded3">							
-							<div class ="drop-zone__wrapper rounded3">
-								<input type="file" id="comment_images" multiple="multiple" name="comment_images[]" accept="image/*" title="" class="drop-zone__wrapper-input uniform-ignore">
-							</div>
+					<div class="drop-zone bordered rounded3">							
+						<div class ="drop-zone__wrapper rounded3">
+							<input type="file" id="comment_images" multiple="multiple" name="comment_images[]" accept="image/*" title="" class="drop-zone__wrapper-input uniform-ignore">
 						</div>
-
-						<script>var dropZone = new DropZone('.drop-zone', {maxImageCount:<?=$arParams['MAX_IMAGE_COUNT']?>});</script>
-					<?endif;?>
+					</div>
+					
+					<script>let dropZone = new DropZone('.drop-zone');</script>
 					<?
 					//include($_SERVER["DOCUMENT_ROOT"].$templateFolder."/lhe.php");
 
@@ -375,10 +373,6 @@ else
 		$prevTab = 0;
 		function ShowComment($comment, $tabCount=0, $tabSize=2.5, $canModerate=false, $User=Array(), $use_captcha=false, $bCanUserComment=false, $errorComment=false, $arParams = array())
 		{
-			if (!isset($application) && !isset($request)) {
-				$application = \Bitrix\Main\Application::getInstance();
-				$request = $application->getContext()->getRequest();
-			}
 			$comment["urlToAuthor"] = "";
 			$comment["urlToBlog"] = "";
 			$comment["urlToApprove"] = "";

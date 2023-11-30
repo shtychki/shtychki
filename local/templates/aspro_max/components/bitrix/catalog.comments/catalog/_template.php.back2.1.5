@@ -24,22 +24,30 @@ $templateData = array(
 	'TEMPLATE_THEME' => $this->GetFolder().'/themes/'.$arParams['TEMPLATE_THEME'].'/style.css',
 	'TEMPLATE_CLASS' => 'bx_'.$arParams['TEMPLATE_THEME']
 );
-?>
-<?if (!$templateData['BLOG']['BLOG_FROM_AJAX']):?>
-	<?
-	if (!empty($arResult['ERRORS'])) {
+
+if (!$templateData['BLOG']['BLOG_FROM_AJAX'])
+{
+	if (!empty($arResult['ERRORS']))
+	{
 		ShowError(implode('<br>', $arResult['ERRORS']));
 		return;
 	}
 
 	$arData = array();
 	$arJSParams = array(
-		'serviceList' => array(),
-		'settings' => array(),
-		'tabs' => array(),
+		'serviceList' => array(
+
+		),
+		'settings' => array(
+
+		),
+		'tabs' => array(
+
+		)
 	);
 
-	if ($arResult['BLOG_USE']) {
+	if ($arResult['BLOG_USE'])
+	{
 		$templateData['BLOG']['AJAX_PARAMS'] = array(
 			'IBLOCK_ID' => $arResult['ELEMENT']['IBLOCK_ID'],
 			'ELEMENT_ID' => $arResult['ELEMENT']['ID'],
@@ -70,8 +78,6 @@ $templateData = array(
 			"REVIEW_COMMENT_REQUIRED" => $arParams["REVIEW_COMMENT_REQUIRED"],
 			"REVIEW_FILTER_BUTTONS" => $arParams["REVIEW_FILTER_BUTTONS"],
 			"REAL_CUSTOMER_TEXT" => $arParams["REAL_CUSTOMER_TEXT"],
-			"MAX_IMAGE_COUNT" => $arParams['MAX_IMAGE_COUNT'],
-			"NO_USE_IMAGE" => $arParams['NO_USE_IMAGE'],
 		);
 		$arJSParams['serviceList']['blog'] = true;
 		$arJSParams['settings']['blog'] = array(
@@ -86,53 +92,65 @@ $templateData = array(
 			"CONTENT" => '<div id="bx-cat-soc-comments-blg_'.$arResult['ELEMENT']['ID'].'">'.GetMessage("IBLOCK_CSC_COMMENTS_LOADING").'</div>'
 		);
 	}
-	?>
-	<?if (!empty($arData)):?>
-		<?
+
+	if (!empty($arData))
+	{
 		$arTabsParams = array(
 			"DATA" => $arData,
 			"ID" => $templateData['TABS_ID']
 		);
+
+?><div id="<? echo $templateData['TABS_FRAME_ID']; ?>" class="bx_soc_comments_div bx_important <? echo $templateData['TEMPLATE_CLASS']; ?>"><?
 		$content = "";
 		$activeTabId = "";
 		$tabIDList = array();
-		?>
-		<div id="<?=$templateData['TABS_FRAME_ID'];?>" class="bx_soc_comments_div bx_important <?=$templateData['TEMPLATE_CLASS'];?>">
-			<div id="<?=$templateData['TABS_ID'];?>" class="bx-catalog-tab-section-container tabs">
-				<div class="">
-					<ul class="bx-catalog-tab-list1 hidden nav nav-tabs" style="left: 0;"><?
-						// $arData['BLOG']['CONTENT']
-						$id = $templateData['TABS_ID'].'BLOG';
-						$tabActive = true;
-						$activeTabId = $tabIDList[] = 'BLOG';
-						$content .= '<div id="'.$id.'_cont" >'.$arData['BLOG']['CONTENT'].'</div>';
-						?>
-						<li id="<?=$id?>" class="muted bordered font_upper_md BLOG">
-							<a href="#<?=$id;?>_cont" data-toggle="tab"></a>
-						</li>
-					</ul>
-				</div>
-				
-				<div class="bx-catalog-tab-body-container catalog_reviews_extended">
-					<div class="bx-catalog-tab-container"><?=$content?></div>
-				</div>
-			</div>
-			<?
-			$arJSParams['tabs'] = array(
-				'activeTabId' =>  'BLOG',
-				'tabsContId' => $templateData['TABS_ID'],
-				'tabList' => $tabIDList
-			);
-			?>
-		</div>
-		<script type="text/javascript">
-		var obCatalogComments_<? echo $arResult['ELEMENT']['ID']; ?> = new JCCatalogSocnetsComments(<? echo CUtil::PhpToJSObject($arJSParams, false, true); ?>);
-		
-		$(document).on('click', '.show-comment.btn', function() {
-			commentAction('0', this, 'showComment');
-		})
-		</script>
-	<?else:?>
-		<?ShowError(GetMessage("IBLOCK_CSC_NO_DATA"));?>
-	<?endif;?>
-<?endif;?>
+?><div id="<? echo $templateData['TABS_ID']; ?>" class="bx-catalog-tab-section-container tabs">
+	<div class="">
+		<ul class="bx-catalog-tab-list1 hidden nav nav-tabs" style="left: 0;"><?
+			// $arData['BLOG']['CONTENT']
+			$id = $templateData['TABS_ID'].'BLOG';
+			$tabActive = true;
+			?><li id="<?=$id?>" class="muted bordered font_upper_md BLOG"><a href="#<?=$id;?>_cont" data-toggle="tab"></a></li><?
+			$activeTabId = 'BLOG';
+
+			$content .= '<div id="'.$id.'_cont" >'.$arData['BLOG']['CONTENT'].'</div>';
+			$tabIDList[] = 'BLOG';
+
+		?></ul>
+	</div>
+	<div class="bx-catalog-tab-body-container catalog_reviews_extended">
+		<div class="bx-catalog-tab-container"><?=$content?></div>
+	</div>
+</div>
+<?
+		$arJSParams['tabs'] = array(
+			'activeTabId' =>  'BLOG',
+			'tabsContId' => $templateData['TABS_ID'],
+			'tabList' => $tabIDList
+		);
+?></div>
+<script type="text/javascript">
+var obCatalogComments_<? echo $arResult['ELEMENT']['ID']; ?> = new JCCatalogSocnetsComments(<? echo CUtil::PhpToJSObject($arJSParams, false, true); ?>);
+$(document).on('click', '.show-comment.btn', function(){
+
+	const $imagesDrop = document.getElementsByClassName(dropZone.option.className.images)[0];
+	if($imagesDrop){
+		$imagesDrop.remove();
+	}
+
+	if($(this).hasClass('clicked') && $('#form_comment_0 #form_c_del').length) {
+		$('#form_comment_0').slideToggle();
+	} else {
+		showComment('0');
+		$('#form_comment_0').show();
+	}
+	$(this).addClass('clicked');
+
+})
+</script><?
+	}
+	else
+	{
+		ShowError(GetMessage("IBLOCK_CSC_NO_DATA"));
+	}
+}
