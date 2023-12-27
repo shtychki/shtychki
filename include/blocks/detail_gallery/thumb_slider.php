@@ -36,9 +36,9 @@ $arOptions = $arConfig['PARAMS'];
                             <?foreach($arOptions['ITEMS'] as $i => $arImage):?>
                                 <div id="thumb-photo-<?=$i?>" class="<?= $arOptions['GALLERY_SETTINGS']['THUMBS']['SLIDE_CLASS_LIST']; ?>" data-big="<?=$arImage["BIG"]["src"];?>">
                                     <?if(!$isEmpty){?>
-                                        <img class="gallery__picture" src="<?=$arImage["THUMB"]["src"]?>" <?=($arOptions['CONFIG']['IS_MAGNIFIER'] ? 'data-xoriginalwidth="'.$arImage["BIG"]["width"].'"data-xoriginalheight="'.$arImage["BIG"]["height"].'"' : "");?> alt="<?=$alt;?>" title="<?=$title;?>"/>
+                                        <img class="gallery__picture" src="<?=$arImage["THUMB"]["src"]?>" <?=($arOptions['CONFIG']['IS_MAGNIFIER'] ? 'data-xoriginalwidth="'.$arImage["BIG"]["width"].'"data-xoriginalheight="'.$arImage["BIG"]["height"].'"' : "");?> alt="<?=$arImage["ALT"];?>" title="<?=$arImage["TITLE"];?>"/>
                                     <?}else{?>
-                                        <img class="gallery__picture" src="<?=$arImage["SRC"]?>" alt="<?=$alt;?>" title="<?=$title;?>" />
+                                        <img class="gallery__picture" src="<?=$arImage["SRC"]?>" alt="<?=$arImage["ALT"];?>" title="<?=$arImage["TITLE"];?>" />
                                     <?}?>
                                 </div>
                             <?endforeach;?>

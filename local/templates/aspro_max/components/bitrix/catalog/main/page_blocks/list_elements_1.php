@@ -1,7 +1,5 @@
 <?
 global $bHeaderStickyMenu, $bHeaderStickyMenuSm, $arTheme;
-$test = $APPLICATION->GetTitle('title');
-$test2 = $APPLICATION->GetTitle();
 if($bHeaderStickyMenu || $bHeaderStickyMenuSm){
 	$bShowCompactHideLeft = ($arTheme['COMPACT_FILTER_HIDE_LEFT_BLOCK']['VALUE'] == 'Y');
 	if($bShowCompactHideLeft){
@@ -176,7 +174,7 @@ if(isset($isAjaxFilter) && $isAjaxFilter == "Y")
 <?$section_pos_top = \Bitrix\Main\Config\Option::get("aspro.max", "TOP_SECTION_DESCRIPTION_POSITION", "UF_SECTION_DESCR", SITE_ID );?>
 <?$section_pos_bottom = \Bitrix\Main\Config\Option::get("aspro.max", "BOTTOM_SECTION_DESCRIPTION_POSITION", "DESCRIPTION", SITE_ID );?>
 
-<?php $test2 = $APPLICATION->GetTitle();?>
+
 <?$sViewElementTemplate = ($arParams["LANDING_TYPE_VIEW"] == "FROM_MODULE" ? $arTheme["CATALOG_PAGE_LANDINGS"]["VALUE"] : $arParams["LANDING_TYPE_VIEW"]);?>
 
 <?$this->SetViewTarget("top_content2");?>
@@ -293,7 +291,7 @@ if(isset($isAjaxFilter) && $isAjaxFilter == "Y")
 		<div class="inner_wrapper">
 <?endif;?>
 
-<?if(!$arSeoItem):?>
+			<?if(!$arSeoItem):?>
 				<?if(
 					$arParams["SHOW_SECTION_DESC"] != 'N' &&
 					strpos($_SERVER['REQUEST_URI'], 'PAGEN') === false
@@ -423,7 +421,6 @@ if(isset($isAjaxFilter) && $isAjaxFilter == "Y")
 						"AJAX_OPTION_JUMP" => $arParams["AJAX_OPTION_JUMP"],
 						"AJAX_OPTION_STYLE" => $arParams["AJAX_OPTION_STYLE"],
 						"AJAX_OPTION_HISTORY" => $arParams["AJAX_OPTION_HISTORY"],
-						"COMPATIBLE_MODE" => $arParams['COMPATIBLE_MODE'],
 						"CACHE_TYPE" => $arParams["CACHE_TYPE"],
 						"CACHE_TIME" => $arParams["CACHE_TIME"],
 						"CACHE_GROUPS" => $arParams["CACHE_GROUPS"],
@@ -499,6 +496,8 @@ if(isset($isAjaxFilter) && $isAjaxFilter == "Y")
 						"SECTION_COUNT_ELEMENTS" => $arParams["SECTION_COUNT_ELEMENTS"],
 						"SHOW_PROPS_TABLE" => $typeTableProps ?? strtolower(CMax::GetFrontParametrValue('SHOW_TABLE_PROPS')),
 						"SHOW_OFFER_TREE_IN_TABLE" => CMax::GetFrontParametrValue('SHOW_OFFER_TREE_IN_TABLE'),
+						"SHOW_SLIDER" => "N",
+						"COMPATIBLE_MODE" => "Y",
 					), $component, array("HIDE_ICONS" => $isAjax)
 				);?>
 
@@ -538,7 +537,7 @@ if(isset($isAjaxFilter) && $isAjaxFilter == "Y")
 	<?endif;?>
 <?endif;?>
 
-<?if($isAjax=="N"){?>
+			<?if($isAjax=="N"){?>
 				<?global $arRegion;?>
 				<?if($arParams["BLOG_IBLOCK_ID"]):?>
 					<?
@@ -747,25 +746,21 @@ if(isset($isAjaxFilter) && $isAjaxFilter == "Y")
 					):?>
 						<?ob_start();?>
 						<?if($posSectionDescr=="BOTH"):?>
-							<?if($arSection[$section_pos_bottom] &&
-                                empty($GLOBALS["MAX_SMART_FILTER"])):?>
+							<?if($arSection[$section_pos_bottom]):?>
 								<div class="group_description_block bottom muted777">
 									<div><?=$arSection[$section_pos_bottom]?></div>
 								</div>
 							<?endif;?>
 						<?elseif($posSectionDescr=="BOTTOM"):?>
-							<?if($arSection[$arParams["SECTION_PREVIEW_PROPERTY"]] &&
-                                empty($GLOBALS["MAX_SMART_FILTER"])):?>
+							<?if($arSection[$arParams["SECTION_PREVIEW_PROPERTY"]]):?>
 								<div class="group_description_block bottom muted777">
 									<div><?=$arSection[$arParams["SECTION_PREVIEW_PROPERTY"]]?></div>
 								</div>
-							<?elseif ($arSection["DESCRIPTION"] &&
-                                empty($GLOBALS["MAX_SMART_FILTER"])):?>
+							<?elseif ($arSection["DESCRIPTION"]):?>
 								<div class="group_description_block bottom muted777">
 									<div><?=$arSection["DESCRIPTION"]?></div>
 								</div>
-							<?elseif($arSection["UF_SECTION_DESCR"] &&
-                                empty($GLOBALS["MAX_SMART_FILTER"])):?>
+							<?elseif($arSection["UF_SECTION_DESCR"]):?>
 								<div class="group_description_block bottom muted777">
 									<div><?=$arSection["UF_SECTION_DESCR"]?></div>
 								</div>
@@ -814,6 +809,8 @@ if($arTheme["HIDE_SITE_NAME_TITLE"]["VALUE"] == "N" && ($bBitrixAjax || $isAjaxF
 {
 	$postfix = " - ".$arSite["NAME"];
 }?>
+
+
 
 <?if($itemsCnt):?>
 			<?if($isAjax=="Y"){
@@ -884,11 +881,9 @@ if($arSeoItem)
 		$APPLICATION->SetPageProperty("keywords", $arSeoItem["IPROPERTY_VALUES"]['ELEMENT_META_KEYWORDS']);
 	?>
 <?}?>
-
 <?
 $original_title = $APPLICATION->GetTitle();
-?>
-
+?>										   
 <?
 if($arParams["AJAX_MODE"] !== "Y" && isset($isAjaxFilter) && $isAjaxFilter && CMax::isSmartSeoInstalled()){
 	Aspro\Smartseo\General\SmartseoEngine::replaceSeoPropertyOnPage();
@@ -917,7 +912,7 @@ if($arParams["AJAX_MODE"] !== "Y" && isset($isAjaxFilter) && $isAjaxFilter && CM
 	<script type="text/javascript">
 		BX.removeCustomEvent("onAjaxSuccessFilter", function tt(e){});
 		BX.addCustomEvent("onAjaxSuccessFilter", function tt(e){
-			let arAjaxPageData = <?=CUtil::PhpToJSObject($arAdditionalData);?>;
+			var arAjaxPageData = <?=CUtil::PhpToJSObject($arAdditionalData);?>;			
 			if($('.element-count-wrapper .element-count').length){
 				//$('.element-count-wrapper .element-count').text($('.js_append').closest('.ajax_load.cur').find('.bottom_nav').attr('data-all_count'));
 				var cntFromNav = $('.js_append').closest('.ajax_load.cur').find('.bottom_nav').attr('data-all_count');
@@ -927,7 +922,7 @@ if($arParams["AJAX_MODE"] !== "Y" && isset($isAjaxFilter) && $isAjaxFilter && CM
 					$('.element-count-wrapper .element-count').text($('.js_append > div.item:not(.flexbox)').length)
 				}				
 			}
-			<?if( $arParams["AJAX_MODE"] !== "Y" ):?>
+			<?if( $arParams["AJAX_MODE"] !== "Y" ):?>	
 				if (arAjaxPageData.TITLE)
 					BX.ajax.UpdatePageTitle(arAjaxPageData.TITLE);
 				if (arAjaxPageData.WINDOW_TITLE || arAjaxPageData.TITLE)
@@ -938,11 +933,13 @@ if($arParams["AJAX_MODE"] !== "Y" && isset($isAjaxFilter) && $isAjaxFilter && CM
 					$('#navigation').html(ajaxBreadCrumb);
 					$('.ajax_breadcrumb').remove();
 				}
+					
 			<?endif;?>
 
 		});
 	</script>
 <?endif;?>
+
 <?$APPLICATION->IncludeComponent(
     "itcentre:seo_ajax",
      "",
@@ -951,7 +948,7 @@ if($arParams["AJAX_MODE"] !== "Y" && isset($isAjaxFilter) && $isAjaxFilter && CM
         "METADATA" => $arAdditionalData,
         "TITLE" => $original_title,
      )
-);?>
+);?>						
 <?if($itemsCnt):?>
 		</div>
 	</div>

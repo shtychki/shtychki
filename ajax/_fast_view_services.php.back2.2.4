@@ -16,7 +16,7 @@ if(isset($_GET['iblock_id']) && $_GET['iblock_id'])
 		}
 		$('.fast_view_services').addClass('loading_block');
 		BX.ajax({
-			url: <?var_export($url)?>+add_url,
+			url: '<?=$url;?>'+add_url,
 			method: 'POST',
 			data: BX.ajax.prepareData({'FAST_VIEW':'Y'}),
 			dataType: 'html',

@@ -11,12 +11,12 @@ if(isset($_GET['iblock_id']) && $_GET['iblock_id'])
 	$request = $context->getRequest();
 
 	$href = $request['item_href'] ?? $result['DETAIL_PAGE_URL']; // from fastViewNav.php
-	$url = htmlspecialcharsbx(urldecode($href));
 	$url = str_replace('&amp;', '&', $href );
 
 	\Bitrix\Main\Loader::includeModule('sale');
 	\Bitrix\Main\Loader::includeModule('currency');
 	\Bitrix\Main\Loader::includeModule('catalog');?>
+
 	<script>
 		var objUrl = parseUrlQuery(),
 			add_url = '<?=(strpos($url, '?') !== false ? '&' : '?')?>FAST_VIEW=Y';
@@ -27,7 +27,7 @@ if(isset($_GET['iblock_id']) && $_GET['iblock_id'])
 		}
 		$('.fast_view_frame').addClass('loading_block');
 		BX.ajax({
-			url: <?var_export($url)?> + add_url,
+			url: decodeURIComponent('<?=$url?>') + add_url,
 			method: 'POST',
 			data: BX.ajax.prepareData({'FAST_VIEW':'Y'}),
 			dataType: 'html',
@@ -55,6 +55,9 @@ if(isset($_GET['iblock_id']) && $_GET['iblock_id'])
 				$('.fast_view_frame').removeClass('loading_block');
 
 				setBasketStatusBtn();
+
+				// InitZoomPict($('#fast_view_item .zoom_picture'));
+				// InitLazyLoad();
 
 				BX.loadScript(arAsproOptions.SITE_TEMPLATE_PATH + '/js/jquery.fancybox.min.js', function(event){
 					BX.loadCSS(arAsproOptions.SITE_TEMPLATE_PATH + '/css/jquery.fancybox.min.css');
