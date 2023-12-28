@@ -746,21 +746,25 @@ if(isset($isAjaxFilter) && $isAjaxFilter == "Y")
 					):?>
 						<?ob_start();?>
 						<?if($posSectionDescr=="BOTH"):?>
-							<?if($arSection[$section_pos_bottom]):?>
+							<?if($arSection[$section_pos_bottom] &&
+                                empty($GLOBALS["MAX_SMART_FILTER"])):?>
 								<div class="group_description_block bottom muted777">
 									<div><?=$arSection[$section_pos_bottom]?></div>
 								</div>
 							<?endif;?>
 						<?elseif($posSectionDescr=="BOTTOM"):?>
-							<?if($arSection[$arParams["SECTION_PREVIEW_PROPERTY"]]):?>
+							<?if($arSection[$arParams["SECTION_PREVIEW_PROPERTY"]] &&
+                                empty($GLOBALS["MAX_SMART_FILTER"])):?>
 								<div class="group_description_block bottom muted777">
 									<div><?=$arSection[$arParams["SECTION_PREVIEW_PROPERTY"]]?></div>
 								</div>
-							<?elseif ($arSection["DESCRIPTION"]):?>
+							<?elseif ($arSection["DESCRIPTION"] &&
+                                empty($GLOBALS["MAX_SMART_FILTER"])):?>
 								<div class="group_description_block bottom muted777">
 									<div><?=$arSection["DESCRIPTION"]?></div>
 								</div>
-							<?elseif($arSection["UF_SECTION_DESCR"]):?>
+							<?elseif($arSection["UF_SECTION_DESCR"] &&
+                                empty($GLOBALS["MAX_SMART_FILTER"])):?>
 								<div class="group_description_block bottom muted777">
 									<div><?=$arSection["UF_SECTION_DESCR"]?></div>
 								</div>
