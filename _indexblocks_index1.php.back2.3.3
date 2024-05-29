@@ -155,16 +155,6 @@
 			<?endif;?>
 		<?endif;?>
 
-		<?//GALLERY?>
-		<?if($optionCode == "GALLERY"):?>
-			<?global $bShowGallery, $bGalleryIndexClass;?>			
-			<?if($bShowGallery):?>
-				<div class="drag-block container <?=$optionCode?> <?=$bGalleryIndexClass;?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>">
-				<?=CMax::ShowPageType('mainpage', $subtype, $strTemplateName, true);?>
-				</div>
-			<?endif;?>
-		<?endif;?>
-
 		<?//BOTTOM_BANNERS?>
 		<?if($optionCode == "BOTTOM_BANNERS"):?>
 			<?global $bShowBottomBanner, $bBottomBannersIndexClass;?>
