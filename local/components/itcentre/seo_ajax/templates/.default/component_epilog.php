@@ -14,7 +14,7 @@ $highLoadBlockColorId = 22; //HL block цвета
 
 //Массив умного фильтра со свойствами
 $smartFilterNameCustom = $GLOBALS["MAX_SMART_FILTER"];
-if(is_array($smartFilterNameCustom) && !empty($smartFilterNameCustom) && array_key_first($smartFilterNameCustom) !== '>=CATALOG_PRICE_7') {
+if(is_array($smartFilterNameCustom) && !empty($smartFilterNameCustom) && array_key_first($smartFilterNameCustom) !== '>=CATALOG_PRICE_7' && array_key_first($smartFilterNameCustom) !== '<=CATALOG_PRICE_7') {
 //Количество примененных свойств в умном фильтре
     $countPropertiesFilter = count($smartFilterNameCustom);
 //Количество выбранных значений в одном свойстве
