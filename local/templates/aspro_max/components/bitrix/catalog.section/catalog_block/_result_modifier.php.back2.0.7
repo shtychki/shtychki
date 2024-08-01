@@ -7,12 +7,6 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED!==true) die();
 /** @var CBitrixComponentTemplate $this */
 /** @var array $arParams */
 /** @var array $arResult */
-
-if(isset($arParams["BIG_DATA_MODE"]) && $arParams["BIG_DATA_MODE"] === 'Y'){
-	$component = $this->getComponent();
-	$arParams = $component->applyTemplateModifications();
-}
-
 $arDefaultParams = array(
 	'TYPE_SKU' => 'N',
 	'FILTER_HIT_PROP' => 'block',
@@ -98,8 +92,6 @@ if (!empty($arResult['ITEMS'])){
 	$strBaseCurrency = '';
 	$boolConvert = isset($arResult['CONVERT_CURRENCY']['CURRENCY_ID']);
 
-	$arParams['OFFERS_CART_PROPERTIES'] = isset($arParams['OFFERS_CART_PROPERTIES']) && is_array($arParams['OFFERS_CART_PROPERTIES']) ? $arParams['OFFERS_CART_PROPERTIES'] : [];
-
 	if ($arResult['MODULES']['catalog'])
 	{
 		if (!$boolConvert)
@@ -108,11 +100,10 @@ if (!empty($arResult['ITEMS'])){
 		$arSKU = CCatalogSKU::GetInfoByProductIBlock($arParams['IBLOCK_ID']);
 
 		$boolSKU = !empty($arSKU) && is_array($arSKU);
-		$bUseModuleProps = \Bitrix\Main\Config\Option::get("iblock", "property_features_enabled", "Y") === "Y";
+		$bUseModuleProps = \Bitrix\Main\Config\Option::get("iblock", "property_features_enabled", "N") === "Y";
 
-		if ($bUseModuleProps) {
-			$arParams['OFFERS_CART_PROPERTIES'] = (array)\Bitrix\Catalog\Product\PropertyCatalogFeature::getBasketPropertyCodes($arSKU['IBLOCK_ID'], ['CODE' => 'Y']);
-		}
+		if ($bUseModuleProps)
+			$arParams['OFFERS_CART_PROPERTIES'] = \Bitrix\Catalog\Product\PropertyCatalogFeature::getBasketPropertyCodes($arSKU['IBLOCK_ID'], ['CODE' => 'Y']);
 
 		if ('TYPE_1' === $arParams['TYPE_SKU'] && $arParams['DISPLAY_TYPE'] !== 'table') {
 			if (!is_array($arParams['OFFER_TREE_PROPS']))
@@ -155,22 +146,10 @@ if (!empty($arResult['ITEMS'])){
 				)
 			);
 
-			$arFilterSKU = $GLOBALS[$arParams['FILTER_NAME']];
-			if ($arFilterSKU && $arFilterSKU['OFFERS_ID']) {
-				foreach ($arResult['ITEMS'] as $key => $arItem) {
-					if ($arItem['OFFERS']) {
-						$arResult['ITEMS'][$key]['OFFERS'] = array_filter($arItem['OFFERS'], function($arValue) use ($arFilterSKU){
-							return in_array($arValue['ID'], $arFilterSKU['OFFERS_ID']);
-						});
-					}
-				}
-			}
-
 			$arResult["SKU_IBLOCK_ID"]=$arSKU["IBLOCK_ID"];
 			$arNeedValues = array();
 			foreach ($arResult['ITEMS'] as $arItem) {
 				if ($arItem['OFFERS']){
-					
 					foreach ($arItem['OFFERS'] as &$arOffer) {
 						foreach ($arOffer['DISPLAY_PROPERTIES'] as &$arProperty) {
 							if (isset($arOffer['DISPLAY_PROPERTIES'][$arProperty['CODE']])) {
@@ -213,9 +192,8 @@ if (!empty($arResult['ITEMS'])){
 		}
 	}
 
-	$arOfferProps = implode(';', $arParams['OFFERS_CART_PROPERTIES']);
-
 	$arNewItemsList = array();
+
 	foreach ($arResult['ITEMS'] as $key => $arItem)
 	{
 		if(is_array($arItem['PROPERTIES']['CML2_ARTICLE']['VALUE']))
@@ -295,19 +273,14 @@ if (!empty($arResult['ITEMS'])){
 			$arItem['OFFERS'] = array();
 		}
 
-		if(($arItem['PREVIEW_PICTURE'])) {
-			// method CMax::getSliderForItemExt using DETAIL_PICTURE
+
+		if(($arItem['DETAIL_PICTURE'] && $arItem['PREVIEW_PICTURE']) || (!$arItem['DETAIL_PICTURE'] && $arItem['PREVIEW_PICTURE']))
 			$arItem['DETAIL_PICTURE'] = $arItem['PREVIEW_PICTURE'];
 
-			if ($arItem['IPROPERTY_VALUES']) {
-				$arItem['IPROPERTY_VALUES']['ELEMENT_DETAIL_PICTURE_FILE_ALT'] = $arItem['IPROPERTY_VALUES']['ELEMENT_PREVIEW_PICTURE_FILE_ALT'];
-				$arItem['IPROPERTY_VALUES']['ELEMENT_DETAIL_PICTURE_FILE_TITLE'] = $arItem['IPROPERTY_VALUES']['ELEMENT_PREVIEW_PICTURE_FILE_TITLE'];
-			}
-		}
-
-		$arItem['ALT_TITLE_GET'] = $arParams['ALT_TITLE_GET'];
 		$arItem['GALLERY'] = CMax::getSliderForItemExt($arItem, $arParams['ADD_PICT_PROP'], 'Y' == $arParams['ADD_DETAIL_TO_SLIDER']);
 		array_splice($arItem['GALLERY'], $arParams['MAX_GALLERY_ITEMS']);
+
+
 
 		if ($arItem['CATALOG'] && isset($arItem['OFFERS']) && !empty($arItem['OFFERS']))
 		{
@@ -529,31 +502,17 @@ if (!empty($arResult['ITEMS'])){
 						}
 						unset($foundOffer);
 					//}
-
-					// clear offers by store
-					if(!Aspro\Max\Stores\Property::checkFilterOfferByStore($arOffer, $arParams)){
-						unset($arItem['OFFERS'][$keyOffer]);
-					}
 				}
 
 				if (-1 == $intSelected)
 					$intSelected = 0;
 				$arItem['OFFERS_SELECTED'] = $intSelected;
-				
-				// for filter offers by store
-				if(!empty($arItem['OFFERS'])){
-					if(!isset($arItem['OFFERS'][$arItem['OFFERS_SELECTED']])){
-						$arItem['OFFERS_SELECTED'] = key($arItem['OFFERS']);
-					}
-				}
-				/////
 
 				foreach ($arItem['OFFERS'] as $keyOffer => $arOffer)
 				{
 					if($arItem['OFFERS_SELECTED'] !== $keyOffer){
 						continue;
-					}					
-					
+					}
 					$arSKUProps =$arSKUArticle = false;
 					if (!empty($arOffer['DISPLAY_PROPERTIES']))
 					{
@@ -664,7 +623,6 @@ if (!empty($arResult['ITEMS'])){
 						$arOffer['DETAIL_PICTURE'] = $arOffer['PREVIEW_PICTURE'];
 
 					if ($arParams['SHOW_GALLERY'] == 'Y') {
-						$arOffer['ALT_TITLE_GET'] = $arParams['ALT_TITLE_GET'];
 						$arItem['OFFERS'][$keyOffer]['GALLERY'] = CMax::getSliderForItemExt($arOffer, $arParams['OFFER_ADD_PICT_PROP'], true);
 
 						if ($arItem['GALLERY']) {

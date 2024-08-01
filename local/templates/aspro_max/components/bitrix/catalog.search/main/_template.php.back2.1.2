@@ -33,11 +33,6 @@ $arSKU = array();
 if($arParams['IBLOCK_ID']){
 	$arSKU = CCatalogSKU::GetInfoByProductIBlock($arParams['IBLOCK_ID']);
 	if($arSKU['IBLOCK_ID']){
-		$bUseModuleProps = \Bitrix\Main\Config\Option::get('iblock', 'property_features_enabled', 'N') === 'Y';
-		if ($bUseModuleProps) {
-			$arParams['OFFERS_CART_PROPERTIES'] = (array)\Bitrix\Catalog\Product\PropertyCatalogFeature::getBasketPropertyCodes($arSKU['IBLOCK_ID'], ['CODE' => 'Y']);
-		}
-
 		$dbRes = CIBlock::GetByID($arSKU['IBLOCK_ID']);
 		if($arSkuIblock = $dbRes ->Fetch()){
 			$arSearchPageFilter['arrFILTER'][] = 'iblock_'.$arSkuIblock['IBLOCK_TYPE_ID'];
@@ -53,6 +48,9 @@ if($arParams['IBLOCK_ID']){
 // show bitrix.search_page content
 $APPLICATION->ShowViewContent('comp_search_page');
 
+?>
+
+<?
 // include bitrix.search_page
 ob_start();
 include 'include_search_page.php';
@@ -425,7 +423,7 @@ if($arLanding){
 // reinit in sort.php
 $bHideLeftBlock = $APPLICATION->GetDirProperty('HIDE_LEFT_BLOCK') == 'Y' || ($arTheme['HEADER_TYPE']['VALUE'] == 28 || $arTheme['HEADER_TYPE']['VALUE'] == 29);?>
 
-<div class="main-catalog-wrapper flexbox<?= CMax::GetFrontParametrValue("LEFT_BLOCK_CS_TYPE") === 'NORMAL' ? ' flexbox--gap flexbox--gap-32' : '' ; ?><?= $arTheme["SIDE_MENU"]["VALUE"] === 'LEFT' ? ' flexbox--row-reverse' : ' flexbox--row' ; ?> flexbox--align-start">
+<div class="main-catalog-wrapper">
 	<div class="section-content-wrapper <?=($arElements && !$bHideLeftBlock ? 'with-leftblock' : '');?> <?=($bShowFilter ? 'with-filter' : '');?> js-load-wrapper<?=($arTheme["LAZYLOAD_BLOCK_CATALOG"]["VALUE"] === "Y" ? ' with-load-block' : '')?>">
 		<?
 		if($arRegion)
@@ -475,7 +473,6 @@ $bHideLeftBlock = $APPLICATION->GetDirProperty('HIDE_LEFT_BLOCK') == 'Y' || ($ar
 			$GLOBALS[$arParams["FILTER_NAME"]] = array(
 				"=ID" => $arElements,
 				'SECTION_GLOBAL_ACTIVE' => 'Y',
-				'IBLOCK_ID' => $catalogIBlockID,
 			) + $arrFilter;
 
 			if($arLanding && $arCustomFilter){
@@ -535,8 +532,6 @@ $bHideLeftBlock = $APPLICATION->GetDirProperty('HIDE_LEFT_BLOCK') == 'Y' || ($ar
 						}
 					}
 				}
-
-				$GLOBALS[$arParams["FILTER_NAME"]] = CMax::makeElementFilterInRegion($GLOBALS[$arParams["FILTER_NAME"]]);
 			}
 
 			$arItems = CMaxCache::CIBLockElement_GetList(
@@ -546,7 +541,7 @@ $bHideLeftBlock = $APPLICATION->GetDirProperty('HIDE_LEFT_BLOCK') == 'Y' || ($ar
 						'TAG' => CMaxCache::GetIBlockCacheTag($catalogIBlockID),
 					)
 				),
-				$GLOBALS[$arParams["FILTER_NAME"]],
+				CMax::makeElementFilterInRegion($GLOBALS[$arParams["FILTER_NAME"]]),
 				false,
 				false,
 				array(
@@ -623,24 +618,54 @@ $bHideLeftBlock = $APPLICATION->GetDirProperty('HIDE_LEFT_BLOCK') == 'Y' || ($ar
 				<?endif;?>
 				<div class="inner_wrapper">
 					<div class="ajax_load cur <?=$display?>" data-code="<?=$display?>">
-						<?$arConfigTransfer = array(
+						<?$arTransferParams = array(
+							"SHOW_ABSENT" => $arParams["SHOW_ABSENT"],
+							"HIDE_NOT_AVAILABLE_OFFERS" => $arParams["HIDE_NOT_AVAILABLE_OFFERS"],
+							"PRICE_CODE" => $arParams["PRICE_CODE"],
+							"OFFER_TREE_PROPS" => $arParams["OFFER_TREE_PROPS"],
+							"CACHE_TIME" => $arParams["CACHE_TIME"],
+							"CONVERT_CURRENCY" => $arParams["CONVERT_CURRENCY"],
+							"CURRENCY_ID" => $arParams["CURRENCY_ID"],
+							"OFFERS_SORT_FIELD" => $arParams["OFFERS_SORT_FIELD"],
+							"OFFERS_SORT_ORDER" => $arParams["OFFERS_SORT_ORDER"],
+							"OFFERS_SORT_FIELD2" => $arParams["OFFERS_SORT_FIELD2"],
+							"OFFERS_SORT_ORDER2" => $arParams["OFFERS_SORT_ORDER2"],
 							"LIST_OFFERS_LIMIT" => $arParams["OFFERS_LIMIT"],
 							"LIST_OFFERS_PROPERTY_CODE" => $arParams["OFFERS_PROPERTY_CODE"],
+							"SHOW_DISCOUNT_TIME" => $arParams["SHOW_DISCOUNT_TIME"],
+							"SHOW_COUNTER_LIST" => $arParams["SHOW_COUNTER_LIST"],
+							"PRICE_VAT_INCLUDE" => $arParams["PRICE_VAT_INCLUDE"],
+							"USE_PRICE_COUNT" => $arParams["USE_PRICE_COUNT"],
+							"SHOW_MEASURE" => $arParams["SHOW_MEASURE"],
+							"CACHE_GROUPS" => $arParams["CACHE_GROUPS"],
+							"SHOW_OLD_PRICE" => $arParams["SHOW_OLD_PRICE"],
+							"SHOW_DISCOUNT_PERCENT" => $arParams["SHOW_DISCOUNT_PERCENT"],
+							"SHOW_DISCOUNT_PERCENT_NUMBER" => $arParams["SHOW_DISCOUNT_PERCENT_NUMBER"],
 							"USE_REGION" => ($arRegion ? "Y" : "N"),
+							"STORES" => $arParams["STORES"],
+							"DEFAULT_COUNT" => $arParams["DEFAULT_COUNT"],
+							"BASKET_URL" => $arParams["BASKET_URL"],
+							"OFFERS_CART_PROPERTIES" => $arParams["OFFERS_CART_PROPERTIES"],
+							"PRODUCT_PROPERTIES" => $arParams["PRODUCT_PROPERTIES"],
+							"PARTIAL_PRODUCT_PROPERTIES" => $arParams["PARTIAL_PRODUCT_PROPERTIES"],
+							"ADD_PROPERTIES_TO_BASKET" => $arParams["ADD_PROPERTIES_TO_BASKET"],
+							"SHOW_DISCOUNT_TIME_EACH_SKU" => $arParams["SHOW_DISCOUNT_TIME_EACH_SKU"],
+							"SHOW_ARTICLE_SKU" => $arParams["SHOW_ARTICLE_SKU"],
+							"OFFER_ADD_PICT_PROP" => $arParams["OFFER_ADD_PICT_PROP"],
 							"SHOW_GALLERY" => $arParams["SHOW_GALLERY"],
 							"MAX_GALLERY_ITEMS" => $arParams["MAX_GALLERY_ITEMS"],
 							"DISPLAY_COMPARE" => CMax::GetFrontParametrValue('CATALOG_COMPARE'),
 							"SHOW_POPUP_PRICE" => CMax::GetFrontParametrValue('SHOW_POPUP_PRICE'),
+							"ADD_PICT_PROP" => $arParams["ADD_PICT_PROP"],
 							"ADD_DETAIL_TO_SLIDER" => $arParams["DETAIL_ADD_DETAIL_TO_SLIDER"],
+							"PRODUCT_QUANTITY_VARIABLE" => $arParams["PRODUCT_QUANTITY_VARIABLE"],
+							"SHOW_ONE_CLICK_BUY" => $arParams["SHOW_ONE_CLICK_BUY"],
 							"DISPLAY_WISH_BUTTONS" => $arParams["DISPLAY_WISH_BUTTONS"],
 							'CURRENT_BASE_PAGE' => $arLanding && strlen($arLanding['PROPERTY_URL_CONDITION_VALUE']) ? $canonicalUrl : null,
 							"IBINHERIT_TEMPLATES" => $arLanding ? $arIBInheritTemplates : array(),
-						);
-
-						$arTransferParams = \Aspro\Functions\CAsproMax::getTransferParams($arParams, $arConfigTransfer);
-						?>
+						);?>
 						<?$show = $arParams["PAGE_ELEMENT_COUNT"];?>
-						<div class="catalog <?=$display;?> search js_wrapper_items" data-params='<?//=str_replace('\'', '"', CUtil::PhpToJSObject($arTransferParams, false))?>'>
+						<div class="catalog <?=$display;?> search js_wrapper_items" data-params='<?=str_replace('\'', '"', CUtil::PhpToJSObject($arTransferParams, false))?>'>
 							<?/*if($isAjax === "Y" && $isAjaxFilter !== "Y"):?>
 								<?$APPLICATION->RestartBuffer();?>
 							<?endif;*/?>
@@ -754,7 +779,6 @@ $bHideLeftBlock = $APPLICATION->GetDirProperty('HIDE_LEFT_BLOCK') == 'Y' || ($ar
 									"IBINHERIT_TEMPLATES" => $arLanding ? $arIBInheritTemplates : array(),
 									'OFFER_SHOW_PREVIEW_PICTURE_PROPS' => $arParams['OFFER_SHOW_PREVIEW_PICTURE_PROPS'],
 									"REVIEWS_VIEW" => $arTheme["REVIEWS_VIEW"]["VALUE"] == "EXTENDED",
-									"COMPATIBLE_MODE" => "Y",
 								),
 								$arResult["THEME_COMPONENT"]
 							);?>

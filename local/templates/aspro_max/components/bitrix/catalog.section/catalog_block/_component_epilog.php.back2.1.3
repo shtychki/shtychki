@@ -7,20 +7,20 @@ global $arTheme;
 $arScripts = ['countdown', 'bonus_system'];
 
 //	big data json answers
-if(isset($arParams["BIG_DATA_MODE"]) && $arParams["BIG_DATA_MODE"] === 'Y'){
-	$request = \Bitrix\Main\Context::getCurrent()->getRequest();
-	if ($request->isAjaxRequest() && ($request->get('action') === 'deferredLoad'))
-	{
-		$content = ob_get_contents();
-		ob_end_clean();
+$request = \Bitrix\Main\Context::getCurrent()->getRequest();
+if ($request->isAjaxRequest() && ($request->get('action') === 'deferredLoad') && $arParams['USE_BIG_DATA'] == "Y")
+{
+	$content = ob_get_contents();
+	ob_end_clean();
 
-		list(, $itemsContainer) = explode('<!-- items-container -->', $content);
+	list(, $itemsContainer) = explode('<!-- items-container -->', $content);
 
-		$component::sendJsonAnswer(array(
-			'items' => $itemsContainer,
-		));
-		
-	}
+	$component::sendJsonAnswer(array(
+		'items' => $itemsContainer,
+	));
+	
+}
+if (isset($arParams['USE_BIG_DATA']) && $arParams['USE_BIG_DATA'] == "Y") {
 	$arScripts[] = 'bigdata';
 }
 
