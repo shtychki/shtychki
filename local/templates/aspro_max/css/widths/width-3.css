@@ -92,9 +92,6 @@ body.fill_bg_y .top_big_one_banner {
   }
 }
 @media (min-width: 992px) {
-  .side_RIGHT:not(.block_side_WIDE) .catalog_page .left_block {
-    margin-left: 32px;
-  }
   .side_RIGHT.block_side_WIDE.catalog_page .left_block .sticky-sidebar__inner > div {
     margin-left: auto;
   }

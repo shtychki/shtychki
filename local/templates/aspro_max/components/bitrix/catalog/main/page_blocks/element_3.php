@@ -4,7 +4,7 @@
 
 <?$APPLICATION->AddViewContent('wrapper_inner_class', 'wide_page');?>
 
-<div class="product-view <?=($arParams["SHOW_UNABLE_SKU_PROPS"] != "N" ? "show_un_props" : "unshow_un_props");?> main_item_wrapper product-view--type2">
+<div class="product-view <?=($arParams["SHOW_UNABLE_SKU_PROPS"] != "N" ? "show_un_props" : "unshow_un_props");?> main_item_wrapper product-view--type2 <?=($sViewPictureDetail === 'square_big' ? 'product-view--big-gallery' : '')?>">
 	<?$ElementID = $APPLICATION->IncludeComponent(
 		"bitrix:catalog.element",
 		"main3_custom",
@@ -12,7 +12,7 @@
 			"USE_REGION" => ($arRegion ? "Y" : "N"),
 			"USE_PREDICTION" => $arParams['USE_DETAIL_PREDICTION'],
 			"SECTION_TIZERS"=>$arSection["UF_SECTION_TIZERS"],
-			"SECTION_COMMON_PROPERTIES" => $arSection["UF_ELEMENT_PROP_LIST"],
+            "SECTION_COMMON_PROPERTIES" => $arSection["UF_ELEMENT_PROP_LIST"],
 			"HELP_TEXT"=>$arSection["UF_HELP_TEXT"],
 			"ALT_TITLE_GET" => $arParams["ALT_TITLE_GET"],
 			"GRUPPER_PROPS" => $arParams["GRUPPER_PROPS"],
@@ -92,9 +92,9 @@
 			"SECTION_CODE" => $arResult["VARIABLES"]["SECTION_CODE"],
 			"SECTION_URL" => $arResult["FOLDER"].$arResult["URL_TEMPLATES"]["section"],
 			"DETAIL_URL" => $arResult["FOLDER"].$arResult["URL_TEMPLATES"]["element"],
-//			"ADD_SECTIONS_CHAIN" => $arParams["ADD_SECTIONS_CHAIN"],
+            //			"ADD_SECTIONS_CHAIN" => $arParams["ADD_SECTIONS_CHAIN"],
 //			"ADD_ELEMENT_CHAIN" => $arParams["ADD_ELEMENT_CHAIN"],
-			"ADD_ELEMENT_CHAIN" => 'N',
+            "ADD_ELEMENT_CHAIN" => 'N',
             "ADD_SECTIONS_CHAIN" => 'N',
 			"USE_STORE" => $arParams["USE_STORE"],
 			"USE_STORE_PHONE" => $arParams["USE_STORE_PHONE"],
@@ -127,6 +127,7 @@
 			"CURRENCY_ID" => $arParams["CURRENCY_ID"],
 			'HIDE_NOT_AVAILABLE' => $arParams["HIDE_NOT_AVAILABLE"],
 			'HIDE_NOT_AVAILABLE_OFFERS' => $arParams["HIDE_NOT_AVAILABLE_OFFERS"],
+			'HIDE_NOT_AVAILABLE_LINKED' => $arParams['HIDE_NOT_AVAILABLE'],
 			'SHOW_DEACTIVATED' => $arParams['SHOW_DEACTIVATED'],
 			"USE_ELEMENT_COUNTER" => $arParams["USE_ELEMENT_COUNTER"],
 			"STAFF_VIEW_TYPE" => ($arParams["STAFF_VIEW_TYPE"] ? $arParams["STAFF_VIEW_TYPE"] : "staff_block"),
@@ -267,6 +268,8 @@
 			"COMMENTS_COUNT" => (isset($arParams['COMMENTS_COUNT']) ? $arParams['COMMENTS_COUNT'] : '5'),
 			"DETAIL_BLOG_EMAIL_NOTIFY" => (isset($arParams['DETAIL_BLOG_EMAIL_NOTIFY']) ? $arParams['DETAIL_BLOG_EMAIL_NOTIFY'] : 'Y'),
 			"MAX_IMAGE_SIZE" => (isset($arParams['MAX_IMAGE_SIZE']) ? $arParams['MAX_IMAGE_SIZE'] : '0.5'),
+			"MAX_IMAGE_COUNT" => (isset($arParams['MAX_IMAGE_COUNT']) ? $arParams['MAX_IMAGE_COUNT'] : '10'),
+			"NO_USE_IMAGE" => (isset($arParams['NO_USE_IMAGE']) ? $arParams['NO_USE_IMAGE'] : 'N'),
 
 			"DETAIL_BLOCKS_ORDER" => ($arParams["DETAIL_BLOCKS_ORDER"] ? $arParams["DETAIL_BLOCKS_ORDER"] : 'complect,nabor,offers,tabs,services,news,blog,staff,vacancy,goods'),
 			"DETAIL_BLOCKS_TAB_ORDER" => ($arParams["DETAIL_BLOCKS_TAB_ORDER"] ? $arParams["DETAIL_BLOCKS_TAB_ORDER"] : 'desc,char,buy,payment,delivery,video,stores,reviews,custom_tab,buy_services'),
@@ -284,6 +287,14 @@
 			"SHOW_SKU_DESCRIPTION" => $arParams["SHOW_SKU_DESCRIPTION"],
 			"VISIBLE_PROP_WITH_OFFER" => $arParams["VISIBLE_PROP_WITH_OFFER"],
 			"MOBILE_CAROUSEL" => "Y",
+			"SECTION_ID_FOR_BIG_DATA" => $arSection['ID'], 
+			"BIGDATA_PATH_TEMPLATE" => $this->__folder.'/page_blocks/'.$sViewBigDataExtTemplate.'.php',
+			"BIGDATA_TYPE_VIEW" => $arParams['BIGDATA_TYPE_VIEW'],
+			"BIGDATA_SHOW_FROM_SECTION" => $arParams['BIGDATA_SHOW_FROM_SECTION'],
+			"BIGDATA_COUNT_BOTTOM" => $arParams["BIGDATA_COUNT_BOTTOM"],
+			"BIGDATA_SET_COUNT_BOTTOM" =>  $arParams["BIGDATA_SET_COUNT_BOTTOM"],
+			"BIGDATA_COUNT" => $arParams["BIGDATA_COUNT"],
+			"BIG_DATA_FILTER_IDS" => $arParams['BIG_DATA_FILTER_IDS'],
 		),
 		$component
 	);?>

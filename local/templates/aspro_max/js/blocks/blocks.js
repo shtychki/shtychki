@@ -2,7 +2,7 @@ InitMenuNavigationAim = function () {
   var $block = $(".menu-navigation__sections-wrapper .menu-navigation__sections:not(.aim-init)");
   if ($block.length) {
     $block.addClass("aim-init");
-    BX.loadScript(arAsproOptions["SITE_TEMPLATE_PATH"] + "/vendor/js/jquery.menu-aim.js", function () {
+    loadScripts(arAsproOptions["SITE_TEMPLATE_PATH"] + "/vendor/js/jquery.menu-aim.js", function () {
       $block.menuAim({
         firstActiveRow: true,
         rowSelector: "> .menu-navigation__sections-item",
@@ -64,19 +64,25 @@ $(document).ready(function () {
   $(document).on("click", ".dropdown-select .dropdown-select__title", function () {
     var _this = $(this),
       menu = _this.parent().find("> .dropdown-select__list");
+
     menu.stop().slideToggle(300);
+    _this.toggleClass('dropdown-select__title--opened');
   });
 
   // close select
   $("html, body").on("mousedown", function (e) {
     if (typeof e.target.className == "string" && e.target.className.indexOf("adm") < 0) {
       e.stopPropagation();
-
       if (!$(e.target).closest(".dropdown-select").length) {
-        $(".dropdown-select__list:visible").slideUp();
+        BX.onCustomEvent("onCloseDropDown");
       }
+
     }
   });
+  BX.addCustomEvent("onCloseDropDown", () => {
+    $(".dropdown-select .dropdown-select__title").removeClass('dropdown-select__title--opened');
+    $(".dropdown-select__list:visible").stop().slideUp();
+  })
   /**/
 
   /*side head block*/
@@ -108,138 +114,6 @@ $(document).ready(function () {
       });
     }
   });
-  /**/
-
-  /*sku change props*/
-  if (!("SelectOfferProp" in window) && typeof window.SelectOfferProp != "function") {
-    SelectOfferProp = function () {
-      // return false;
-      var _this = $(this),
-        obParams = {},
-        obSelect = {},
-        objUrl = parseUrlQuery(),
-        add_url = "",
-        selectMode = _this.hasClass("list_values_wrapper") ? true : false,
-        container = _this.closest(".bx_catalog_item_scu"),
-        img = _this.closest(".item-parent").find(".thumb img"),
-        bDetail = _this.closest(".product-main").length,
-        curCode = _this.closest(".cur").data("code");
-
-      /* request params */
-      obParams = {
-        PARAMS: bDetail ? $(".js-sku-config").data("params") : _this.closest(".js_wrapper_items").data("params"),
-        ID: container.data("offer_id"),
-        SITE_ID: container.data("site_id"),
-        LINK_ID: container.data("id") + "_" + (bDetail ? "detail" : curCode ? curCode : "block"),
-        IBLOCK_ID: container.data("offer_iblockid"),
-        IBLOCK_ID_PARENT: container.data("iblockid"),
-        PROPERTY_ID: container.data("propertyid"),
-        DEPTH: _this.closest(".item_wrapper").index(),
-        VALUE: selectMode ? _this.find("option:selected").data("onevalue") : _this.data("onevalue"),
-        CLASS: "inner_content",
-        PICTURE: img.data("src") ? img.data("src") : img.attr("src"),
-        ARTICLE_NAME: _this.closest(".item-parent").find(".article_block").data("name"),
-        ARTICLE_VALUE: _this.closest(".item-parent").find(".article_block").data("value"),
-      };
-      /**/
-
-      if ("clear_cache" in objUrl) {
-        if (objUrl.clear_cache == "Y") add_url += "?clear_cache=Y";
-      }
-
-      let isActiveContainer = container.hasClass("js-selected");
-      // set active
-      $(".bx_catalog_item_scu").removeClass("js-selected");
-      container.addClass("js-selected");
-
-      /* save selected values */
-      for (i = 0; i < obParams.DEPTH + 1; i++) {
-        strName = "PROP_" + container.find(".item_wrapper:eq(" + i + ") > div").data("id");
-        if (container.find(".item_wrapper:eq(" + i + ") select").length) {
-          obSelect[strName] = container.find(".item_wrapper:eq(" + i + ") select option:selected").data("onevalue");
-          obParams[strName] = container.find(".item_wrapper:eq(" + i + ") select option:selected").data("onevalue");
-        } else {
-          obSelect[strName] = container.find(".item_wrapper:eq(" + i + ") li.item.active").data("onevalue");
-          obParams[strName] = container.find(".item_wrapper:eq(" + i + ") li.item.active").data("onevalue");
-        }
-      }
-
-      // obParams.SELECTED = JSON.stringify(obSelect);
-      /**/
-
-      if (!selectMode) {
-        _this.siblings().removeClass("active");
-        _this.addClass("active");
-      }
-
-      if (_this.attr("title")) {
-        var skuVal = _this.attr("title").split(":")[1];
-        _this.closest(".item_wrapper").find(".show_class .val").text(skuVal);
-      } else {
-        var img_row = _this.find(" > i");
-        if (img_row.length && img_row.attr("title")) {
-          var skuVal = img_row.attr("title").split(":")[1];
-          _this.closest(".item_wrapper").find(".show_class .val").text(skuVal);
-        }
-      }
-
-      /* get sku */
-      if (window.obOffers && typeofExt(obOffers) === "array" && isActiveContainer) {
-        //from /ajax/js_item_detail.php
-        selectedValues = obSelect;
-        strPropValue = obParams["VALUE"];
-        depth = obParams["DEPTH"];
-        //wrapper = item;
-        arFilter = {};
-        tmpFilter = [];
-
-        UpdateSKUInfoByProps();
-        finalActionSKUInfo(_this);
-      } else {
-        /* get sku */
-        $.ajax({
-          url: arMaxOptions["SITE_DIR"] + "ajax/js_item_detail.php" + add_url,
-          type: "POST",
-          data: obParams,
-          success: function (html) {
-            var ob = BX.processHTML(html);
-            BX.ajax.processScripts(ob.SCRIPT);
-            finalActionSKUInfo(_this);
-          },
-        });
-      }
-      function finalActionSKUInfo(th) {
-        if ($(".counter_wrapp.list")) {
-          $(".counter_wrapp.list .counter_block.big").removeClass("big");
-        }
-        var sku_props = th.closest(".sku_props").find(".item_wrapper .item.active, .item_wrapper .list_values_wrapper");
-        $.each(sku_props, function (index, value) {
-          value = $(value);
-          var skuVal = "";
-          if (value.attr("title")) {
-            skuVal = value.attr("title").split(":")[1];
-          } else if (typeof value.val() !== "undefined") {
-            skuVal = value.val();
-          } else {
-            var img_row = value.find(" > i");
-            if (img_row.length && img_row.attr("title")) {
-              skuVal = img_row.attr("title").split(":")[1];
-            }
-          }
-
-          if (skuVal != "") {
-            value.closest(".item_wrapper").find(".show_class .val").text(skuVal);
-          }
-        });
-      }
-    };
-    $(document).on("click", ".ajax_load .bx_catalog_item_scu li.item", SelectOfferProp);
-    $(document).on("change", ".ajax_load .bx_catalog_item_scu select.list_values_wrapper", SelectOfferProp);
-    //detail
-    $(document).on("click", ".bx_catalog_item_scu.sku_in_detail li.item", SelectOfferProp);
-    $(document).on("change", ".bx_catalog_item_scu.sku_in_detail select.list_values_wrapper", SelectOfferProp);
-  }
-
   /**/
 
   /**/

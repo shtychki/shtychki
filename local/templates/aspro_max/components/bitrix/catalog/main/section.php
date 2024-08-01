@@ -20,28 +20,16 @@ $APPLICATION->SetPageProperty("HIDE_LEFT_BLOCK", (($arTheme["LEFT_BLOCK_CATALOG_
 <?if(CMax::checkAjaxRequest2()):?>
 	<div>
 <?endif;?>
-<div class="top-filter-share">
-    <div class="btn-filter-sort">
-        <div class="bx-filter-title">
-            <i class="svg  svg-inline-icon" aria-hidden="true">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24">
-                    <path id="Ellipse_12_copy_2" data-name="Ellipse 12 copy 2" class="cls-1" d="M18,208H30.142a3.981,3.981,0,0,0,7.717,0H40a1,1,0,0,0,0-2H37.859a3.982,3.982,0,0,0-7.717,0H18A1,1,0,0,0,18,208Zm16-3a2,2,0,1,1-2,2A2,2,0,0,1,34,205Zm-16-5h2.141a3.981,3.981,0,0,0,7.717,0H40a1,1,0,0,0,0-2H27.859a3.981,3.981,0,0,0-7.717,0H18A1,1,0,0,0,18,200Zm6-3a2,2,0,1,1-2,2A2,2,0,0,1,24,197Zm16,17H27.859a3.982,3.982,0,0,0-7.717,0H18a1,1,0,0,0,0,2h2.141a3.982,3.982,0,0,0,7.717,0H40A1,1,0,0,0,40,214Zm-16,3a2,2,0,1,1,2-2A2,2,0,0,1,24,217Z" transform="translate(-17 -195)"/>
-                </svg>
-            </i>
-            <span class="font_upper_md font-bold darken"><?=Loc::getMessage('SECT_FILTER_SHARE');?></span>
-        </div>
-    </div>
-    <?\Aspro\Functions\CAsproMax::showShareBlock('')?>
-</div>
-<div class="top-content-block">
-    <?$APPLICATION->ShowViewContent('top_content');?>
-
-    <?$APPLICATION->ShowViewContent('top_content2');?></div>
+<div class="top-content-block"><?$APPLICATION->ShowViewContent('top_content');?><?$APPLICATION->ShowViewContent('top_content2');?></div>
 <?if(CMax::checkAjaxRequest2()):?>
 	</div>
 <?endif;?>
 
-<?\Aspro\Functions\CAsproMax::replacePropsParams($arParams);?>
+
+<?
+//set params for props from module
+\Aspro\Functions\CAsproMax::replacePropsParams($arParams);
+?>
 <?// get current section ID
 if($arResult["VARIABLES"]["SECTION_ID"] > 0){
 	$arSectionFilter = array('GLOBAL_ACTIVE' => 'Y', "ID" => $arResult["VARIABLES"]["SECTION_ID"], "IBLOCK_ID" => $arParams["IBLOCK_ID"]);
@@ -49,7 +37,7 @@ if($arResult["VARIABLES"]["SECTION_ID"] > 0){
 elseif(strlen(trim($arResult["VARIABLES"]["SECTION_CODE"])) > 0){
 	$arSectionFilter = array('GLOBAL_ACTIVE' => 'Y', "=CODE" => $arResult["VARIABLES"]["SECTION_CODE"], "IBLOCK_ID" => $arParams["IBLOCK_ID"]);
 }
-$section = CMaxCache::CIBlockSection_GetList(array('CACHE' => array("MULTI" =>"N", "TAG" => CMaxCache::GetIBlockCacheTag($arParams["IBLOCK_ID"]))), CMax::makeSectionFilterInRegion($arSectionFilter), false, array("ID", "IBLOCK_ID", "NAME", "DESCRIPTION", "PICTURE", "DETAIL_PICTURE", "UF_SECTION_DESCR", "UF_OFFERS_TYPE", 'UF_FILTER_VIEW', 'UF_LINE_ELEMENT_CNT', 'UF_TABLE_PROPS', 'UF_SECTION_BG_DARK', 'UF_LINKED_BLOG', 'UF_BLOG_BOTTOM', 'UF_BLOG_WIDE', 'UF_BLOG_MOBILE', 'UF_SECTION_PROP_LIST', 'UF_LINKED_BANNERS', 'UF_BANNERS_BOTTOM', 'UF_FILTER_VIEW', 'UF_BANNERS_WIDE', 'UF_BANNERS_MOBILE', $arParams["SECTION_DISPLAY_PROPERTY"], $arParams["SECTION_BG"], "IBLOCK_SECTION_ID", "DEPTH_LEVEL", "LEFT_MARGIN", "RIGHT_MARGIN"));
+$section = CMaxCache::CIBlockSection_GetList(array('CACHE' => array("MULTI" =>"N", "TAG" => CMaxCache::GetIBlockCacheTag($arParams["IBLOCK_ID"]))), CMax::makeSectionFilterInRegion($arSectionFilter), false, array("ID", "IBLOCK_ID", "NAME", "DESCRIPTION", "PICTURE", "DETAIL_PICTURE", "UF_SECTION_DESCR", "UF_OFFERS_TYPE", 'UF_FILTER_VIEW', 'UF_LINE_ELEMENT_CNT', 'UF_TABLE_PROPS', 'UF_SECTION_BG_DARK', 'UF_LINKED_BLOG', 'UF_BLOG_BOTTOM', 'UF_BLOG_WIDE', 'UF_BLOG_MOBILE', 'UF_LINKED_BANNERS', 'UF_BANNERS_BOTTOM', 'UF_FILTER_VIEW', 'UF_BANNERS_WIDE', 'UF_BANNERS_MOBILE', 'UF_SECTION_PROP_LIST', $arParams["SECTION_DISPLAY_PROPERTY"], $arParams["SECTION_BG"], "IBLOCK_SECTION_ID", "DEPTH_LEVEL", "LEFT_MARGIN", "RIGHT_MARGIN"));
 CMax::AddMeta([
 	'og:image' => ($section['PICTURE'] || $section['DETAIL_PICTURE'] ? CFile::GetPath($section['PICTURE'] ?: $section['DETAIL_PICTURE']) : false),
 ]);
@@ -62,26 +50,17 @@ if ($section) {
 	$arSection["NAME"] = $section["NAME"];
 	$arSection["IBLOCK_SECTION_ID"] = $section["IBLOCK_SECTION_ID"];
 	$arSection["DEPTH_LEVEL"] = $section["DEPTH_LEVEL"];
-	foreach($section["UF_SECTION_PROP_LIST"] as $sec_prop){
+    foreach($section["UF_SECTION_PROP_LIST"] as $sec_prop){
         $rsEnum = CUserFieldEnum::GetList(array(), array('ID' => $sec_prop));
         $arEnum = $rsEnum->GetNext();
         $arSection["SECTION_PROP_LIST"][] = $arEnum["XML_ID"];
     }
-	//$arSection["SECTION_PROP_LIST"] = $section["UF_SECTION_PROP_LIST"];
-	
-    if ($section[$arParams["SECTION_DISPLAY_PROPERTY"]]) {
-//        if ($section[$arParams["SECTION_DISPLAY_PROPERTY"]] == 34) {
-//            $arDisplayRes = CUserFieldEnum::GetList(array(), array("ID" => 54 ));
-//        } elseif ($section[$arParams["SECTION_DISPLAY_PROPERTY"]] == 35) {
-//            $arDisplayRes = CUserFieldEnum::GetList(array(), array("ID" => 55 ));
-//        } else {
-//            $arDisplayRes = CUserFieldEnum::GetList(array(), array("ID" => $section[$arParams["SECTION_DISPLAY_PROPERTY"]]));
-//        }
+	if ($section[$arParams["SECTION_DISPLAY_PROPERTY"]]) {
 		$arDisplayRes = CUserFieldEnum::GetList(array(), array("ID" => $section[$arParams["SECTION_DISPLAY_PROPERTY"]]));
-        if ($arDisplay = $arDisplayRes->GetNext()) {
-            $arSection["DISPLAY"] = $arDisplay["XML_ID"];
-        }
-    }
+		if ($arDisplay = $arDisplayRes->GetNext()) {
+			$arSection["DISPLAY"] = $arDisplay["XML_ID"];
+		}
+	}
 	if ($section["UF_LINE_ELEMENT_CNT"]) {
 		$arCntRes = CUserFieldEnum::GetList(array(), array("ID" => $section["UF_LINE_ELEMENT_CNT"]));
 		if ($arLineCnt = $arCntRes->GetNext()) {
@@ -171,7 +150,7 @@ if ($section) {
 		|| !$linkedBanners	|| !$linkedBannersPos || $linkedBannersRows || $linkedBannersRowsMobile || !$viewTableProps
 		) {
 		if ($section['DEPTH_LEVEL'] > 1) {
-			$sectionParent = CMaxCache::CIBlockSection_GetList(array('CACHE' => array("MULTI" =>"N", "TAG" => CMaxCache::GetIBlockCacheTag($arParams["IBLOCK_ID"]))), array('GLOBAL_ACTIVE' => 'Y', "ID" => $section["IBLOCK_SECTION_ID"], "IBLOCK_ID" => $arParams["IBLOCK_ID"]), false, array("ID", "IBLOCK_ID", "NAME", "UF_OFFERS_TYPE", 'UF_FILTER_VIEW', $arParams["SECTION_DISPLAY_PROPERTY"], "UF_LINE_ELEMENT_CNT", "UF_TABLE_PROPS", "UF_LINKED_BLOG", 'UF_BLOG_BOTTOM', 'UF_BLOG_WIDE', 'UF_BLOG_MOBILE', 'UF_LINKED_BANNERS', 'UF_BANNERS_BOTTOM', 'UF_BANNERS_WIDE', 'UF_FILTER_VIEW', 'UF_BANNERS_MOBILE', 'UF_SECTION_PROP_LIST',));
+			$sectionParent = CMaxCache::CIBlockSection_GetList(array('CACHE' => array("MULTI" =>"N", "TAG" => CMaxCache::GetIBlockCacheTag($arParams["IBLOCK_ID"]))), array('GLOBAL_ACTIVE' => 'Y', "ID" => $section["IBLOCK_SECTION_ID"], "IBLOCK_ID" => $arParams["IBLOCK_ID"]), false, array("ID", "IBLOCK_ID", "NAME", "UF_OFFERS_TYPE", 'UF_FILTER_VIEW', $arParams["SECTION_DISPLAY_PROPERTY"], "UF_LINE_ELEMENT_CNT", "UF_TABLE_PROPS", "UF_LINKED_BLOG", 'UF_BLOG_BOTTOM', 'UF_BLOG_WIDE', 'UF_BLOG_MOBILE', 'UF_LINKED_BANNERS', 'UF_BANNERS_BOTTOM', 'UF_BANNERS_WIDE', 'UF_FILTER_VIEW', 'UF_BANNERS_MOBILE', 'UF_SECTION_PROP_LIST'));
 			if ($sectionParent['UF_OFFERS_TYPE'] && !$typeTmpSKU) {
 				$typeTmpSKU = $sectionParent['UF_OFFERS_TYPE'];
 			}
@@ -203,18 +182,11 @@ if ($section) {
 				$linkedBannersRowsMobile = $sectionParent['UF_BANNERS_MOBILE'];
 			}
 			if ($sectionParent[$arParams["SECTION_DISPLAY_PROPERTY"]] && !$arSection["DISPLAY"]) {
-//                if ($sectionParent[$arParams["SECTION_DISPLAY_PROPERTY"]] == 34) {
-//                    $arDisplayRes = CUserFieldEnum::GetList(array(), array("ID" => 54 ));
-//                } elseif ($sectionParent[$arParams["SECTION_DISPLAY_PROPERTY"]] == 35) {
-//                    $arDisplayRes = CUserFieldEnum::GetList(array(), array("ID" => 55 ));
-//                } else {
-//                    $arDisplayRes = CUserFieldEnum::GetList(array(), array("ID" => $sectionParent[$arParams["SECTION_DISPLAY_PROPERTY"]]));
-//                }
 				$arDisplayRes = CUserFieldEnum::GetList(array(), array("ID" => $sectionParent[$arParams["SECTION_DISPLAY_PROPERTY"]]));
-                if ($arDisplay = $arDisplayRes->GetNext()) {
-                    $arSection["DISPLAY"] = $arDisplay["XML_ID"];
-                }
-            }
+				if ($arDisplay = $arDisplayRes->GetNext()) {
+					$arSection["DISPLAY"] = $arDisplay["XML_ID"];
+				}
+			}
 			if ($sectionParent["UF_LINE_ELEMENT_CNT"] && !$bSetElementsLineRow) {
 				$arCntRes = CUserFieldEnum::GetList(array(), array("ID" => $sectionParent["UF_LINE_ELEMENT_CNT"]));
 				if ($arLineCnt = $arCntRes->GetNext()) {
@@ -222,7 +194,7 @@ if ($section) {
 					$bSetElementsLineRow = true;
 				}
 			}
-			if ($sectionParent["UF_SECTION_PROP_LIST"]) {
+            if ($sectionParent["UF_SECTION_PROP_LIST"]) {
                 //$arDisplaySec = $sectionParent["UF_SECTION_PROP_LIST"];
                 foreach($sectionParent["UF_SECTION_PROP_LIST"] as $sec_prop){
                     $rsEnum = CUserFieldEnum::GetList(array(), array('ID' => $sec_prop));
@@ -237,7 +209,7 @@ if ($section) {
 
 			if ($section['DEPTH_LEVEL'] > 2) {
 				if (!$typeTmpSKU || !$viewTmpFilter || !$arSection["DISPLAY"] || !$bSetElementsLineRow  || !$viewTableProps) {
-					$sectionRoot = CMaxCache::CIBlockSection_GetList(array('CACHE' => array("MULTI" =>"N", "TAG" => CMaxCache::GetIBlockCacheTag($arParams["IBLOCK_ID"]))), array('GLOBAL_ACTIVE' => 'Y', "<=LEFT_BORDER" => $section["LEFT_MARGIN"], ">=RIGHT_BORDER" => $section["RIGHT_MARGIN"], "DEPTH_LEVEL" => 1, "IBLOCK_ID" => $arParams["IBLOCK_ID"]), false, array("ID", "IBLOCK_ID", "NAME", "UF_OFFERS_TYPE", 'UF_FILTER_VIEW', $arParams["SECTION_DISPLAY_PROPERTY"], "UF_LINE_ELEMENT_CNT", "UF_TABLE_PROPS", "UF_LINKED_BLOG", 'UF_BLOG_BOTTOM', 'UF_BLOG_WIDE', 'UF_BLOG_MOBILE', 'UF_LINKED_BANNERS', 'UF_BANNERS_BOTTOM', 'UF_BANNERS_WIDE', 'UF_BANNERS_MOBILE', 'UF_SECTION_PROP_LIST',));
+					$sectionRoot = CMaxCache::CIBlockSection_GetList(array('CACHE' => array("MULTI" =>"N", "TAG" => CMaxCache::GetIBlockCacheTag($arParams["IBLOCK_ID"]))), array('GLOBAL_ACTIVE' => 'Y', "<=LEFT_BORDER" => $section["LEFT_MARGIN"], ">=RIGHT_BORDER" => $section["RIGHT_MARGIN"], "DEPTH_LEVEL" => 1, "IBLOCK_ID" => $arParams["IBLOCK_ID"]), false, array("ID", "IBLOCK_ID", "NAME", "UF_OFFERS_TYPE", 'UF_FILTER_VIEW', $arParams["SECTION_DISPLAY_PROPERTY"], "UF_LINE_ELEMENT_CNT", "UF_TABLE_PROPS", "UF_LINKED_BLOG", 'UF_BLOG_BOTTOM', 'UF_BLOG_WIDE', 'UF_BLOG_MOBILE', 'UF_LINKED_BANNERS', 'UF_BANNERS_BOTTOM', 'UF_BANNERS_WIDE', 'UF_BANNERS_MOBILE', 'UF_SECTION_PROP_LIST'));
 					if ($sectionRoot['UF_OFFERS_TYPE'] && !$typeTmpSKU) {
 						$typeTmpSKU = $sectionRoot['UF_OFFERS_TYPE'];
 					}
@@ -269,18 +241,11 @@ if ($section) {
 						$linkedBannersRowsMobile = $sectionRoot['UF_BANNERS_MOBILE'];
 					}
 					if ($sectionRoot[$arParams["SECTION_DISPLAY_PROPERTY"]] && !$arSection["DISPLAY"]) {
-//                        if ($sectionRoot[$arParams["SECTION_DISPLAY_PROPERTY"]] == 34) {
-//                            $arDisplayRes = CUserFieldEnum::GetList(array(), array("ID" => 54 ));
-//                        } elseif ($sectionRoot[$arParams["SECTION_DISPLAY_PROPERTY"]] == 35) {
-//                            $arDisplayRes = CUserFieldEnum::GetList(array(), array("ID" => 55 ));
-//                        } else {
-//                            $arDisplayRes = CUserFieldEnum::GetList(array(), array("ID" => $sectionRoot[$arParams["SECTION_DISPLAY_PROPERTY"]]));
-//                        }
 						$arDisplayRes = CUserFieldEnum::GetList(array(), array("ID" => $sectionRoot[$arParams["SECTION_DISPLAY_PROPERTY"]]));
-                        if ($arDisplay = $arDisplayRes->GetNext()) {
-                            $arSection["DISPLAY"] = $arDisplay["XML_ID"];
-                        }
-                    }
+						if ($arDisplay = $arDisplayRes->GetNext()) {
+							$arSection["DISPLAY"] = $arDisplay["XML_ID"];
+						}
+					}
 					if ($sectionRoot["UF_LINE_ELEMENT_CNT"] && !$bSetElementsLineRow) {
 						$arCntRes = CUserFieldEnum::GetList(array(), array("ID" => $sectionRoot["UF_LINE_ELEMENT_CNT"]));
 						if ($arLineCnt = $arCntRes->GetNext()) {
@@ -288,7 +253,7 @@ if ($section) {
 							$bSetElementsLineRow = true;
 						}
 					}
-					if ($sectionRoot["UF_SECTION_PROP_LIST"]) {
+                    if ($sectionRoot["UF_SECTION_PROP_LIST"]) {
                         //$arDisplaySec = $sectionParent["UF_SECTION_PROP_LIST"];
                         foreach($sectionRoot["UF_SECTION_PROP_LIST"] as $sec_prop){
                             $rsEnum = CUserFieldEnum::GetList(array(), array('ID' => $sec_prop));
@@ -371,8 +336,7 @@ if ($bHideSideSectionBlock) {
 }?>
 
 <?$bShowLeftBlock = (!$bSimpleSectionTemplate && ($APPLICATION->GetProperty("HIDE_LEFT_BLOCK") != "Y" && !($arTheme['HEADER_TYPE']['VALUE'] == 28 || $arTheme['HEADER_TYPE']['VALUE'] == 29)));?>
-
-<div class="main-catalog-wrapper clearfix">
+<div class="main-catalog-wrapper flexbox<?= $arTheme["SIDE_MENU"]["VALUE"] === 'LEFT' ? ' flexbox--row-reverse' : ' flexbox--row' ; ?> flexbox--justify-space-between flexbox--align-start<?= CMax::GetFrontParametrValue("LEFT_BLOCK_CS_TYPE") === 'NORMAL' ? ' flexbox--gap flexbox--gap-32' : '' ; ?>">
 	<div class="section-content-wrapper <?=($bShowLeftBlock ? 'with-leftblock' : '');?>">
 		<?
 		if($section)
@@ -393,6 +357,7 @@ if ($bHideSideSectionBlock) {
 					if(!$section['UF_SECTION_BG_DARK'])
 						$dopClass .= ' light-menu-color';?>
 				<div class="js-banner" data-class="<?=$dopClass?>"></div>
+				<?\Aspro\Max\Functions\Extensions::init('banners');?>
 			<?endif;?>
 		<?}
 		else{
@@ -581,67 +546,33 @@ if ($bHideSideSectionBlock) {
 		/**/
 
 		$arParams['DISPLAY_WISH_BUTTONS'] = CMax::GetFrontParametrValue('CATALOG_DELAY');
-		?>
-		<?
-			if(!in_array("DETAIL_PAGE_URL", (array)$arParams["LIST_OFFERS_FIELD_CODE"]))
-				$arParams["LIST_OFFERS_FIELD_CODE"][] = "DETAIL_PAGE_URL";
+	
+		if(!in_array("DETAIL_PAGE_URL", (array)$arParams["LIST_OFFERS_FIELD_CODE"]))
+			$arParams["LIST_OFFERS_FIELD_CODE"][] = "DETAIL_PAGE_URL";
 
-			if ($bUseModuleProps){
-				$arSKU = CCatalogSKU::GetInfoByProductIBlock($arParams['IBLOCK_ID']);
-				$arParams['OFFERS_CART_PROPERTIES'] = \Bitrix\Catalog\Product\PropertyCatalogFeature::getBasketPropertyCodes($arSKU['IBLOCK_ID'], ['CODE' => 'Y']);
-			}
-		?>
+		if ($bUseModuleProps){
+			$arSKU = CCatalogSKU::GetInfoByProductIBlock($arParams['IBLOCK_ID']);
+			$arParams['OFFERS_CART_PROPERTIES'] = (array)\Bitrix\Catalog\Product\PropertyCatalogFeature::getBasketPropertyCodes($arSKU['IBLOCK_ID'], ['CODE' => 'Y']);
+		}
 
-		<?$arTransferParams = array(
-			"SHOW_ABSENT" => $arParams["SHOW_ABSENT"],
-			"HIDE_NOT_AVAILABLE_OFFERS" => $arParams["HIDE_NOT_AVAILABLE_OFFERS"],
-			"PRICE_CODE" => $arParams["PRICE_CODE"],
-			"OFFER_TREE_PROPS" => $arParams["OFFER_TREE_PROPS"],
-			"OFFER_SHOW_PREVIEW_PICTURE_PROPS" => $arParams["OFFER_SHOW_PREVIEW_PICTURE_PROPS"],
-			"CACHE_TIME" => $arParams["CACHE_TIME"],
-			"CONVERT_CURRENCY" => $arParams["CONVERT_CURRENCY"],
-			"CURRENCY_ID" => $arParams["CURRENCY_ID"],
-			"OFFERS_SORT_FIELD" => $arParams["OFFERS_SORT_FIELD"],
-			"OFFERS_SORT_ORDER" => $arParams["OFFERS_SORT_ORDER"],
-			"OFFERS_SORT_FIELD2" => $arParams["OFFERS_SORT_FIELD2"],
-			"OFFERS_SORT_ORDER2" => $arParams["OFFERS_SORT_ORDER2"],
+		$arConfigTransfer = array(
 			"LIST_OFFERS_LIMIT" => $arParams["LIST_OFFERS_LIMIT"],
-			"CACHE_GROUPS" => $arParams["CACHE_GROUPS"],
 			"LIST_OFFERS_PROPERTY_CODE" => $arParams["LIST_OFFERS_PROPERTY_CODE"],
-			"SHOW_DISCOUNT_TIME" => $arParams["SHOW_DISCOUNT_TIME"],
-			"SHOW_COUNTER_LIST" => $arParams["SHOW_COUNTER_LIST"],
-			"PRICE_VAT_INCLUDE" => $arParams["PRICE_VAT_INCLUDE"],
-			"USE_PRICE_COUNT" => $arParams["USE_PRICE_COUNT"],
-			"SHOW_MEASURE" => $arParams["SHOW_MEASURE"],
-			"SHOW_OLD_PRICE" => $arParams["SHOW_OLD_PRICE"],
-			"SHOW_DISCOUNT_PERCENT" => $arParams["SHOW_DISCOUNT_PERCENT"],
-			"SHOW_DISCOUNT_PERCENT_NUMBER" => $arParams["SHOW_DISCOUNT_PERCENT_NUMBER"],
-			"USE_REGION" => $arParams["USE_REGION"],
-			"STORES" => $arParams["STORES"],
-			"DEFAULT_COUNT" => $arParams["DEFAULT_COUNT"],
-			"BASKET_URL" => $arParams["BASKET_URL"],
 			"SHOW_GALLERY" => $arParams["SHOW_GALLERY"],
 			"MAX_GALLERY_ITEMS" => $arParams["MAX_GALLERY_ITEMS"],
-			"OFFERS_CART_PROPERTIES" => $arParams["OFFERS_CART_PROPERTIES"],
-			"PRODUCT_PROPERTIES" => $arParams["PRODUCT_PROPERTIES"],
-			"PARTIAL_PRODUCT_PROPERTIES" => $arParams["PARTIAL_PRODUCT_PROPERTIES"],
-			"ADD_PROPERTIES_TO_BASKET" => $arParams["ADD_PROPERTIES_TO_BASKET"],
-			"SHOW_ONE_CLICK_BUY" => $arParams["SHOW_ONE_CLICK_BUY"],
-			"SHOW_DISCOUNT_TIME_EACH_SKU" => $arParams["SHOW_DISCOUNT_TIME_EACH_SKU"],
-			"SHOW_ARTICLE_SKU" => $arParams["SHOW_ARTICLE_SKU"],
 			"SHOW_POPUP_PRICE" => CMax::GetFrontParametrValue('SHOW_POPUP_PRICE'),
-			"ADD_PICT_PROP" => $arParams["ADD_PICT_PROP"],
 			"ADD_DETAIL_TO_SLIDER" => $arParams["DETAIL_ADD_DETAIL_TO_SLIDER"],
-			"OFFER_ADD_PICT_PROP" => $arParams["OFFER_ADD_PICT_PROP"],
-			"PRODUCT_QUANTITY_VARIABLE" => $arParams["PRODUCT_QUANTITY_VARIABLE"],
 			"IBINHERIT_TEMPLATES" => $arSeoItem ? $arIBInheritTemplates : array(),
 			"DISPLAY_COMPARE" => CMax::GetFrontParametrValue('CATALOG_COMPARE'),
 			"DISPLAY_WISH_BUTTONS" => $arParams["DISPLAY_WISH_BUTTONS"],
-		);?>
+			"COMPATIBLE_MODE" => "Y",
+		);
+
+		$arTransferParams = \Aspro\Functions\CAsproMax::getTransferParams($arParams, $arConfigTransfer);?>
 
 		<?$bContolAjax = (isset($_SERVER["HTTP_X_REQUESTED_WITH"]) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == "xmlhttprequest" && isset($_GET["control_ajax"]) && $_GET["control_ajax"] == "Y" );?>
 		<?// section elements?>
-		<div class="js_wrapper_items<?=($arTheme["LAZYLOAD_BLOCK_CATALOG"]["VALUE"] == "Y" ? ' with-load-block' : '')?>" data-params='<?=str_replace('\'', '"', CUtil::PhpToJSObject($arTransferParams, false))?>'>
+		<div class="js_wrapper_items<?=($arTheme["LAZYLOAD_BLOCK_CATALOG"]["VALUE"] == "Y" ? ' with-load-block' : '')?>" data-params='<?//=str_replace('\'', '"', CUtil::PhpToJSObject($arTransferParams, false))?>'>
 			<div class="js-load-wrapper">
 				<?if($bContolAjax):?>
 					<?$APPLICATION->RestartBuffer();?>

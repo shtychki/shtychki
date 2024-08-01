@@ -14,7 +14,7 @@
 	$MESS["SECT_DISPLAY_4"] = "Big list";
 	$MESS["CATALOG_SMART_FILTER_TITLE"] = "Filter";
 	$MESS["CATALOG_DROP_TO"] = "Show by:";
-	$MESS["CATALOG_IN_CART"] = "In the basket";
+	$MESS["CATALOG_IN_CART"] = "In the cart";
 	$MESS["TITLE_QUANTITY"] = "pc.";
 	$MESS["UNTIL_AKC"] = "Until the end of the promotion";
 	$MESS["TITLE_QUANTITY_BLOCK"] = "balance";

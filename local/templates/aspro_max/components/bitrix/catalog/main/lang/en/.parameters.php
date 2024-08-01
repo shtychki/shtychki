@@ -29,6 +29,7 @@ $MESS["SKU_DISPLAY_LOCATION_RIGHT"] = "to the right of the product photo";
 $MESS["SKU_DISPLAY_LOCATION_BOTTOM"] = "under the product photo";
 $MESS["SKU_DISPLAY_LOCATION_TIP"] = "The display of product offers to the right of the photo is suitable for a small list, if there are many offers, it will be more convenient to place them below";
 $MESS["OFFER_SHOW_PREVIEW_PICTURE_PROPS_TITLE"] = "Display the preview image of the proposal in the properties for selection";
+$MESS["LIST_OFFERS_LIMIT_TIP"] = "The value must be specified in the solution module settings in the item 'Maximum number of offers to display (0 - all)'";
 
 $MESS["SHOW_QUANTITY"] = "Show product availability";
 $MESS["SECTION_TOP_BLOCK_TITLE"] = "Block Title";
@@ -66,11 +67,11 @@ $MESS["LIST_DEFAULT_CATALOG_TEMPLATE_LIST"] = 'list';
 $MESS["LIST_DEFAULT_CATALOG_TEMPLATE_TABLE"] = 'table';
 $MESS["LIST_DEFAULT_CATALOG_TEMPLATE_BLOCK"] = 'tile';
 $MESS["SECTION_DISPLAY_PROPERTY"] = 'Section property with default template';
-$MESS["MAX_COUNT_TIP"] = "The maximum (if there is enough stock in the warehouse) number of items available for selection in the basket from the productвЂ™s card. 0 - the list is limited by stock balances";
+$MESS["MAX_COUNT_TIP"] = "The maximum (if there is enough stock in the warehouse) number of items available for selection in the cart from the productвЂ™s card. 0 - the list is limited by stock balances";
 $MESS["MAX_BASKET_PRODUCTS"] = "The maximum number of products available for selection (0 - unlimited)";
 $MESS["DEFAULT_BASKET_PRODUCTS"] = "The number of items to add to the basket by default";
 $MESS["DISPLAY_WISH_BUTTONS"] = "Show 'postpone' button";
-$MESS["DEFAULT_COUNT"] = "The amount added to the basket by default";
+$MESS["DEFAULT_COUNT"] = "The amount added to the cart by default";
 $MESS["SHOW_BRAND_PICTURE"] = "Show brand logo";
 $MESS["PROPERTIES_DISPLAY_LOCATION"] = "Show product properties";
 $MESS["PROPERTIES_DISPLAY_LOCATION_DESCRIPTION"] = "in description";
@@ -86,6 +87,15 @@ $MESS["SHOW_MEASURE"] = "Show units of measure";
 $MESS["SHOW_QUANTITY_COUNT"] = "Show product availability by quantity";
 $MESS["SHOW_HINTS"] = "Show tooltips for properties";
 $MESS["USE_SHARE"] = "Show block \" Share \"";
+
+$MESS["BIGDATA_EXT_BOTTOM_TITLE"] = "Personal recommendation template for bottom catalog detail page";
+$MESS["BIGDATA_TYPE_VIEW_TEXT"] = "Personal Recommendation View";
+$MESS["BIGDATA_TYPE_VIEW_RIGHT_TEXT"] = "Right";
+$MESS["BIGDATA_TYPE_VIEW_BOTTOM_TEXT"] = "Bottom";
+$MESS["BIGDATA_TYPE_VIEW_FROM_MODULE"] = "From control center settings";
+$MESS["BIGDATA_SET_COUNT_BOTTOM_TEXT"] = "Set a different number of personal recommendations for bottom view";
+$MESS["BIGDATA_COUNT_TEXT"] = "Number of Personal Recommendations";
+$MESS["BIGDATA_COUNT_TEXT_BOTTOM"] = "Number of Personal Recommendations Bottom";
 
 $MESS["BIGDATA_NORMAL_TITLE"] = "Template for personal recommendations for a detailed catalog page with tabs and without tabs";
 $MESS["BIGDATA_EXT_TITLE"] = "Template for personal recommendations for the detailed catalog page";
@@ -139,7 +149,6 @@ $MESS["OFFERS_SETTINGS"] = "Properties for selecting offers";
 $MESS["CP_BC_TPL_ADD_PICT_PROP"] = "Additional picture of the main product";
 $MESS["CP_BC_TPL_LABEL_PROP"] = "Product Tag Property";
 $MESS["CP_BC_TPL_PRODUCT_DISPLAY_MODE"] = "Display scheme";
-$MESS["CP_BC_TPL_OFFER_ADD_PICT_PROP"] = "Additional offer pictures";
 $MESS['DETAIL_OFFERS_PROPERTY_CODE_TIP'] = 'Setting has moved to the admin area of the site. Go to the solution settings on the "Catalog" tab. Selected properties via component parameters will not be taken into account on the site.';
 $MESS['OFFER_TREE_PROPS_TIP'] = 'Setting has moved to the admin area of the site. Go to the solution settings on the "Catalog" tab. Selected properties via component parameters will not be taken into account on the site.';
 $MESS['OFFER_SHOW_PREVIEW_PICTURE_PROPS_TIP'] = 'Setting has moved to the admin area of the site. Go to the solution settings on the "Catalog" tab. Selected properties via component parameters will not be taken into account on the site.';
@@ -172,8 +181,10 @@ $MESS["USE_BIG_DATA_TIP"] = "Show personalized recommendations on catalog pages"
 $MESS["SHOW_DISCOUNT_PERCENT_TIP"] = "Withdraw savings if there is a discount";
 $MESS["SHOW_OLD_PRICE_TIP"] = "Show old price if there is a discount";
 
-$MESS["ADD_PICT_PROP_TIP"] = "Property of additional product images";
-$MESS["OFFER_ADD_PICT_PROP_TIP"] = "Property of additional offer pictures (if any)";
+$MESS["ADD_PICT_PROP_TIP"] = "The value must be specified in the solution module settings in the 'Additional pictures of the main product'";
+$MESS["OFFER_ADD_PICT_PROP_TIP"] = "The value must be specified in the solution module settings in the 'Additional offer pictures'";
+$MESS["CONVERT_CURRENCY_TIP"] = "The value must be specified in the solution module settings in the 'Show prices in one currency'";
+$MESS["CURRENCY_ID_TIP"] = "The value must be specified in the solution module settings in the 'Currency into which prices will be converted'";
 $MESS["AJAX_FILTER_CATALOG_TIP"] = "When this option is enabled, the output of filtering results will occur without reloading the page";
 $MESS["OFFER_HIDE_NAME_PROPS_TIP"] = "When this option is enabled, the property headers of trading offers will be hidden";
 
@@ -300,6 +311,7 @@ $MESS['SMARTSEO_TAGS_SHOW_DEACTIVATED'] = 'Display disabled tag cloud from Smart
 $MESS['SMARTSEO_TAGS_SORT'] = 'Tag cloud from Smart SEO element sorting field';
 $MESS['SMARTSEO_TAGS_SORT_NAME'] = 'name';
 $MESS['SMARTSEO_TAGS_SORT_SORT'] = 'sort';
+$MESS['SMARTSEO_TAGS_LIMIT'] = 'Number of tags processed from Smart SEO';
 
 $MESS['SHOW_GALLERY_NAME'] = "Display Gallery";
 $MESS['MAX_GALLERY_ITEMS_NAME'] = "The number of pictures in the gallery";
@@ -352,8 +364,10 @@ $MESS["CP_BC_TPL_DETAIL_USE_COMMENTS"] = "Include product reviews";
 $MESS["CP_BC_TPL_DETAIL_BLOG_EMAIL_NOTIFY"] = "Email recall notification";
 $MESS["T_COMMENTS_COUNT"] = "Number of comments per page";
 $MESS["CP_BC_TPL_MAX_IMAGE_SIZE"] = "Maximum size of attached pictures";
+$MESS["CP_BC_TPL_MAX_IMAGE_COUNT"] = "Maximum number of attached pictures";
+$MESS["CP_BC_TPL_NO_USE_IMAGE"] = "Disable file uploads in reviews";
+$MESS["NO_USE_IMAGE_TIP"] = "Attention! After activating the option, the ability to edit images in reviews will also disappear - they cannot be deleted or downloaded.";
 $MESS["BIGDATA_SHOW_FROM_SECTION"] = "Show from current section";
-
 $MESS["IBLOCK_SORT_ASC"] = "ascending";
 $MESS["IBLOCK_SORT_DESC"] = "descending";
 $MESS["LINKED_ELEMENT_TAB_SORT_FIELD"] = "By what field do we sort related products";
@@ -392,5 +406,6 @@ $MESS["LANDINGS_GROUP_FROM_SEO_TITLE"] = "Get landing page group names from SEO"
 
 $MESS['T_SHOW_KIT_ALL'] = "Show all goods of kit immediately";
 
-$MESS["T_USE_COMPARE_GROUP"] = "Использовать группировку на странице сравнения";
+$MESS["T_USE_COMPARE_GROUP"] = "Use grouping on the comparison page";
+$MESS["LANDING_SEARCH_COUNT_MOBILE"] = "Number of visible elements in the \"Similar queries\" block for landing pages in the search (<768 px)";
 ?>

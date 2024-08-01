@@ -19,6 +19,10 @@ $ajaxData = array(
 	'ELEMENT_ID' => $arElement['ID'],
 	'SITE_ID' => SITE_ID,
 );
+
+// remove external links
+$url = preg_replace('/^(https?:)?\/\//', '', trim($request['ajax_url'] ?: ''));
+$containerId = htmlspecialcharsbx($request['containerId']);
 ?>
 <script>
 	var data = <?=CUtil::PhpToJSObject($ajaxData)?>;
@@ -27,7 +31,7 @@ $ajaxData = array(
 		type: 'post',
 		data: data,
 		success: function(html){
-			$('<?="#".$request['containerId']?>').html($(html).find(".blog-comments").html());
+			$(<?var_export("#".$containerId)?>).html($(html).find(".blog-comments").html());
 		}
 	});
 </script>

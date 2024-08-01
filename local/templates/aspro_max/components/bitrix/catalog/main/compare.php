@@ -22,7 +22,10 @@ if($arRegion)
 }
 if(!in_array('ID', (array)$arParams["COMPARE_OFFERS_FIELD_CODE"]))
 	$arParams["COMPARE_OFFERS_FIELD_CODE"][] = 'ID';
-?>
+
+$arParams["CONVERT_CURRENCY"] = CMax::GetFrontParametrValue('CONVERT_CURRENCY');
+$arParams["CURRENCY_ID"] = CMax::GetFrontParametrValue('CURRENCY_ID');?>
+
 <?$APPLICATION->IncludeComponent(
 	"bitrix:catalog.compare.result",
 	"main",
@@ -64,6 +67,7 @@ if(!in_array('ID', (array)$arParams["COMPARE_OFFERS_FIELD_CODE"]))
 		'HIDE_NOT_AVAILABLE' => $arParams['HIDE_NOT_AVAILABLE'],
 		'TEMPLATE_THEME' => (isset($arParams['TEMPLATE_THEME']) ? $arParams['TEMPLATE_THEME'] : ''),
 		'USE_COMPARE_GROUP' => $arParams['USE_COMPARE_GROUP'],
+		'DISPLAY_WISH_BUTTONS' => CMax::GetFrontParametrValue('CATALOG_DELAY'),
 	),
 	$component,
 	array("HIDE_ICONS" => "Y")

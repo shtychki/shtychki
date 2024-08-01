@@ -1,7 +1,7 @@
 <?$APPLICATION->SetPageProperty("HIDE_LEFT_BLOCK", "Y")?>
 <?$APPLICATION->SetPageProperty("WITH_LEFT_BLOCK", "")?>
 
-<div class="product-view product-view--side-left">
+<div class="product-view product-view--side-left <?=($sViewPictureDetail === 'square_big' ? 'product-view--big-gallery' : '')?>">
 	<?$ElementID = $APPLICATION->IncludeComponent(
 		"bitrix:catalog.element",
 		"main",
@@ -118,6 +118,7 @@
 			"CURRENCY_ID" => $arParams["CURRENCY_ID"],
 			'HIDE_NOT_AVAILABLE' => $arParams["HIDE_NOT_AVAILABLE"],
 			'HIDE_NOT_AVAILABLE_OFFERS' => $arParams["HIDE_NOT_AVAILABLE_OFFERS"],
+			'HIDE_NOT_AVAILABLE_LINKED' => $arParams['HIDE_NOT_AVAILABLE'],
 			'SHOW_DEACTIVATED' => $arParams['SHOW_DEACTIVATED'],
 			"USE_ELEMENT_COUNTER" => $arParams["USE_ELEMENT_COUNTER"],
 			"STAFF_VIEW_TYPE" => ($arParams["STAFF_VIEW_TYPE"] ? $arParams["STAFF_VIEW_TYPE"] : "staff_block"),
@@ -128,6 +129,8 @@
 			"COMMENTS_COUNT" => (isset($arParams['COMMENTS_COUNT']) ? $arParams['COMMENTS_COUNT'] : '5'),
 			"DETAIL_BLOG_EMAIL_NOTIFY" => (isset($arParams['DETAIL_BLOG_EMAIL_NOTIFY']) ? $arParams['DETAIL_BLOG_EMAIL_NOTIFY'] : 'Y'),
 			"MAX_IMAGE_SIZE" => (isset($arParams['MAX_IMAGE_SIZE']) ? $arParams['MAX_IMAGE_SIZE'] : '0.5'),
+			"MAX_IMAGE_COUNT" => (isset($arParams['MAX_IMAGE_COUNT']) ? $arParams['MAX_IMAGE_COUNT'] : '10'),
+			"NO_USE_IMAGE" => (isset($arParams['NO_USE_IMAGE']) ? $arParams['NO_USE_IMAGE'] : 'N'),
 
 			"USE_RATING" => $arParams["USE_RATING"],
 			"USE_REVIEW" => $arParams["USE_REVIEW"],
@@ -277,22 +280,31 @@
 			"SHOW_SKU_DESCRIPTION" => $arParams["SHOW_SKU_DESCRIPTION"],
 			"VISIBLE_PROP_WITH_OFFER" => $arParams["VISIBLE_PROP_WITH_OFFER"],
 			"MOBILE_CAROUSEL" => "Y",
+			"SECTION_ID_FOR_BIG_DATA" => $arSection['ID'], 
+			"BIGDATA_PATH_TEMPLATE" => $this->__folder.'/page_blocks/'.$sViewBigDataExtTemplate.'.php',
+			"BIGDATA_TYPE_VIEW" => $arParams['BIGDATA_TYPE_VIEW'],
+			"BIGDATA_SHOW_FROM_SECTION" => $arParams['BIGDATA_SHOW_FROM_SECTION'],
+			"BIGDATA_COUNT_BOTTOM" => $arParams["BIGDATA_COUNT_BOTTOM"],
+			"BIGDATA_SET_COUNT_BOTTOM" =>  $arParams["BIGDATA_SET_COUNT_BOTTOM"],
+			"BIGDATA_COUNT" => $arParams["BIGDATA_COUNT"],
+			"BIG_DATA_FILTER_IDS" => $arParams['BIG_DATA_FILTER_IDS'],
 		),
 		$component
 	);?>
 </div>
-<div class="left_block sticky-sidebar-custom product-side main_item_wrapper product-main js-offers-calc <?=($arParams["SHOW_UNABLE_SKU_PROPS"] != "N" ? "show_un_props" : "unshow_un_props");?>">
-	<?$APPLICATION->ShowViewContent('PRODUCT_SIDE_INFO')?>
-
+<div class="left_block sticky-sidebar-custom product-side main_item_wrapper js-offers-calc <?=($arParams["SHOW_UNABLE_SKU_PROPS"] != "N" ? "show_un_props" : "unshow_un_props");?>">
+	<div class="product-main">
+		<?$APPLICATION->ShowViewContent('PRODUCT_SIDE_INFO')?>
+	</div>
 	<?//bigdata?>
-	<?if($arParams['USE_BIG_DATA'] == 'Y'):?>
+	<?if($arParams['USE_BIG_DATA'] == 'Y' && $arParams['BIGDATA_TYPE_VIEW'] === 'RIGHT' ):?>
 		<?
 		$GLOBALS['CATALOG_CURRENT_ELEMENT_ID'] = $ElementID;
-
+		
 		$GLOBALS['arrFilterBigData']['IBLOCK_ID'] = $arParams['IBLOCK_ID'];
 		CMax::makeElementFilterInRegion($GLOBALS['arrFilterBigData']);
 		?>
-		<div class="bigdata-wrapper"><?include_once($_SERVER["DOCUMENT_ROOT"].$this->__folder.'/page_blocks/'.$sViewBigDataExtTemplate.'.php');?></div>
+		<div class="bigdata-wrapper bigdata_recommended_products_items"><?include_once($_SERVER["DOCUMENT_ROOT"].$this->__folder.'/page_blocks/'.$sViewBigDataExtTemplate.'.php');?></div>
 	<?endif;?>
 
 	<?//feedback?>

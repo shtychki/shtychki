@@ -1,3 +1,11 @@
+.mt {
+  --mt: 0px;
+  margin-top: var(--mt);
+}
+.mt--32 {
+  --mt: clamp(24px, 3vw, 32px);
+}
+
 .flexbox {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -39,6 +47,9 @@
 .flexbox--gap-16 {
   --gap: 16px;
 }
+.flexbox--gap-32 {
+  --gap: clamp(24px, 3vw, 32px);
+}
 .flexbox--row-reverse {
   -ms-flex-direction: row-reverse;
   flex-direction: row-reverse;
@@ -47,7 +58,6 @@
   flex-wrap: nowrap;
   align-items: center;
 }
-
 .flexbox--wrap {
   -webkit-flex-wrap: wrap;
   -ms-flex-wrap: wrap;
@@ -61,6 +71,12 @@
 }
 .flexbox--justify-end {
   justify-content: end;
+}
+.flexbox--justify-space-between {
+  justify-content: space-between;
+}
+.flexbox--align-start {
+  align-items: flex-start;
 }
 .minwidth0 {
   min-width: 0px;
@@ -579,8 +595,15 @@ body.jqm-initied.wf {
   top: -5px;
 }
 
-.svg.svg-inline-hot + h3 {
+.svg.svg-inline-hot + .top_block_title {
   margin: -1px 0px 0px 14px;
+}
+
+.top_block_title {
+  display: inline-block;
+  margin: 0px 38px 0px 0px;
+  font-size: 1.6em;
+  line-height: 1.126em;
 }
 
 .svg.svg-inline-hot svg {
@@ -629,13 +652,8 @@ body.jqm-initied.wf {
   fill: #b8b8b8;
 }
 
-.has-secion-banner .colored_theme_hover_bg-block:not(:hover) .svg path {
-  fill: #fff;
-  opacity: 0.5;
-}
-
-.has-secion-banner .colored_theme_hover_bg-block:hover .svg path {
-  fill: #fff;
+.has-secion-banner.light-menu-color .page-top .svg path {
+  --fill_dark_light_white_hover: #fff;
 }
 
 .title_position_CENTERED .page-top {
@@ -1690,10 +1708,6 @@ body .owl-carousel .owl-item img {
   justify-content: space-between;
   top: calc(50% - 20px);
   z-index: 1;
-}
-
-body .owl-carousel .owl-nav {
-  margin-top: 0px;
 }
 
 .owl-carousel.owl-dots .owl-nav {
@@ -4345,7 +4359,7 @@ table.offers_table td {
   height: 26px;
   text-align: center;
   line-height: 26px;
-  margin: 0px 12px 5px 12px;
+  margin: 0px 12px;
   text-decoration: none;
   font-size: 14px;
   font-weight: bold;
@@ -4779,7 +4793,7 @@ body .module-pagination .point_sep {
 
 #mobilefilter .bx_filter .bx_filter_parameters_box.title .filter_title > span {
   padding-left: 9px;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 #mobilefilter .bx_filter .bx_filter_parameters_box.title.shadow {
@@ -6609,16 +6623,11 @@ form .rating_message:before {
   border-color: rgba(0, 0, 0, 0);
 }
 
-.bx_filter_parameters_box_title .hint .tooltip {
-  left: -10px;
-  opacity: 1;
-  top: auto;
-  bottom: 27px;
-  z-index: 200;
-  color: #888;
-  color: var(--light_basic_text_black);
-  background: #fff;
-  background: var(--card_bg_hover_black);
+.bx_filter.compact .bx_filter_parameters_box_title .props_list .hint .tooltip {
+  top: -60px;
+  left: 0px;
+ width: 200px;
+ white-space: normal;
 }
 
 .bx_filter_parameters_box_title .hint .tooltip:after {
@@ -8004,7 +8013,7 @@ div[id^="CatalogSetConstructor"] .popup-window {
 .fancybox-container .fancybox-button {
   background: #fff;
   background-color: var(--black_bg_black);
-  opacity: 1;
+  opacity: 1 !important;
 }
 
 .fancybox-container svg path {
@@ -8024,7 +8033,7 @@ div[id^="CatalogSetConstructor"] .popup-window {
   top: calc(50% - 19px);
   width: 44px;
   height: 38px;
-  outline: none;
+  outline: none !important;
   background: transparent;
 }
 
@@ -8783,6 +8792,20 @@ body .catalog_block.owl-carousel .item_block {
 .view_sale_block.v2 .countdown {
   border-radius: 0px;
   width: 115px;
+}
+
+.view_sale_block.all-info .countdown {
+  width: auto;
+  padding-right: 13px;
+}
+
+body .view_sale_block.v2.all-info > div:first-of-type{
+  display: inline-block;
+}
+
+.view_sale_block.all-info .values .item.minutes:before,
+.view_sale_block.all-info .values .item.minutes:after {
+  display: block;
 }
 
 .view_sale_block.v2 .values {
@@ -10001,6 +10024,11 @@ html.bx-ie .block-items.flexbox.block-items--margined .block-item__info {
     position: relative;
   }
 
+  .bottom_nav.mobile_slider.hidden-nav {
+    padding-right: 0;
+    width: 0;
+  }
+
   .bottom_nav.mobile_slider .svg-inline-bottom_nav-icon {
     position: absolute;
     top: calc(50% - 32px);
@@ -10327,8 +10355,8 @@ body .bx-soa-auth .eye-password:after {
   .hide-600 {
     display: none;
   }
-  .ajax_load.block .TYPE_2 .in-cart .svg.svg-inline-fw svg,
-  .ajax_load.block .TYPE_3 .in-cart .svg.svg-inline-fw svg {
+  .compact-catalog .ajax_load.block .TYPE_2 .in-cart .svg.svg-inline-fw svg,
+  .compact-catalog .ajax_load.block .TYPE_3 .in-cart .svg.svg-inline-fw svg {
     display: none;
   }
 }
@@ -10344,5 +10372,3 @@ body .bx-soa-auth .eye-password:after {
     display: none;
   }
 }
-
-/**/

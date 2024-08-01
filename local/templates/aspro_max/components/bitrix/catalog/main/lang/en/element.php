@@ -2,7 +2,7 @@
 $MESS["VIEWED_BEFORE"] = "You previously watched";
 $MESS["CATALOG_STOCK_TITLE"] = "Product for the action";
 $MESS["CATALOG_STOCK_VIEW"] = "Details";
-$MESS["CATALOG_IN_CART"] = "In the basket";
+$MESS["CATALOG_IN_CART"] = "In the cart";
 $MESS["TITLE_QUANTITY"] = "PCS.";
 $MESS["UNTIL_AKC"] = "Until the end of the action";
 $MESS["TITLE_QUANTITY_BLOCK"] = "Remainder";
@@ -48,7 +48,7 @@ $MESS['CT_IS_AVAILABLE'] = "Are available";
 $MESS['DONT_AVAILABLE'] = "Not available";
 $MESS['AVAILABLE'] = "In stock";
 $MESS['MEASURE'] = "PCS.";
-$MESS['CATALOG_IN_CART'] = "In the basket";
+$MESS['CATALOG_IN_CART'] = "In the cart";
 $MESS["CT_NAME_ASSOCIATED_TITLE"] = "They often buy with goods:";
 $MESS["ONE_CLICK_BUY"] = "Buy in 1 click";
 $MESS["BRAND"] = "Manufacturer";

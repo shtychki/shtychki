@@ -8,7 +8,7 @@ use Bitrix\Main\ModuleManager;
 use Bitrix\Main\Web\Json;
 
 $request = \Bitrix\Main\Application::getInstance()->getContext()->getRequest();
-$siteId = $request->get("src_site");
+$siteId = $request->get("src_site") ?? $request->get("site");
 
 if (!Loader::includeModule('iblock'))
 	return;
@@ -35,7 +35,7 @@ if ($arCurrentValues["IBLOCK_BANNERS_TYPE_ID"])
 }
 $arTypesEx = CIBlockParameters::GetIBlockTypes(Array("-"=>" "));
 
-
+$arProperty_N = [];
 $arPrice = array();
 if (Loader::includeModule("catalog"))
 {
@@ -87,6 +87,7 @@ if (0 < intval($arCurrentValues['IBLOCK_ID']))
 
 $arUserFields = $USER_FIELD_MANAGER->GetUserFields('IBLOCK_'.$arCurrentValues['IBLOCK_ID'].'_SECTION', 0, LANGUAGE_ID);
 $arUserFields_F = array('-' => '-');
+$arProperty_UF = $arUserFields_S = array();
 foreach ($arUserFields as $FIELD_NAME => $arUserField)
 {
 	$arUserField['LIST_COLUMN_LABEL'] = (string)$arUserField['LIST_COLUMN_LABEL'];
@@ -111,8 +112,20 @@ if(\Bitrix\Main\Loader::includeModule('aspro.max')){
 			"NAME" => GetMessage("BIGDATA_EXT_TITLE"),
 			"TYPE" => "LIST",
 			"VALUES" => $arPageBlocks["BIGDATA"],
-			"DEFAULT" => "bigdata_2",
-			"PARENT" => "BASE",
+			"DEFAULT" => "bigdata_1",
+			"PARENT" => "BIG_DATA_SETTINGS",
+			"TYPE" => "LIST",
+		);
+	}
+	if($arPageBlocks["BIGDATA_BOTTOM"])
+	{
+		$arPageBlocksParams["BIGDATA_EXT_BOTTOM"] = array(
+			"SORT" => 100,
+			"NAME" => GetMessage("BIGDATA_EXT_BOTTOM_TITLE"),
+			"TYPE" => "LIST",
+			"VALUES" => $arPageBlocks["BIGDATA_BOTTOM"],
+			"DEFAULT" => "bigdata_bottom_1",
+			"PARENT" => "BIG_DATA_SETTINGS",
 			"TYPE" => "LIST",
 		);
 	}
@@ -796,7 +809,6 @@ if(!ModuleManager::isModuleInstalled("forum") && ModuleManager::isModuleInstalle
 		);
 	}
 }
-
 if(CMax::GetFrontParametrValue('REVIEWS_VIEW') == 'EXTENDED' && Loader::includeModule("blog")) {
 	$resBlogs = CBlog::GetList(
 		array("ID"=>"ASK"),
@@ -822,6 +834,19 @@ if(CMax::GetFrontParametrValue('REVIEWS_VIEW') == 'EXTENDED' && Loader::includeM
 			'NAME' => GetMessage('CP_BC_TPL_MAX_IMAGE_SIZE'),
 			'TYPE' => 'STRING',
 			'DEFAULT' => '0.5'
+		),
+		'MAX_IMAGE_COUNT' => array(
+			'PARENT' => 'REVIEW_SETTINGS',
+			'NAME' => GetMessage('CP_BC_TPL_MAX_IMAGE_COUNT'),
+			'TYPE' => 'STRING',
+			'DEFAULT' => '10'
+		),
+		'NO_USE_IMAGE' => array(
+			'PARENT' => 'REVIEW_SETTINGS',
+			'NAME' => GetMessage('CP_BC_TPL_NO_USE_IMAGE'),
+			"TYPE" => "CHECKBOX",
+			"DEFAULT" => "N",
+			"REFRESH" => "N",
 		),
 		"BLOG_URL" => array(
 			"NAME" => GetMessage("BLOG_URL"),
@@ -1066,6 +1091,12 @@ if($arCurrentValues["SHOW_LANDINGS"] !== 'N'){
                     'SORT' => GetMessage('SMARTSEO_TAGS_SORT_SORT'),
                 ),
                 'DEFAULT' => 'SORT',
+            ),
+			'SMARTSEO_TAGS_LIMIT' => array(
+                "PARENT" => "LIST_SETTINGS",
+                'NAME' => GetMessage('SMARTSEO_TAGS_LIMIT'),
+                'TYPE' => 'STRING',
+                'DEFAULT' => '',
             ),
 		);
 	}
@@ -1340,18 +1371,6 @@ $arTemplateParametersParts[] = Array(
 );
 
 $arTemplateParametersParts[] = array(
-	'ADD_PICT_PROP' => array(
-		'PARENT' => 'VISUAL',
-		'NAME' => GetMessage('CP_BC_TPL_ADD_PICT_PROP'),
-		'TYPE' => 'LIST',
-		'MULTIPLE' => 'N',
-		'ADDITIONAL_VALUES' => 'N',
-		'REFRESH' => 'N',
-		'DEFAULT' => '-',
-		'VALUES' => $arFilePropList
-	)
-);
-$arTemplateParametersParts[] = array(
 	'DETAIL_DOCS_PROP' => array(
 		'PARENT' => 'VISUAL',
 		'NAME' => GetMessage('DETAIL_DOCS_PROP_TTILE'),
@@ -1381,18 +1400,6 @@ $arTemplateParametersParts[] = array(
 
 if ($boolSKU)
 {
-	$arTemplateParametersParts[] = array(
-		'OFFER_ADD_PICT_PROP' => array(
-			'PARENT' => 'VISUAL',
-			'NAME' => GetMessage('CP_BC_TPL_OFFER_ADD_PICT_PROP'),
-			'TYPE' => 'LIST',
-			'MULTIPLE' => 'N',
-			'ADDITIONAL_VALUES' => 'N',
-			'REFRESH' => 'N',
-			'DEFAULT' => '-',
-			'VALUES' => $arFileOfferPropList
-		)
-	);
 	$arTemplateParametersParts[]=array(
 		'OFFER_TREE_PROPS' => array(
 			'PARENT' => 'OFFERS_SETTINGS',
@@ -1467,6 +1474,57 @@ if (ModuleManager::isModuleInstalled("sale"))
 				'DEFAULT' => 'N',
 			)
 		);
+		$arTemplateParametersParts[]=array(
+			'BIGDATA_COUNT' => array(
+				'PARENT' => 'BIG_DATA_SETTINGS',
+				'NAME' => GetMessage('BIGDATA_COUNT_TEXT'),
+				'TYPE' => 'STRING',
+				'DEFAULT' => 5,
+			)
+		);
+		$arTemplateParametersParts[]=array(
+			'BIGDATA_TYPE_VIEW' => array(
+				'PARENT' => 'BIG_DATA_SETTINGS',
+				'NAME' => GetMessage('BIGDATA_TYPE_VIEW_TEXT'),
+				'TYPE' => 'LIST',
+				"REFRESH" => "Y",
+				'VALUES' => array(
+                    'RIGHT' => GetMessage('BIGDATA_TYPE_VIEW_RIGHT_TEXT'),
+                    'BOTTOM' => GetMessage('BIGDATA_TYPE_VIEW_BOTTOM_TEXT'),
+					'FROM_MODULE' => GetMessage('BIGDATA_TYPE_VIEW_FROM_MODULE')
+                ),
+				'DEFAULT' => 'FROM_MODULE',
+			)
+		);
+
+		$bShowExtCount = ($arCurrentValues['BIGDATA_TYPE_VIEW'] === "BOTTOM");
+		if (!isset($arCurrentValues['BIGDATA_TYPE_VIEW']) || $arCurrentValues['BIGDATA_TYPE_VIEW'] === "FROM_MODULE") {
+			$bShowExtCount = CMax::GetFrontParametrValue('BIGDATA_TYPE_VIEW', $siteId, false) === "BOTTOM";
+		}
+
+		if ($bShowExtCount) {
+			$arTemplateParametersParts[] =array(
+				'BIGDATA_SET_COUNT_BOTTOM' => array(
+					'PARENT' => 'BIG_DATA_SETTINGS',
+					'NAME' => GetMessage('BIGDATA_SET_COUNT_BOTTOM_TEXT'),
+					'TYPE' => 'CHECKBOX',
+					'DEFAULT' => "Y",
+					"REFRESH" => "Y",
+				)
+			);
+		
+			if ($arCurrentValues['BIGDATA_SET_COUNT_BOTTOM'] !== "N") {
+				$arTemplateParametersParts[]=array(
+					'BIGDATA_COUNT_BOTTOM' => array(
+						'PARENT' => 'BIG_DATA_SETTINGS',
+						'NAME' => GetMessage('BIGDATA_COUNT_TEXT_BOTTOM'),
+						'TYPE' => 'STRING',
+						'DEFAULT' => 10,
+					)
+				);
+	
+			};
+		}	
 	}
 }
 

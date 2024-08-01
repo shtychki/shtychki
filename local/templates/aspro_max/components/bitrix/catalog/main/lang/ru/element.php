@@ -120,4 +120,7 @@ $MESS["COMPLECT_BUTTON"] = "Выбрать товары";
 $MESS["DETAIL_SET_PRODUCT"] = "Собрать комплект";
 $MESS["T_COMPLECT_ALL_ON"] = "Выбрать все";
 $MESS["T_COMPLECT_ALL_OFF"] = "Сбросить все";
+$MESS["MORE_DETAIL_TEXT"] = "Развернуть";
+$MESS["HIDE_DETAIL_TEXT"] = "Скрыть";
+
 ?>

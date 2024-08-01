@@ -433,6 +433,7 @@ body .sale-order-history-link {
   width: 10px;
   height: 6px;
   background: url("../images/arrows.png") 0px -161px no-repeat;
+  background-position-y:  var(--light, -161px) var(--dark, -142px);
   z-index: 2;
 }
 .personal_wrapper .orders_wrapper .sale-order-list-change-payment:hover {
@@ -649,19 +650,22 @@ body .sale-order-detail-title-element {
 .sale-order-detail-about-order-inner-container-name-read-less:after {
   position: absolute;
   right: 5px;
-  top: 7px;
+  top: 9px;
   width: 10px;
   height: 6px;
   background: url("../images/arrows.png") 0px -161px no-repeat;
+  background-position-y:  var(--light, -161px) var(--dark, -142px);
   z-index: 2;
 }
 .sale-order-detail-about-order-inner-container-name-read-more:hover:after,
 .sale-order-detail-show-link:hover:after {
   background-position: 0px -161px;
+  background-position-y:  var(--light, -161px) var(--dark, -142px);
 }
 .sale-order-detail-about-order-inner-container-name-read-less:after,
 .sale-order-detail-about-order-inner-container-name-read-less:hover:after {
-  background-position: -35px -161px;
+  background-position-x: var(--light, -35px) var(--dark, -18px);
+  background-position-y:  var(--light, -161px) var(--dark, -142px);
 }
 .sale-order-detail-about-order-inner-container-details-title {
   color: #777777;
@@ -832,6 +836,7 @@ div.payment-options-methods-row:last-child:after {
   width: 10px;
   height: 6px;
   background: url("../images/arrows.png") 0px -161px no-repeat;
+  background-position-y:  var(--light, -161px) var(--dark, -142px);
   z-index: 2;
 }
 .sale-order-detail-hide-link {
@@ -839,7 +844,8 @@ div.payment-options-methods-row:last-child:after {
 }
 .sale-order-detail-hide-link:after,
 .sale-order-detail-hide-link:hover:after {
-  background-position: -35px -161px;
+  background-position-x: var(--light, -35px) var(--dark, -18px);
+  background-position-y:  var(--light, -161px) var(--dark, -142px);
 }
 
 .personal_wrapper .sale-paysystem-close {

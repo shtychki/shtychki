@@ -100,7 +100,7 @@
             }, opts);
 
         var MOUSE_LOCS_TRACKED = 3,  // number of past mouse locations to track
-            DELAY = 3000;  // ms delay when user appears to be entering submenu
+            DELAY = 200;  // ms delay when user appears to be entering submenu
 
         /**
          * Keep track of the last few locations of the mouse.

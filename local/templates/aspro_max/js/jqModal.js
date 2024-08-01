@@ -125,7 +125,7 @@
 			}
 		
 			// maintain legacy "hash" construct
-			h = {w: e, c: o, o: v, t: t};
+			var h = {w: e, c: o, o: v, t: t};
 
 
 		if(o.ajax){

@@ -68,7 +68,7 @@
   }
   .search .dropdown-select .dropdown-menu-wrapper {
     left: -15px;
-    z-index: 3001;
+    /* z-index: 3001; */
   }
   .search .dropdown-select.searchtype--drop2left .dropdown-menu-wrapper {
     right: 0;
@@ -265,12 +265,12 @@ div.title-search-result {
   margin-top: -3px;
   display: none;
   overflow: visible;
-  z-index: 3000 !important;
   padding: 0;
   border: none;
   position: absolute;
   border: 1px solid #ececec;
   border-color: var(--stroke_black);
+  z-index: 4;
 }
 div.title-search-result.fixed_type {
   border-right: none;

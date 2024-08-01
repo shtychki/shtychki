@@ -1,4 +1,8 @@
 function initSwiperSlider(selector) {
+  if (typeof Swiper !== "function") {
+    return;
+  }
+
   const $slider = $(selector || ".swiper" + ':not(.swiper-initialized):not(.appear-block)');
   $slider.each(function () {
     const _this = $(this);
@@ -20,12 +24,25 @@ function initSwiperSlider(selector) {
       options = deepMerge({}, options, _this.data("pluginOptions"));
     }
 
+    if (options.thumbs && typeof options.thumbs.swiper === "string") {
+      const thumbsSwiper = $(options.thumbs.swiper).data("swiper");
+
+      if (thumbsSwiper) options.thumbs.swiper = thumbsSwiper;
+      else delete options.thumbs;
+    }
+
     BX.onCustomEvent("onSetSliderOptions", [options]);
+    
     const swiper = new Swiper(this, options);
 
     swiper.on("slideChange", function (swiper) {
       const eventdata = { slider: swiper };
       BX.onCustomEvent("onSlideChanges", [eventdata]);
+    });
+
+    swiper.on("click", function (swiper, event) {
+      const eventdata = { slider: swiper, event: event };
+      BX.onCustomEvent("onSlideClick", [eventdata]);
     });
 
     if (options.init === false) {

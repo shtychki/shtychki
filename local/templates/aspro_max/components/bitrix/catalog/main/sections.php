@@ -21,7 +21,7 @@ if(
 <?$sViewElementTemplate = ($arParams["SECTIONS_TYPE_VIEW"] == "FROM_MODULE" ? $arTheme["CATALOG_PAGE_SECTIONS"]["VALUE"] : $arParams["SECTIONS_TYPE_VIEW"]);?>
 <?$bShowLeftBlock = ($arTheme["LEFT_BLOCK_CATALOG_ROOT"]["VALUE"] == "Y" && !defined("ERROR_404") && !($arTheme['HEADER_TYPE']['VALUE'] == 28 || $arTheme['HEADER_TYPE']['VALUE'] == 29));?>
 <?$APPLICATION->SetPageProperty("HIDE_LEFT_BLOCK", ( $bShowLeftBlock ? 'N' : 'Y' ) );?>
-<div class="main-catalog-wrapper">
+<div class="main-catalog-wrapper flexbox<?= $arTheme["SIDE_MENU"]["VALUE"] === 'LEFT' ? ' flexbox--row-reverse' : ' flexbox--row' ; ?> flexbox--justify-space-between flexbox--align-start<?= CMax::GetFrontParametrValue("LEFT_BLOCK_CS_TYPE") === 'NORMAL' ? ' flexbox--gap flexbox--gap-32' : '' ; ?>">
 	<div class="section-content-wrapper <?=($bShowLeftBlock ? 'with-leftblock' : '');?>">
 		<?@include_once('page_blocks/'.$sViewElementTemplate.'.php');?>
 		<?CMax::get_banners_position('CONTENT_BOTTOM');

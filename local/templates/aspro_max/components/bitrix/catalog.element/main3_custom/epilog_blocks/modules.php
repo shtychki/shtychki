@@ -67,62 +67,27 @@
 		$arProductSection = array('0' => '0');
 	}
 	?>
-	<?if( !empty($arExGoodsFilter) ):?>
-		<?
-		$arTransferParams = array(
-			"SHOW_ABSENT" => $arParams["SHOW_ABSENT"],
-			"HIDE_NOT_AVAILABLE_OFFERS" => $arParams["HIDE_NOT_AVAILABLE_OFFERS"],
-			"PRICE_CODE" => $arParams["PRICE_CODE"],
-			"OFFER_TREE_PROPS" => $arParams["OFFER_TREE_PROPS"],
-			"OFFER_SHOW_PREVIEW_PICTURE_PROPS" => $arParams["OFFER_SHOW_PREVIEW_PICTURE_PROPS"],
-			"CACHE_TIME" => $arParams["CACHE_TIME"],
-			"CONVERT_CURRENCY" => $arParams["CONVERT_CURRENCY"],
-			"CURRENCY_ID" => $arParams["CURRENCY_ID"],
-			"OFFERS_SORT_FIELD" => $arParams["OFFERS_SORT_FIELD"],
-			"OFFERS_SORT_ORDER" => $arParams["OFFERS_SORT_ORDER"],
-			"OFFERS_SORT_FIELD2" => $arParams["OFFERS_SORT_FIELD2"],
-			"OFFERS_SORT_ORDER2" => $arParams["OFFERS_SORT_ORDER2"],
+	<?if(!empty($arExGoodsFilter)):?>
+		<?$arConfigTransfer = array(
 			"LIST_OFFERS_LIMIT" => $arParams["OFFERS_LIMIT"],
-			"CACHE_GROUPS" => $arParams["CACHE_GROUPS"],
 			"LIST_OFFERS_PROPERTY_CODE" => $arParams["LIST_OFFERS_PROPERTY_CODE"],
-			"SHOW_DISCOUNT_TIME" => $arParams["SHOW_DISCOUNT_TIME"],
-			"SHOW_COUNTER_LIST" => $arParams["SHOW_COUNTER_LIST"],
-			"PRICE_VAT_INCLUDE" => $arParams["PRICE_VAT_INCLUDE"],
-			"USE_PRICE_COUNT" => $arParams["USE_PRICE_COUNT"],
-			"SHOW_MEASURE" => $arParams["SHOW_MEASURE"],
-			"SHOW_OLD_PRICE" => $arParams["SHOW_OLD_PRICE"],
-			"SHOW_DISCOUNT_PERCENT" => $arParams["SHOW_DISCOUNT_PERCENT"],
-			"SHOW_DISCOUNT_PERCENT_NUMBER" => $arParams["SHOW_DISCOUNT_PERCENT_NUMBER"],
-			"USE_REGION" => $arParams["USE_REGION"],
-			"STORES" => $arParams["STORES"],
-			"DEFAULT_COUNT" => $arParams["DEFAULT_COUNT"],
-			"BASKET_URL" => $arParams["BASKET_URL"],
 			"SHOW_GALLERY" => $arParams["SHOW_GALLERY"],
 			"MAX_GALLERY_ITEMS" => $arParams["MAX_GALLERY_ITEMS"],
-			"OFFERS_CART_PROPERTIES" => $arParams["OFFERS_CART_PROPERTIES"],
-			"PRODUCT_PROPERTIES" => $arParams["PRODUCT_PROPERTIES"],
-			"PARTIAL_PRODUCT_PROPERTIES" => $arParams["PARTIAL_PRODUCT_PROPERTIES"],
-			"ADD_PROPERTIES_TO_BASKET" => $arParams["ADD_PROPERTIES_TO_BASKET"],
-			"SHOW_ONE_CLICK_BUY" => $arParams["SHOW_ONE_CLICK_BUY"],
-			"SHOW_DISCOUNT_TIME_EACH_SKU" => $arParams["SHOW_DISCOUNT_TIME_EACH_SKU"],
-			"SHOW_ARTICLE_SKU" => $arParams["SHOW_ARTICLE_SKU"],
 			"SHOW_POPUP_PRICE" => CMax::GetFrontParametrValue('SHOW_POPUP_PRICE'),
-			"ADD_PICT_PROP" => $arParams["ADD_PICT_PROP"],
 			"ADD_DETAIL_TO_SLIDER" => $arParams["ADD_DETAIL_TO_SLIDER"],
-			"OFFER_ADD_PICT_PROP" => $arParams["OFFER_ADD_PICT_PROP"],
-			"PRODUCT_QUANTITY_VARIABLE" => $arParams["PRODUCT_QUANTITY_VARIABLE"],
 			"DISPLAY_COMPARE" => CMax::GetFrontParametrValue('CATALOG_COMPARE'),
 			"DISPLAY_WISH_BUTTONS" => $arParams["DISPLAY_WISH_BUTTONS"],
 		);	
-		?>
-		<?
-			$application = \Bitrix\Main\Application::getInstance();
-			$request = $application->getContext()->getRequest();
 
-			//Show all results simultaneously
-			$bKitShowAll = $arParams['SHOW_KIT_ALL'] === 'Y';
-			$bAjaxKitShowAll = isset($request['SHOW_ALL']) && $request['SHOW_ALL'] === 'Y';
-			$bAjaxPagenavigation = isset($request['pagen_data_block']) && $request['pagen_data_block'] === 'Y';
+		$arTransferParams = \Aspro\Functions\CAsproMax::getTransferParams($arParams, $arConfigTransfer);
+
+		$application = \Bitrix\Main\Application::getInstance();
+		$request = $application->getContext()->getRequest();
+
+		//Show all results simultaneously
+		$bKitShowAll = $arParams['SHOW_KIT_ALL'] === 'Y';
+		$bAjaxKitShowAll = isset($request['SHOW_ALL']) && $request['SHOW_ALL'] === 'Y';
+		$bAjaxPagenavigation = isset($request['pagen_data_block']) && $request['pagen_data_block'] === 'Y';
 		?>
 		<div class="ordered-block <?=$code?> js-scroll-complect complect_main_wrap js_wrapper_items" data-params='<?=str_replace('\'', '"', CUtil::PhpToJSObject($arTransferParams, false))?>'>
 			<div class="complect_header_block">

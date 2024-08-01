@@ -711,10 +711,10 @@ body:not(.menu-hovered) .light-menu-color header .logo_and_menu-row .mega-menu t
   border-color: var(--stroke_black);
 }
 
-.logo-row .subbottom {
-  /*position:relative;*/
-  z-index: 1;
-}
+/*.logo-row .subbottom {
+  position:relative;
+  z-index: 1; 
+}*/
 .logo-row .subbottom > .menu {
   padding-right: 155px;
 }

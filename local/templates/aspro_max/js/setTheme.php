@@ -10,18 +10,42 @@ define('NO_AGENT_STATISTIC', true);
 define('NO_AGENT_CHECK', true);
 define('PUBLIC_AJAX_MODE', true);
 
-if(isset($_REQUEST['site_id'])) {
+if (isset($_REQUEST['site_id'])) {
 	$SITE_ID = htmlspecialchars($_REQUEST['site_id']);
 	define('SITE_ID', $SITE_ID);
 }
-if(isset($_REQUEST['site_dir'])) {
+
+if (isset($_REQUEST['site_dir'])) {
 	$SITE_DIR = htmlspecialchars($_REQUEST['site_dir']);
 	define('SITE_DIR', $SITE_DIR);
 }
 
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_before.php");
 
+$arDomains = [];
 $arSite = CSite::GetByID($SITE_ID)->Fetch();
+if ($arSite) {
+	if ($arSite['SERVER_NAME']) {
+		$arDomains[] = $arSite['SERVER_NAME'];
+	}
+
+	if (strlen($arSite['DOMAINS'])) {
+		$arSite['DOMAINS'] = preg_replace('/\s+/', ',', $arSite['DOMAINS']);
+		$arDomains = explode(',', $arSite['DOMAINS']);
+	}
+}
+
+$strListDomains = implode(
+	',',
+	array_unique(
+		array_filter(
+			$arDomains,
+			function ($domain) {
+				return strlen(trim($domain));
+			}
+		)
+	)
+);
 
 Loader::includeModule('aspro.max');
 $moduleClass = 'CMax';
@@ -35,13 +59,16 @@ $DATETIME_MASK = $DATE_MASK.' h:s';
 $DATETIME_PLACEHOLDER = ($tmp == 'DOT' ? GetMessage('DATE_FORMAT_DOT') : ($tmp == 'HYPHEN' ? GetMessage('DATE_FORMAT_HYPHEN') : ($tmp == 'SPACE' ? GetMessage('DATE_FORMAT_SPACE') : ($tmp == 'SLASH' ? GetMessage('DATE_FORMAT_SLASH') : GetMessage('DATE_FORMAT_COLON'))))).' '.GetMessage('TIME_FORMAT_COLON');
 $VALIDATE_DATETIME_MASK = ($tmp == 'DOT' ? '^[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{4} [0-9]{1,2}\:[0-9]{1,2}$': ($tmp == 'HYPHEN' ? '^[0-9]{1,2}\-[0-9]{1,2}\-[0-9]{4} [0-9]{1,2}\:[0-9]{1,2}$': ($tmp == 'SPACE' ? '^[0-9]{1,2} [0-9]{1,2} [0-9]{4} [0-9]{1,2}\:[0-9]{1,2}$': ($tmp == 'SLASH' ? '^[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4} [0-9]{1,2}\:[0-9]{1,2}$': '^[0-9]{1,2}\:[0-9]{1,2}\:[0-9]{4} [0-9]{1,2}\:[0-9]{1,2}$'))));
 
-list($bPhoneAuthSupported, $bPhoneAuthShow, $bPhoneAuthRequired, $bPhoneAuthUse) = Aspro\Max\PhoneAuth::getOptions();?>
-<?header('Content-Type: application/javascript;charset='.LANG_CHARSET);?>
+list($bPhoneAuthSupported, $bPhoneAuthShow, $bPhoneAuthRequired, $bPhoneAuthUse) = Aspro\Max\PhoneAuth::getOptions();
+
+header('Content-Type: application/javascript;charset='.LANG_CHARSET);
+?>
 var arAsproOptions = window[solutionName] = ({
 	"SITE_DIR" : "<?=$SITE_DIR?>",
 	"SITE_ID" : "<?=$SITE_ID?>",
 	"SITE_TEMPLATE_PATH" : "<?=SITE_TEMPLATE_PATH?>",
-	"SITE_ADDRESS" : "<?=$arSite['SERVER_NAME'];?>",
+	"SITE_ADDRESS" : "<?=$strListDomains?>",
+	"MODULE_VERSION": "<?=$moduleClass::getVersionModule($moduleClass::moduleID)?>",
 	"FORM" : ({
 		"ASK_FORM_ID" : "ASK",
 		"SERVICES_FORM_ID" : "SERVICES",
@@ -55,6 +82,7 @@ var arAsproOptions = window[solutionName] = ({
 		"COMPARE_PAGE_URL" : "<?=$arFrontParametrs['COMPARE_PAGE_URL']?>",
 		"SEARCH_PAGE_URL" : "<?=$arFrontParametrs['SEARCH_PAGE_URL']?>",
 		"BASKET_PAGE_URL" : "<?=$arFrontParametrs['BASKET_PAGE_URL']?>",
+		"FAVORITE_PAGE_URL" : "<?=$arFrontParametrs['FAVORITE_PAGE_URL']?>",
 		"SHARE_BASKET_PAGE_URL" : "<?=$arFrontParametrs['SHARE_BASKET_PAGE_URL']?>",
 		"ORDER_PAGE_URL" : "<?=$arFrontParametrs['ORDER_PAGE_URL']?>",
 		"PERSONAL_PAGE_URL" : "<?=$arFrontParametrs['PERSONAL_PAGE_URL']?>",
@@ -70,6 +98,7 @@ var arAsproOptions = window[solutionName] = ({
 		'BASE_COLOR_CUSTOM' : '<?=$arFrontParametrs['BASE_COLOR_CUSTOM']?>',
 		'LOGO_IMAGE' : '<?=$arFrontParametrs['LOGO_IMAGE']?>',
 		'LOGO_IMAGE_LIGHT' : '<?=$arFrontParametrs['LOGO_IMAGE_WHITE']?>',
+		'LOGO_IMAGE_FIXED' : '<?=$arFrontParametrs['LOGO_IMAGE_FIXED']?>',
 		'TOP_MENU_FIXED' : '<?=$arFrontParametrs['TOP_MENU_FIXED']?>',
 		'COLORED_LOGO' : '<?=$arFrontParametrs['COLORED_LOGO']?>',
 		'COMPACT_FOOTER_MOBILE' : '<?=$arFrontParametrs['COMPACT_FOOTER_MOBILE']?>',

@@ -355,7 +355,7 @@ body #basket-root .basket-item-label-ring {
 }
 #basket-root .basket-item-price-title {
   color: #999;
-  font-size: 11px;
+  font-size: 12px;
 }
 #basket-root .basket-item-block-price .basket-item-price-old,
 #basket-root .basket-checkout-block-total-price-inner .basket-coupon-block-total-price-old {
@@ -492,7 +492,7 @@ body #basket-root .basket-item-label-ring {
 #basket-root .basket-item-price-difference,
 #basket-root .basket-checkout-block-total-price-inner .basket-coupon-block-total-price-difference {
   text-align: left;
-  font-size: 11px;
+  font-size: 12px;
   color: #333333;
   padding: 2px 4px 2px;
   background: #fff8db;
@@ -620,7 +620,7 @@ body .basket-items-list-item-container > td {
 }
 .basket-checkout-block-share .title {
   display: inline-block;
-  font-size: 0.734em;
+  font-size: 0.8em;
   text-transform: uppercase;
   line-height: 1.181em;
   letter-spacing: 0.08em;
@@ -633,7 +633,7 @@ body .basket-items-list-item-container > td {
   color: #fff !important;
 }
 #basket-root .basket-checkout-section .btn-default.basket-btn-checkout {
-  font-size: 0.733em;
+  font-size: 0.8em;
   line-height: 1.3em;
   text-transform: uppercase;
   letter-spacing: 0.8px;

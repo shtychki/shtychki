@@ -1114,6 +1114,20 @@ body .smalls .header-v16.top-block .menu.topest li a .svg {
 .wrapper1.sticky_menu.sm .header-v28 .phone.with_dropdown {
   padding-right: 13px !important;
 }
+.wrapper1 .header_wrap {
+  z-index: 4;
+}
+.menu-hovered .wrapper1 .header_wrap {
+  z-index: auto;
+}
+.menu-hovered .wrapper1 .header_wrap #header {
+  position: relative;
+  z-index: 1060; /*background:#fff;*/
+}
+
+.wrapper1 .header_wrap.zindexed {
+  z-index: 3000;
+}
 
 /*for dark hover overlay*/
 .menu-hovered .dark-hover-overlay:not(.has-secion-banner) #header .top-block {
@@ -1434,7 +1448,6 @@ body .smalls .header-v16.top-block .menu.topest li a .svg {
 
 .header__main-part {
   position: static;
-  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;

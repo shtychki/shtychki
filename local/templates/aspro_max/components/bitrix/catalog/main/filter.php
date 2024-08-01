@@ -53,6 +53,7 @@
 			"SORT_ORDER" => $sort_order,
 			"TOP_VERTICAL_FILTER_PANEL" => $TOP_VERTICAL_FILTER_PANEL,
 			"SHOW_SORT" => ($arParams['SHOW_SORT_IN_FILTER'] != 'N'),
+			"STORES" => $arParams["STORES"],
 		),
 		$component);
 	?>

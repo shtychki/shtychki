@@ -18,22 +18,5 @@ BX.ajax({
     }
 
     BX.ajax.processScripts(ob.SCRIPT);
-
-    if (typeof updateBottomIconsPanel === 'function') {
-		var counter = 0;
-		var arItemsCompare = [];
-		for(var key in arBasketAspro["COMPARE"]){
-			if(arBasketAspro["COMPARE"].hasOwnProperty(key)) {
-				arItemsCompare[counter] = arBasketAspro["COMPARE"][key];
-				counter++;
-			}
-		}
-
-		updateBottomIconsPanel({
-			"COMPARE":{
-				"COUNT": arItemsCompare.length,
-			}
-		});
-	}
   },
 });

@@ -129,6 +129,7 @@ body .top_slider_wrapp .main-slider .main-slider__item:not(.image) .img img {
 .main-slider .dark .banner_title h1,
 .main-slider .dark .banner_title a {
   color: #202020;
+  text-decoration-color:transparent;
 }
 .main-slider .dark .banner_text {
   color: #333;

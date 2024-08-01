@@ -17,7 +17,7 @@ function setNewHeader(obOffer) {
     }
     ratingHtml += '">';
 
-    $(".product-info-headnote .rating .inner_rating > div").each(function (index) {
+    $(".product-info-headnote .rating .inner_rating:first > div").each(function (index) {
       var index_title = index + 1;
       ratingHtml += '<div class="item-rating ' + ($(this).hasClass("filed") ? "filed" : "");
       if (inner.attr("title") === undefined) {
@@ -92,7 +92,7 @@ function setNewHeader(obOffer) {
           '<i class="svg inline  svg-inline-close" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path data-name="Rounded Rectangle 114 copy 3" class="cccls-1" d="M334.411,138l6.3,6.3a1,1,0,0,1,0,1.414,0.992,0.992,0,0,1-1.408,0l-6.3-6.306-6.3,6.306a1,1,0,0,1-1.409-1.414l6.3-6.3-6.293-6.3a1,1,0,0,1,1.409-1.414l6.3,6.3,6.3-6.3A1,1,0,0,1,340.7,131.7Z" transform="translate(-325 -130)"></path></svg></i>' +
           "</div>" +
           '<div class="block_wrap">' +
-          '<div class="block_wrap_inner prices srollbar-custom">';
+          '<div class="block_wrap_inner prices scrollblock">';
 
         if (bPriceCount) {
           priceHtml += obOffer.PRICE_MATRIX_HTML;
@@ -126,15 +126,15 @@ function setNewHeader(obOffer) {
 
   if ($("#photo-sku").length) {
     //show img
-    imgSrc = $("#photo-sku .product-detail-gallery__picture.one").attr("src")
-      ? $("#photo-sku .product-detail-gallery__picture.one").attr("src")
-      : $("#photo-sku .product-detail-gallery__picture").data("src")
-      ? $("#photo-sku .product-detail-gallery__picture").data("src")
-      : $("#photo-sku .product-detail-gallery__picture").attr("src");
-  } else if ($(".product-detail-gallery__slider #photo-0").length) {
-    imgSrc = $(".product-detail-gallery__slider #photo-0 .product-detail-gallery__picture").data("src")
-      ? $(".product-detail-gallery__slider #photo-0 .product-detail-gallery__picture").data("src")
-      : $(".product-detail-gallery__slider #photo-0 .product-detail-gallery__picture").attr("src");
+    imgSrc = $("#photo-sku .detail-gallery-big__picture.one").attr("src")
+      ? $("#photo-sku .detail-gallery-big__picture.one").attr("src")
+      : $("#photo-sku .detail-gallery-big__picture").data("src")
+      ? $("#photo-sku .detail-gallery-big__picture").data("src")
+      : $("#photo-sku .detail-gallery-big__picture").attr("src");
+  } else if ($(".detail-gallery-big #photo-0").length) {
+    imgSrc = $(".detail-gallery-big #photo-0 .detail-gallery-big__picture").data("src")
+      ? $(".detail-gallery-big #photo-0 .detail-gallery-big__picture").data("src")
+      : $(".detail-gallery-big #photo-0 .detail-gallery-big__picture").attr("src");
   }
   //show button
   if ($(".slide_offer").length) {

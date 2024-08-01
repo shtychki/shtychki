@@ -12,7 +12,8 @@ if ($oidParam = $arParams["SKU_DETAIL_ID"]) {
 	}
 }
 ?>
-<div class="main-catalog-wrapper details js_wrapper_items" >
+
+<div class="main-catalog-wrapper details js_wrapper_items flexbox<?= $arTheme["SIDE_MENU"]["VALUE"] === 'LEFT' ? ' flexbox--row-reverse' : ' flexbox--row' ; ?> flexbox--justify-space-between flexbox--align-start flexbox--gap flexbox--gap-32" >
 	<div class="section-content-wrapper <?CMax::ShowPageProps("WITH_LEFT_BLOCK")?>">
 		<?CMax::AddMeta(
 			array(
@@ -102,9 +103,26 @@ if ($oidParam = $arParams["SKU_DETAIL_ID"]) {
 				setStatusButton();
 			</script>
 		<?endif;?>
-		<?$sViewBigDataTemplate = ($arParams["BIGDATA_NORMAL"] ? $arParams["BIGDATA_NORMAL"] : "bigdata_1" );?>
-		<?$sViewBigDataExtTemplate = ($arParams["BIGDATA_EXT"] ? $arParams["BIGDATA_EXT"] : "bigdata_2" );?>
+		<?$sViewBigDataExtTemplate = '';
+		$bigDataFromModule = CMax::GetFrontParametrValue('BIGDATA_TYPE_VIEW');
+		$arParams["BIGDATA_EXT_BOTTOM"] = $arParams["BIGDATA_EXT_BOTTOM"] ? $arParams["BIGDATA_EXT_BOTTOM"] : "bigdata_bottom_1";
+		$arParams["BIGDATA_EXT"] = $arParams["BIGDATA_EXT"] ? $arParams["BIGDATA_EXT"] : "bigdata_1";
 
+		if ($arParams['BIGDATA_TYPE_VIEW']) {
+			if ($arParams['BIGDATA_TYPE_VIEW'] == "FROM_MODULE") {
+				$arParams['BIGDATA_TYPE_VIEW'] = $bigDataFromModule;
+			}
+		}else {
+			$arParams['BIGDATA_TYPE_VIEW'] = $bigDataFromModule;
+		}
+		
+		if ($arParams['BIGDATA_TYPE_VIEW'] === 'BOTTOM') {
+			$sViewBigDataExtTemplate = $arParams["BIGDATA_EXT_BOTTOM"];
+		}
+		if ($arParams['BIGDATA_TYPE_VIEW'] === 'RIGHT') {
+			$sViewBigDataExtTemplate = $arParams["BIGDATA_EXT"];
+		}
+		?>
 		<?
 		$arParams["DETAIL_EXPANDABLES_TITLE"] = ($arParams["DETAIL_EXPANDABLES_TITLE"] ? $arParams["DETAIL_EXPANDABLES_TITLE"] : GetMessage("EXPANDABLES_TITLE"));
 		$arParams["DETAIL_ASSOCIATED_TITLE"] = ($arParams["DETAIL_ASSOCIATED_TITLE"] ? $arParams["DETAIL_ASSOCIATED_TITLE"] : GetMessage("ASSOCIATED_TITLE"));
@@ -214,7 +232,7 @@ if ($oidParam = $arParams["SKU_DETAIL_ID"]) {
 
 		global $arBigData;
 		$arBigData = array(
-			'SECTION_ID' => $arElement['IBLOCK_SECTION_ID'],
+			'SECTION_ID' => $arSection['ID'],
 			'BIGDATA_SHOW_FROM_SECTION' => $arParams['BIGDATA_SHOW_FROM_SECTION'],
 		);
 

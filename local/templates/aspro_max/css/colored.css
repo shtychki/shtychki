@@ -127,6 +127,12 @@ body a,
   text-decoration-color: var(--light, transparent) var(--dark, #fff);
   text-underline-offset: 3px;
 }
+.stroke-dark-light,
+.stroke-dark-light *,
+.stroke-dark-light-block path,
+.stroke-dark-light-block use {
+  stroke: var(--fill_dark_light);
+}
 /*buttons*/
 .btn.btn-transparent-border {
   background-color: transparent;
@@ -149,7 +155,8 @@ body a,
   );
   color: var(--fill_dark_light_hover);
 }
-.btn.btn-transparent-border-color:hover {
+.btn.btn-transparent-border-color:hover,
+.btn.btn-transparent-border-color:focus {
   background-color: var(--theme-base-color);
   border-color: var(--theme-base-color);
 }

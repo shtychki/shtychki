@@ -20,6 +20,7 @@
 				"SHOW_BY_GROUPS" => $arParams['SMARTSEO_TAGS_BY_GROUPS'],
 				"SHOW_DEACTIVATED" => $arParams['SMARTSEO_TAGS_SHOW_DEACTIVATED'],
 				"SORT" => $arParams['SMARTSEO_TAGS_SORT'],
+				"LIMIT" => $arParams['SMARTSEO_TAGS_LIMIT'],
 				"TITLE_BLOCK" => (!isset($arParams['LANDING_POSITION']) || $arParams['LANDING_POSITION'] !== 'BEFORE_PRODUCTS') ? $arParams['LANDING_TITLE'] : '',
 				"BG_FILLED" => 'N',
 			),

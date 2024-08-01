@@ -120,7 +120,7 @@ $(document).ready(function () {
           $("body").scrollTop(0).css({ position: "fixed" });
 
           // set menu top = bottom of header
-          $mobileMenu.css({ top: +($(".mobileheader-v3").height() + $("#mobileheader").height() + $("#mobileheader").offset().top) + "px" });
+          $mobileMenu.css({ top: +($("#mobileheader").height() + $("#mobileheader").offset().top) + "px" });
 
           // change burger icon
           $("#mobileheader .burger").addClass("c");

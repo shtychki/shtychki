@@ -607,6 +607,38 @@ body .table-view:not(.table-props-cols) .table-view__item.box-shadow:hover {
   display: none;
 }
 
+/*show-hide include block*/
+.ordered-block__text {
+  margin-bottom: 20px;
+}
+.ordered-block__text.opened + .ordered-block__spoiler i {
+  transform: rotate(180deg);
+  padding-bottom: 1px;
+}
+.ordered-block__spoiler i {
+  transition: transform ease 0.2s;
+  margin-right: 7px;
+}
+.ordered-block__spoiler-btn svg path {
+  fill: var(--fill_dark_light_hover);
+}
+.ordered-block__spoiler-btn {
+  font-size: 0.667em;
+  line-height: 1.3em;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  text-decoration: none;
+}
+.ordered-block__spoiler-btn-label:after {
+  content: attr(data-show);
+}
+.ordered-block__spoiler-btn.show .ordered-block__spoiler-btn-label:after {
+  content: attr(data-hide);
+}
+.ordered-block__spoiler.colored:hover svg path {
+  fill: var(--white_text_black);
+}
+
 @media (min-width: 992px) {
 
   .wrapper1 .table-view.table-props-cols {

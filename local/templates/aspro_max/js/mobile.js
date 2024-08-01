@@ -129,6 +129,27 @@ $(document).ready(function () {
       }
     });
 
+    $(document).on("click", ".mobile_regions .mobile-city a", function (e) {
+      e.preventDefault();
+  
+      let $this = $(this);
+      let regionId = $this.data("id");
+  
+      if (regionId) {
+        setCookieOnDomains('current_region', regionId);
+  
+        let locationId = $this.data("locid");
+        if (locationId) {
+          setCookieOnDomains('current_location', locationId);
+        } else {
+          setCookieOnDomains('current_location', '', {expires: -1});
+        }
+  
+        let href = $this.attr("href");
+        location.href = href;
+      }
+    });
+
     function OpenMobileMenu() {
       CloseMobilePhone();
 
@@ -417,24 +438,14 @@ $(document).ready(function () {
         select: function(event, ui) {
           let regionId = ui.item.ID;
           if (regionId) {              
-            $.cookie('current_region', regionId, {
-              path: '/',
-              domain: arAsproOptions['SITE_ADDRESS'],
-            });
+            setCookieOnDomains('current_region', regionId);
 
             let locationId = ui.item.LOCATION_ID;
             if (locationId) {
-              $.cookie('current_location', locationId, {
-                path: '/',
-                domain: arAsproOptions['SITE_ADDRESS'],
-              });
+              setCookieOnDomains('current_location', locationId);
             }
             else {
-              $.cookie('current_location', '', {
-                expires: -1,
-                path: '/',
-                domain: arAsproOptions['SITE_ADDRESS'],
-              });
+              setCookieOnDomains('current_location', '', {expires: -1});
             }
           }
 

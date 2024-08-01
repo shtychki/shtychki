@@ -10,6 +10,7 @@
 				unset($arResult['PRODUCT_PROPERTIES'][$propID]);
 		}
 	}
+	$templateData["USE_OFFERS_SELECT"] = false;
 	$arResult["EMPTY_PROPS_JS"]="Y";
 	$emptyProductProperties = empty($arResult['PRODUCT_PROPERTIES']);
 	if (!$emptyProductProperties){
@@ -41,7 +42,7 @@
 	<?}?>
 </div>
 
-<?if ($arResult['SKU_CONFIG']):?><div class="js-sku-config" data-params='<?=str_replace('\'', '"', CUtil::PhpToJSObject($arResult['SKU_CONFIG'], false))?>'></div><?endif;?>
+<?if ($arResult['SKU_CONFIG']):?><div class="js-sku-config" data-params='<?=\Aspro\Max\Product\SkuTools::getSignedParams($arResult['SKU_CONFIG'])?>'></div><?endif;?>
 
 <?
 $currencyList = '';
@@ -614,105 +615,12 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
 		<div class="flexbox flexbox--row">
 
 			<?//main gallery?>
-			<?
-			$bVertical = ($arParams['GALLERY_THUMB_POSITION'] == 'vertical');
-			$viewImgType=$arParams["DETAIL_PICTURE_MODE"];
-			$bMagnifier = ($viewImgType=="MAGNIFIER");
-			?>
-			<div class="product-detail-gallery swipeignore js-notice-block__image">
-				<div class="<?= $bMagnifier ? '' : 'product-detail-gallery-sticky' ?>">
-					<div class="product-detail-gallery__container<?=($bVertical ? ' product-detail-gallery__container--vertical' : '');?>">
-						<?reset($arResult['MORE_PHOTO']);
-						$countPhoto = count($arResult["MORE_PHOTO"]);
-						$arFirstPhoto = ($arParams['ADD_DETAIL_TO_SLIDER'] != 'Y' && !$arCurrentSKU ? $arResult['PREVIEW_PICTURE'] : current($arResult['MORE_PHOTO']));
-						$bIsOneImage = $bMagnifier; ?>
-
-						<?\Aspro\Functions\CAsproMaxItem::showStickers($arParams, $arResult, true, "product-info-headnote__stickers1");?>
-
-						<?if($arResult["OFFERS"] && $arResult["FIRST_SKU_PICTURE"]):?>
-							<link class="first_sku_picture" href="<?=$arResult["FIRST_SKU_PICTURE"]["src"];?>"/>
-						<?endif;?>
-
-						<link href="<?=($arFirstPhoto["BIG"]["src"] ? $arFirstPhoto["BIG"]["src"] : $arFirstPhoto["SRC"]);?>" itemprop="image"/>
-						<div class="product-detail-gallery__slider <?= $bMagnifier ? 'hidden-xs product-detail-gallery__slider--big--magnifier' : 'product-detail-gallery__slider--big owl-carousel owl-theme owl-bg-nav short-nav corner-nav'; ?> <?=$arParams['PICTURE_RATIO'];?>" data-plugin-options='{"items": "1", "dots": true, "nav": true, "relatedTo": ".product-detail-gallery__slider.thmb", "loop": false}'>
-							<?if($arResult["MORE_PHOTO"]){?>
-								<?foreach($arResult["MORE_PHOTO"] as $i => $arImage){
-									if($i && $bMagnifier):?>
-										<?continue;?>
-									<?endif;?>
-									<?$isEmpty=($arImage["SMALL"]["src"] ? false : true );?>
-									<?
-									$alt=$arImage["ALT"];
-									$title=$arImage["TITLE"];
-									?>
-									<div id="photo-<?=$i?>" class="product-detail-gallery__item product-detail-gallery__item--middle text-center">
-										<?if(!$isEmpty){?>
-											<a href="<?=($viewImgType=="POPUP" ? $arImage["BIG"]["src"] : "javascript:void(0)");?>" <?=($bIsOneImage ? '' : 'data-fancybox="gallery" data-thumb="'.$arImage['THUMB']['src'].'"')?> class="product-detail-gallery__link <?=($viewImgType=="POPUP" ? "popup_link fancy" : "line_link fancy_zoom");?>" title="<?=$title;?>">
-												<img class="lazy product-detail-gallery__picture rounded3 <?=($viewImgType=="MAGNIFIER" ? 'zoom_picture'.'"data-xoriginal="'.$arImage["BIG"]["src"].'" data-xoriginalwidth="'.$arImage["BIG"]["width"].'" data-xoriginalheight="'.$arImage["BIG"]["height"].'"' : "");?>" data-src="<?=$arImage["SMALL"]["src"]?>" src="<?=\Aspro\Functions\CAsproMax::showBlankImg($arImage["SMALL"]["src"])?>" <?=($viewImgType=="MAGNIFIER" ? 'data-xoriginal="'.$arImage["BIG"]["src"].'"' : "");?> data-xpreview="<?=$arImage["THUMB"]["src"];?>" alt="<?=$alt;?>" title="<?=$title;?>"<?//=(!$i ? ' itemprop="image"' : '')?>/>
-											</a>
-										<?}else{?>
-											<img class="lazy product-detail-gallery__picture rounded3" src="<?=\Aspro\Functions\CAsproMax::showBlankImg($arImage["SRC"])?>" data-src="<?=$arImage["SRC"]?>" alt="<?=$alt;?>" title="<?=$title;?>" />
-										<?}?>
-									</div>
-								<?}?>
-							<?}?>
-						</div>
-						<?if($bMagnifier):?>
-							<div class="product-detail-gallery__slider product-detail-gallery__slider--big owl-carousel owl-theme visible-xs <?=$arParams['PICTURE_RATIO'];?>" data-plugin-options='{"items": "1", "dots": true, "nav": true, "loop": false}'>
-								<?if($arResult["MORE_PHOTO"]){?>
-									<?foreach($arResult["MORE_PHOTO"] as $i => $arImage){?>
-										<?$isEmpty=($arImage["SMALL"]["src"] ? false : true );?>
-										<?
-										$alt=$arImage["ALT"];
-										$title=$arImage["TITLE"];
-										?>
-										<div id="photo-<?=$i?>" class="product-detail-gallery__item product-detail-gallery__item--big text-center">
-											<?if(!$isEmpty){?>
-												<a href="<?=$arImage["BIG"]["src"];?>" data-fancybox="gallery" data-thumb="<?=$arImage['THUMB']['src'];?>" class="product-detail-gallery__link popup_link fancy" title="<?=$title;?>">
-													<img class="lazy product-detail-gallery__picture rounded3 " data-src="<?=$arImage["SMALL"]["src"]?>" src="<?=\Aspro\Functions\CAsproMax::showBlankImg($arImage["SMALL"]["src"])?>" alt="<?=$alt;?>" title="<?=$title;?>"<?//=(!$i ? ' itemprop="image"' : '')?>/>
-												</a>
-											<?}else{?>
-												<img class="lazy product-detail-gallery__picture rounded3 " data-src="<?=\Aspro\Functions\CAsproMax::showBlankImg($arImage["SRC"])?>" src="<?=$arImage["SRC"]?>" alt="<?=$alt;?>" title="<?=$title;?>" />
-											<?}?>
-										</div>
-									<?}?>
-								<?}?>
-							</div>
-						<?endif;?>
-						<div class="product-detail-gallery__thmb-container text-center">
-							<div class="product-detail-gallery__thmb-inner<?=($bVertical ? ' vertical' : '');?>">
-								<?if($countPhoto > 1 || $showCustomOffer):?>
-									<div class="product-detail-gallery__slider owl-carousel owl-theme thmb<?=($bVertical ? ' product-detail-gallery__slider--vertical' : '');?><?=$countPhoto <= 1 ? ' hidden ' : ' '?><?=($countPhoto > 3 ? ' m-photo' : '');?>" data-size="<?=$countPhoto;?>" data-plugin-options='{"items": "4", "nav": true, "loop": false, "clickTo": ".product-detail-gallery__slider--big", "dots": false, "autoWidth": true, "margin": 10<?//if($bVertical):?>, "mouseDrag": false, "pullDrag": false<?//endif;?><?if($bMagnifier):?>, "magnifier": true<?endif;?>}' style="max-width:<?=ceil((($countPhoto <= 4 ? $countPhoto : 4) * 70) - 10)?>px;">
-										<?if($arResult["MORE_PHOTO"] && $countPhoto > 1):?>
-											<?foreach($arResult["MORE_PHOTO"] as $i => $arImage):?>
-												<div id="photo-<?=$i?>" class="product-detail-gallery__item text-center  product-detail-gallery__item--thmb" data-big="<?=$arImage["BIG"]["src"];?>">
-													<?if(!$isEmpty){?>
-														<img class="lazy product-detail-gallery__picture" data-src="<?=$arImage["THUMB"]["src"]?>" <?=($viewImgType=="MAGNIFIER" ? 'data-xoriginalwidth="'.$arImage["BIG"]["width"].'"data-xoriginalheight="'.$arImage["BIG"]["height"].'"' : "");?> src="<?=\Aspro\Functions\CAsproMax::showBlankImg($arImage["THUMB"]["src"])?>" alt="<?=$alt;?>" title="<?=$title;?>"/>
-													<?}else{?>
-														<img class="lazy product-detail-gallery__picture" data-src="<?=\Aspro\Functions\CAsproMax::showBlankImg($arImage["SRC"])?>" src="<?=$arImage["SRC"]?>" alt="<?=$alt;?>" title="<?=$title;?>" />
-													<?}?>
-												</div>
-											<?endforeach;?>
-										<?endif;?>
-									</div>
-								<?endif;?>
-								<?if($popupVideo):?>
-									<div class="video-block popup_video <?=($countPhoto > 3 ? 'fromtop' : '');?> sm"><a class="various video_link image dark_link" href="<?=$popupVideo;?>" title="<?=Loc::getMessage("VIDEO")?>"><span class="play text-upper font_xs"><?=Loc::getMessage("VIDEO")?></span></a></div>
-								<?endif;?>
-							</div>
-						</div>
-					</div>
-
-					<?//dop text?>
-					<div class="text-additional hidden">
-						<?$path = SITE_DIR."include/element_detail_text.php"?>
-						<div class="price_txt muted777 font_sxs<?=((CMax::checkContentFile($path) ? ' filed' : ''));?>">
-							<?$APPLICATION->IncludeFile($path, Array(), Array("MODE" => "html",  "NAME" => GetMessage('CT_BCE_CATALOG_DOP_DESCR')));?>
-						</div>
-					</div>
-				</div>	
-			</div>
-
+			<?\Aspro\Functions\CAsproMax::showMainGallery([
+				'POPUPVIDEO' => $popupVideo,
+				'IS_CURRENT_SKU' => !!$arCurrentSKU,
+				'IS_CUSTOM_OFFERS' => $showCustomOffer,
+			], $arResult, $arParams);?>
+			
 			<div class="product-main">
 				<div class="product-info-headnote clearfix product-info-headnote--bordered">
 					<div class="flexbox flexbox--row align-items-center justify-content-between flex-wrap">
@@ -743,7 +651,7 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
 																<?$message = $arResult['PROPERTIES']['EXTENDED_REVIEWS_COUNT']['VALUE'] ? GetMessage('VOTES_RESULT', array('#VALUE#' => $arResult['PROPERTIES']['EXTENDED_REVIEWS_RAITING']['VALUE'])) : GetMessage('VOTES_RESULT_NONE')?>
 																<div class="inner_rating" title="<?=$message?>">
 																	<?for($i=1;$i<=5;$i++):?>
-																		<div class="item-rating <?=$i<=$arResult['PROPERTIES']['EXTENDED_REVIEWS_RAITING']['VALUE'] ? 'filed' : ''?>"><?=CMax::showIconSvg("star", SITE_TEMPLATE_PATH."/images/svg/catalog/star_small.svg");?></div>
+																		<div class="item-rating <?=$i<=round((float)$arResult['PROPERTIES']['EXTENDED_REVIEWS_RAITING']['VALUE']) ? 'filed' : ''?>"><?=CMax::showIconSvg("star", SITE_TEMPLATE_PATH."/images/svg/catalog/star_small.svg");?></div>
 																	<?endfor;?>
 																</div>
 															</div>
@@ -811,9 +719,14 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
 
 							<?//offers tree props?>
 							<?if($arResult["OFFERS"] && $showCustomOffer):?>
+								<?=\Aspro\Max\Product\SkuTools::getTemplateWithJsonOffers($arResult["OFFERS"])?>
+								
+								<?$templateData["USE_OFFERS_SELECT"] = true;?>
+								
 								<?$frame = $this->createFrame()->begin('');?>
+								<script>typeof useOfferSelect === 'function' && useOfferSelect()</script>
 									<div class="buy_block offer-props-wrapper">
-										<div class="sku_props inner_content js_offers__<?=$arResult['ID'];?>_detail">
+										<div class="sku_props inner_content js_offers__<?=$arResult['ID'];?>_detail load-offer-js">
 											<?if (!empty($arResult['OFFERS_PROP'])){?>
 												<div class="bx_catalog_item_scu wrapper_sku sku_in_detail" id="<? echo $arItemIDs["ALL_ITEM_IDS"]['PROP_DIV']; ?>" data-site_id="<?=SITE_ID;?>" data-id="<?=$arResult["ID"];?>" data-offer_id="<?=$arResult["OFFERS"][$arResult["OFFERS_SELECTED"]]["ID"];?>" data-propertyid="<?=$arResult["OFFERS"][$arResult["OFFERS_SELECTED"]]["PROPERTIES"]["CML2_LINK"]["ID"];?>" data-offer_iblockid="<?=$arResult["OFFERS"][$arResult["OFFERS_SELECTED"]]["IBLOCK_ID"];?>" data-iblockid="<?=$arResult["IBLOCK_ID"];?>">
 													<?foreach ($arSkuTemplate as $code => $strTemplate){
@@ -900,7 +813,6 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
 									<?endif;?>
 								</div>
 							<?endif;?>
-                            <?include_once('page_blocks/element_detail_linking.php');?>
 						</div>
 					<?endif;?>
 
@@ -995,6 +907,7 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
 														<?\Aspro\Functions\CAsproMaxItem::showItemPrices($arParams, $arResult["PRICES"], $strMeasure, $min_price_id, ($arParams["SHOW_DISCOUNT_PERCENT_NUMBER"] == "Y" ? "N" : "Y"));?>
 													<?endif;?>
 												<?endif;?>
+                                                <?include_once('page_blocks/element_detail_linking.php');?>
 											</div>
 											<div class="" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
 												<meta itemprop="price" content="<?=($arResult['MIN_PRICE']['DISCOUNT_VALUE'] ? $arResult['MIN_PRICE']['DISCOUNT_VALUE'] : $arResult['MIN_PRICE']['VALUE'])?>" />
@@ -1293,12 +1206,11 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
 <?if($arResult['DETAIL_TEXT'] || $bOfferDetailText ):?>
 	<?$templateData['DETAIL_TEXT'] = true;?>
 	<?$this->SetViewTarget('PRODUCT_DETAIL_TEXT_INFO');?>
+	<?$detailText = $bOfferDetailText ? $arCurrentSKU["DETAIL_TEXT"] : $arResult['DETAIL_TEXT']; ?>
+
 		<div class="content detail-text-wrap" itemprop="description">
-			<?if($bOfferDetailText):?>
-				<?=$arCurrentSKU["DETAIL_TEXT"];?>
-			<?else:?>
-				<?=$arResult['DETAIL_TEXT'];?>
-			<?endif;?>
+			<?Aspro\Functions\CAsproMax::showCollapsedBlockFromText($detailText)?>
+
 		</div>
 	<?$this->EndViewTarget();?>
 <?endif;?>
@@ -1350,19 +1262,7 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
 				</div>
 
 				<?//small gallery?>
-				<div class="small-gallery-block"<?=($bShowSmallGallery ? '' : ' style="display:none;"');?>>
-					<div class="row flexbox flexbox--row">
-						<?foreach($additionalGallery as $i => $arPhoto):?>
-							<div class="col-md-3 col-sm-4 col-xs-6">
-								<div class="item">
-									<div class="wrap"><a href="<?=$arPhoto['DETAIL']['SRC']?>" class="fancy" data-fancybox="small-gallery" target="_blank" title="<?=$arPhoto['TITLE']?>">
-										<img data-src="<?=$arPhoto['PREVIEW']['src']?>" src="<?=\Aspro\Functions\CAsproMax::showBlankImg($arPhoto['PREVIEW']['src']);?>" class="lazy img-responsive inline" title="<?=$arPhoto['TITLE']?>" alt="<?=$arPhoto['ALT']?>" /></a>
-									</div>
-								</div>
-							</div>
-						<?endforeach;?>
-					</div>
-				</div>
+				<?\Aspro\Functions\CAsproMax::showSmallGallery(['IS_ACTIVE' => $bShowSmallGallery], $additionalGallery);?>
 			</div>
 		</div>
 	<?$this->EndViewTarget();?>
@@ -1371,185 +1271,58 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
 <?//custom tab?>
 <?if($arParams['SHOW_ADDITIONAL_TAB'] == 'Y'):?>
 	<?$this->SetViewTarget('PRODUCT_CUSTOM_TAB_INFO');?>
-		<?$APPLICATION->IncludeFile(SITE_DIR."include/additional_products_description.php", array(), array("MODE" => "html", "NAME" => GetMessage('CT_BCE_CATALOG_ADDITIONAL_DESCRIPTION')));?>
+		<?=Aspro\Functions\CAsproMax::showCollapsedBlockFromPath([
+			'CONTENT_PATH' => 'include/additional_products_description.php',
+			'EDIT_MESSAGE_KEY' => 'CT_BCE_CATALOG_ADDITIONAL_DESCRIPTION',
+		]);?>
 	<?$this->EndViewTarget();?>
 <?endif;?>
 <?//props content?>
 <?if(($arResult['DISPLAY_PROPERTIES'] || $arResult['OFFER_PROP']) && ($iCountProps > $arParams['VISIBLE_PROP_COUNT'])):?>
 	<?$templateData['CHARACTERISTICS'] = true;?>
 	<?$this->SetViewTarget('PRODUCT_PROPS_INFO');?>
-		<?$strGrupperType = $arParams["GRUPPER_PROPS"];?>
-		<?if($strGrupperType == "GRUPPER"):?>
-			<div class="char_block bordered rounded3 js-scrolled">
-				<?$APPLICATION->IncludeComponent(
-					"redsign:grupper.list",
-					"",
-					Array(
-						"CACHE_TIME" => "3600000",
-						"CACHE_TYPE" => "A",
-						"COMPOSITE_FRAME_MODE" => "A",
-						"COMPOSITE_FRAME_TYPE" => "AUTO",
-						"DISPLAY_PROPERTIES" => $arResult["GROUPS_PROPS"]
-					),
-					$component, array('HIDE_ICONS'=>'Y')
-				);?>
-				<table class="props_list" id="<? echo $arItemIDs["ALL_ITEM_IDS"]['DISPLAY_PROP_DIV']; ?>"></table>
-			</div>
-		<?elseif($strGrupperType == "WEBDEBUG"):?>
-			<div class="char_block bordered rounded3 js-scrolled">
-				<?$APPLICATION->IncludeComponent(
-					"webdebug:propsorter",
-					"linear",
-					array(
-						"IBLOCK_TYPE" => $arResult['IBLOCK_TYPE'],
-						"IBLOCK_ID" => $arResult['IBLOCK_ID'],
-						"PROPERTIES" => $arResult['GROUPS_PROPS'],
-						"EXCLUDE_PROPERTIES" => array(),
-						"WARNING_IF_EMPTY" => "N",
-						"WARNING_IF_EMPTY_TEXT" => "",
-						"NOGROUP_SHOW" => "Y",
-						"NOGROUP_NAME" => "",
-						"MULTIPLE_SEPARATOR" => ", "
-					),
-					$component, array('HIDE_ICONS'=>'Y')
-				);?>
-				<table class="props_list" id="<? echo $arItemIDs["ALL_ITEM_IDS"]['DISPLAY_PROP_DIV']; ?>"></table>
-			</div>
-		<?elseif($strGrupperType == "YENISITE_GRUPPER"):?>
-			<div class="char_block bordered rounded3 js-scrolled">
-				<?$APPLICATION->IncludeComponent(
-					'yenisite:ipep.props_groups',
-					'',
-					array(
-						'DISPLAY_PROPERTIES' => $arResult['GROUPS_PROPS'],
-						'IBLOCK_ID' => $arParams['IBLOCK_ID']
-					),
-					$component, array('HIDE_ICONS'=>'Y')
-				)?>
-				<table class="props_list colored_char" id="<? echo $arItemIDs["ALL_ITEM_IDS"]['DISPLAY_PROP_DIV']; ?>"></table>
-			</div>
-		<?elseif($strGrupperType == "ASPRO_PROPS_GROUP"):?>
-			<div class="js-scrolled">
-				<?$APPLICATION->IncludeComponent(
-					'aspro:props.group',
-					'',
-					array(
-						'DISPLAY_PROPERTIES' => $arResult['GROUPS_PROPS'],
-						'IBLOCK_ID' => $arParams['IBLOCK_ID'],
-						'OFFERS_IBLOCK_ID' => $arResult['OFFERS_IBLOCK'],
-						'OFFER_DISPLAY_PROPERTIES' => $arResult['OFFER_PROP'],
-						'MODULE_ID' => "aspro.max",
-						'SHOW_HINTS' => $arParams["SHOW_HINTS"],
-					),
-					$component, array('HIDE_ICONS'=>'Y')
-				)?>
-			</div>
-		<?else:?>
-			<?if($arParams["PROPERTIES_DISPLAY_TYPE"] != "TABLE"):?>
-				<div class="props_block js-scrolled clearfix flexbox row js-offers-prop" id="<? echo $arItemIDs["ALL_ITEM_IDS"]['DISPLAY_PROP_DIV']; ?>">
-					<?foreach($arResult["DISPLAY_PROPERTIES"] as $propCode => $arProp):?>
-						<div class="char js-prop-replace col-lg-3 col-md-4 col-xs-6 bordered" itemprop="additionalProperty" itemscope itemtype="http://schema.org/PropertyValue">
-							<div class="char_name">
-								<div class="props_item muted <?if($arProp["HINT"] && $arParams["SHOW_HINTS"] == "Y"){?>whint<?}?>">
-									<span itemprop="name" class="js-prop-title"><?=$arProp["NAME"]?></span>
-								</div>
-								<?if($arProp["HINT"] && $arParams["SHOW_HINTS"]=="Y"):?><div class="hint"><span class="icon"><i>?</i></span><div class="tooltip"><?=$arProp["HINT"]?></div></div><?endif;?>
-							</div>
-							<div class="char_value darken js-prop-value" itemprop="value">
-								<?if(is_array($arProp["DISPLAY_VALUE"]) && count($arProp["DISPLAY_VALUE"]) > 1):?>
-									<?=implode(', ', $arProp["DISPLAY_VALUE"]);?>
-								<?else:?>
-									<?=$arProp["DISPLAY_VALUE"];?>
-								<?endif;?>
-							</div>
-						</div>
-					<?endforeach;?>
-					<?//offers props?>
-					<?foreach($arResult['OFFER_PROP'] as $propCode => $arProp):?>
-						<div class="char js-prop col-lg-3 col-md-4 col-xs-6 bordered" itemprop="additionalProperty" itemscope itemtype="http://schema.org/PropertyValue">
-							<div class="char_name">
-								<div class="props_item muted <?if($arProp["HINT"] && $arParams["SHOW_HINTS"] == "Y"){?>whint<?}?>">
-									<span itemprop="name" class="js-prop-title"><?=$arProp["NAME"]?></span>
-								</div>
-								<?if($arProp["HINT"] && $arParams["SHOW_HINTS"]=="Y"):?><div class="hint"><span class="icon"><i>?</i></span><div class="tooltip"><?=$arProp["HINT"]?></div></div><?endif;?>
-							</div>
-							<div class="char_value darken js-prop-value" itemprop="value">
-								<?if(is_array($arProp["DISPLAY_VALUE"]) && count($arProp["DISPLAY_VALUE"]) > 1):?>
-									<?=implode(', ', $arProp["DISPLAY_VALUE"]);?>
-								<?else:?>
-									<?=$arProp["DISPLAY_VALUE"];?>
-								<?endif;?>
-							</div>
-						</div>
-					<?endforeach;?>
-				</div>
-			<?else:?>
-				<div class="char_block bordered rounded3 js-scrolled">
-					<table class="props_list nbg">
-						<tbody class="js-offers-prop">
-							<?foreach($arResult["DISPLAY_PROPERTIES"] as $arProp):?>
-								<tr class="js-prop-replace" itemprop="additionalProperty" itemscope itemtype="http://schema.org/PropertyValue">
-									<td class="char_name">
-										<div class="props_item <?if($arProp["HINT"] && $arParams["SHOW_HINTS"] == "Y"){?>whint<?}?>">
-											<span itemprop="name" class="js-prop-title"><?=$arProp["NAME"]?></span>
-											<?if($arProp["HINT"] && $arParams["SHOW_HINTS"]=="Y"):?><div class="hint"><span class="icon"><i>?</i></span><div class="tooltip"><?=$arProp["HINT"]?></div></div><?endif;?>
-										</div>
-									</td>
-									<td class="char_value">
-										<span class="js-prop-value" itemprop="value">
-											<?if(is_array($arProp["DISPLAY_VALUE"]) && count($arProp["DISPLAY_VALUE"]) > 1):?>
-												<?=implode(', ', $arProp["DISPLAY_VALUE"]);?>
-											<?else:?>
-												<?=$arProp["DISPLAY_VALUE"];?>
-											<?endif;?>
-										</span>
-									</td>
-								</tr>
-							<?endforeach;?>
-
-							<?foreach($arResult["OFFER_PROP"] as $arProp):?>
-								<tr class="js-prop" itemprop="additionalProperty" itemscope itemtype="http://schema.org/PropertyValue">
-									<td class="char_name">
-										<div class="props_item <?if($arProp["HINT"] && $arParams["SHOW_HINTS"] == "Y"){?>whint<?}?>">
-											<span itemprop="name" class="js-prop-title"><?=$arProp["NAME"]?></span>
-											<?if($arProp["HINT"] && $arParams["SHOW_HINTS"]=="Y"):?><div class="hint"><span class="icon"><i>?</i></span><div class="tooltip"><?=$arProp["HINT"]?></div></div><?endif;?>
-										</div>
-									</td>
-									<td class="char_value">
-										<span class="js-prop-value" itemprop="value">
-											<?if(is_array($arProp["DISPLAY_VALUE"]) && count($arProp["DISPLAY_VALUE"]) > 1):?>
-												<?=implode(', ', $arProp["DISPLAY_VALUE"]);?>
-											<?else:?>
-												<?=$arProp["DISPLAY_VALUE"];?>
-											<?endif;?>
-										</span>
-									</td>
-								</tr>
-							<?endforeach;?>
-						</tbody>
-					</table>
-					<table class="props_list nbg" id="<? echo $arItemIDs["ALL_ITEM_IDS"]['DISPLAY_PROP_DIV']; ?>"></table>
-				</div>
-			<?endif;?>
-		<?endif;?>
+	<?\Aspro\Functions\CAsproMax::showBlockHtml([
+		'FILE' => '/chars.php',
+		'PARENT_COMPONENT' => $this->getComponent(),
+		'PARAMS' => [
+			'GRUPPER_PROPS' => $arParams['GRUPPER_PROPS'],
+			'IBLOCK_ID' => $arResult['IBLOCK_ID'],
+			'IBLOCK_TYPE' => 	$arResult['ORIGINAL_PARAMETERS']['IBLOCK_TYPE'],
+			'CHARACTERISTICS' => $arResult['DISPLAY_PROPERTIES'],
+			'SKU_IBLOCK_ID' => 	$arResult["SKU_IBLOCK_ID"],
+			'OFFER_PROP' => $arResult['OFFER_PROP'],
+			'SHOW_HINTS' => $arParams['SHOW_HINTS'],
+			'PROPERTIES_DISPLAY_TYPE' => $arParams['PROPERTIES_DISPLAY_TYPE'],
+		],
+	]);?>
 	<?$this->EndViewTarget();?>
 <?endif;?>
 
 <?if($arParams["SHOW_HOW_BUY"] == "Y"):?>
 	<?$this->SetViewTarget('PRODUCT_HOW_BUY_INFO');?>
-		<?$APPLICATION->IncludeFile(SITE_DIR."include/tab_catalog_detail_howbuy.php", array(), array("MODE" => "html", "NAME" => GetMessage('TITLE_HOW_BUY')));?>
+		<?=Aspro\Functions\CAsproMax::showCollapsedBlockFromPath([
+			'CONTENT_PATH' => 'include/tab_catalog_detail_howbuy.php',
+			'EDIT_MESSAGE_KEY' => 'TITLE_HOW_BUY',
+		]);?>
 	<?$this->EndViewTarget();?>
 <?endif;?>
 
+
 <?if($arParams["SHOW_PAYMENT"] == "Y"):?>
 	<?$this->SetViewTarget('PRODUCT_PAYMENT_INFO');?>
-		<?$APPLICATION->IncludeFile(SITE_DIR."include/tab_catalog_detail_payment.php", array(), array("MODE" => "html", "NAME" => GetMessage('TITLE_PAYMENT')));?>
+	<?=Aspro\Functions\CAsproMax::showCollapsedBlockFromPath([
+			'CONTENT_PATH' => 'include/tab_catalog_detail_payment.php',
+			'EDIT_MESSAGE_KEY' => 'TITLE_PAYMENT',
+		]);?>
 	<?$this->EndViewTarget();?>
 <?endif;?>
 
 <?if($arParams["SHOW_DELIVERY"] == "Y"):?>
 	<?$this->SetViewTarget('PRODUCT_DELIVERY_INFO');?>
-		<?$APPLICATION->IncludeFile(SITE_DIR."include/tab_catalog_detail_delivery.php", array(), array("MODE" => "html", "NAME" => GetMessage('TITLE_DELIVERY')));?>
+	<?=Aspro\Functions\CAsproMax::showCollapsedBlockFromPath([
+			'CONTENT_PATH' => 'include/tab_catalog_detail_delivery.php',
+			'EDIT_MESSAGE_KEY' => 'TITLE_DELIVERY',
+		]);?>
 	<?$this->EndViewTarget();?>
 <?endif;?>
 

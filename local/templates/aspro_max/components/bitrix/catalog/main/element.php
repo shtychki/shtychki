@@ -187,8 +187,22 @@ $_SESSION['BLOG_MAX_IMAGE_SIZE'] = ($arParams['MAX_IMAGE_SIZE'] ? $arParams['MAX
 if(!isset($arParams['REVIEW_COMMENT_REQUIRED']) || $arParams['USE_RATING'] === 'N')
 	$arParams['REVIEW_COMMENT_REQUIRED'] = "Y";
 
+$arParams["DETAIL_OFFERS_PROPERTY_CODE"] = array_filter($arParams["DETAIL_OFFERS_PROPERTY_CODE"]);
 //set params for props from module
-\Aspro\Functions\CAsproMax::replacePropsParams($arParams);	
+$detailOfferPropsParamCode = $arParams["DETAIL_OFFERS_PROPERTY_CODE"] ? "DETAIL_OFFERS_PROPERTY_CODE_RAW" : "DETAIL_OFFERS_PROPERTY_CODE";
+\Aspro\Functions\CAsproMax::replacePropsParams($arParams, ["DETAIL_OFFERS_PROPERTY_CODE" => $detailOfferPropsParamCode]);	
+
+$arParams['BIG_DATA_FILTER_IDS'] = $arElement['ID'];
+
+if(CMax::GetFrontParametrValue('TOP_MENU_FIXED') === 'Y') {
+	if(CMax::GetFrontParametrValue('SHOW_HEADER_GOODS') === 'Y') {
+		CMax::$arCssVariables['--fixed-header'] = '105px';
+	}
+
+	if(CMax::GetFrontParametrValue('USE_DETAIL_TABS') === 'Y') {
+		CMax::$arCssVariables['--fixed-tabs'] = '49px';
+	}
+}
 
 if($bFastViewMode)
 	include_once('element_fast_view.php');
@@ -199,18 +213,21 @@ else
 ?>
 
 <? CJSCore::Init(array('ls')); ?>
-<script>$(document).ready(function(){$(".buy_block .counter_block input[type=text]").change()})</script>
+	<script>//$(document).ready(function(){$(".buy_block .counter_block input[type=text]").change()})</script>
+
 <?
 $arExt = [
 	'owl_carousel', 
 	'catalog_element',
 	'detail_gallery',
+	'bonus_system',
 ];
 
-if( !$bFastViewMode ){
+if (!$bFastViewMode) {
 	$arExt[] = 'fancybox';
 }
+if (CMax::GetFrontParametrValue('DETAIL_PICTURE_MODE') === 'MAGNIFIER') {
+	$arExt[] = 'xzoom';
+}
 
-\Aspro\Max\Functions\Extensions::init($arExt);
-
-?>
+\Aspro\Max\Functions\Extensions::init($arExt);?>

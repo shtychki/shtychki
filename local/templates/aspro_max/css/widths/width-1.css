@@ -146,7 +146,8 @@ body.fill_bg_y .top_big_one_banner {
   }
 
   .left_block {
-    width: 258px;
+    --width-left-block: 258px;
+    width: var(--width-left-block);
   }
   .right_block.wide_N,
   .right_block.wide_,

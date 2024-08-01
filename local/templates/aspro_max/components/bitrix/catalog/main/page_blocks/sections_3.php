@@ -10,6 +10,8 @@ $APPLICATION->IncludeComponent(
 		"VIEW_TYPE" => "sm",
 		"NO_MARGIN" => "Y",
 		"SHOW_ICONS" => "N",
+		"RIGHT_TEXT" => "Y",
+		"SHOW_LEFT_BLOCK" => $arTheme['LEFT_BLOCK_CATALOG_ROOT']['VALUE'],
 		"SECTION_USER_FIELDS" => $arParams["USER_FIELDS"],
 		"SECTION_FIELDS" => array('ID', 'IBLOCK_ID', 'PICTURE'),
 		"CACHE_TIME" => $arParams["CACHE_TIME"],
