@@ -2,11 +2,20 @@
 <?global $arMainPageOrder; //global array for order blocks?>
 <?global $arTheme, $dopBodyClass;?>
 <?if($arMainPageOrder && is_array($arMainPageOrder)):?>
+	<?
+	$bActiveTheme = ($arTheme["THEME_SWITCHER"]["VALUE"] == 'Y');
+	$indexType = $arTheme["INDEX_TYPE"]["VALUE"];
+	$indexPageOptions = $arTheme['INDEX_TYPE']['SUB_PARAMS'][$indexType];
+	?>
 	<?foreach($arMainPageOrder as $key => $optionCode):?>
-		<?$strTemplateName = $arTheme['TEMPLATE_PARAMS'][$arTheme['INDEX_TYPE']['VALUE']][$arTheme['INDEX_TYPE']['VALUE'].'_'.$optionCode.'_TEMPLATE']['VALUE'];?>
-		<?$subtype = strtolower($optionCode);?>
-		
-		<?$dopBodyClass .= ' '.$optionCode.'_'.$strTemplateName;?>
+		<?
+		$bShowBlock = ($bActiveTheme || ($indexPageOptions[$optionCode]["VALUE"] != "N"));
+		$bBlockIndexClass = ($indexPageOptions[$optionCode]["VALUE"] == 'Y' ? '' : 'hidden');
+		$bBlockIndexClass .= ($arTheme["FON_PARAMS"]["fon".$indexType.$optionCode] == 'Y' ? ' grey_block' : '');	
+		$strTemplateName = $arTheme['TEMPLATE_PARAMS'][$arTheme['INDEX_TYPE']['VALUE']][$arTheme['INDEX_TYPE']['VALUE'].'_'.$optionCode.'_TEMPLATE']['VALUE'];
+		$subtype = strtolower($optionCode);
+		$dopBodyClass .= ' '.$optionCode.'_'.$strTemplateName;
+		?>
 
 		<?//BIG_BANNER_INDEX?>
 		<?if($optionCode == "BIG_BANNER_INDEX"):?>
@@ -22,7 +31,7 @@
 						<div class="middle">
 				<?endif;?>
 
-				<div class="drag-block grey container <?=$optionCode?> <?=$bBigBannersIndexClass?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>">
+				<div class="drag-block grey container <?=$optionCode?> <?=$bBigBannersIndexClass?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" style="--order-index: <?=$key?>">
 					<?=CMax::ShowPageType('mainpage', $subtype, $strTemplateName);?>
 				</div>
 
@@ -39,7 +48,7 @@
 		<?if($optionCode == "STORIES"):?>
 			<?global $bShowStories, $bStoriesIndexClass;?>
 			<?if($bShowStories):?>
-				<div class="drag-block container <?=$optionCode?> <?=$bStoriesIndexClass;?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>">
+				<div class="drag-block container <?=$optionCode?> <?=$bStoriesIndexClass;?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" style="--order-index: <?=$key?>">
 					<?=CMax::ShowPageType('mainpage', $subtype, $strTemplateName, true);?>
 				</div>
 			<?endif;?>
@@ -49,7 +58,7 @@
 		<?if($optionCode == "TIZERS"):?>
 			<?global $bShowTizers, $bTizersIndexClass;?>
 			<?if($bShowTizers):?>
-				<div class="drag-block container <?=$optionCode?> <?=$bTizersIndexClass;?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>">
+				<div class="drag-block container <?=$optionCode?> <?=$bTizersIndexClass;?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" style="--order-index: <?=$key?>">
 					<?=CMax::ShowPageType('mainpage', $subtype, $strTemplateName);?>
 				</div>
 			<?endif;?>
@@ -59,7 +68,7 @@
 		<?if($optionCode == "CATALOG_SECTIONS"):?>
 			<?global $bShowCatalogSections, $bCatalogSectionsIndexClass;?>
 			<?if($bShowCatalogSections):?>
-				<div class="drag-block container <?=$optionCode?> <?=$bCatalogSectionsIndexClass;?> js-load-block loader_circle" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" data-file="<?=SITE_DIR;?>include/mainpage/components/<?=$subtype;?>/<?=$strTemplateName;?>.php">
+				<div class="drag-block container <?=$optionCode?> <?=$bCatalogSectionsIndexClass;?> js-load-block loader_circle" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" style="--order-index: <?=$key?>" data-file="<?=SITE_DIR;?>include/mainpage/components/<?=$subtype;?>/<?=$strTemplateName;?>.php">
 					<?=CMax::ShowPageType('mainpage', $subtype, $strTemplateName);?>
 				</div>
 			<?endif;?>
@@ -69,7 +78,7 @@
 		<?if($optionCode == "CATALOG_TAB"):?>
 			<?global $bShowCatalogTab, $bCatalogTabIndexClass;?>
 			<?if($bShowCatalogTab):?>
-				<div class="drag-block container grey <?=$optionCode?> <?=$bCatalogTabIndexClass;?> js-load-block loader_circle" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" data-file="<?=SITE_DIR;?>include/mainpage/components/<?=$subtype;?>/<?=$strTemplateName;?>.php">
+				<div class="drag-block container grey <?=$optionCode?> <?=$bCatalogTabIndexClass;?> js-load-block loader_circle" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" style="--order-index: <?=$key?>" data-file="<?=SITE_DIR;?>include/mainpage/components/<?=$subtype;?>/<?=$strTemplateName;?>.php">
 					<?=CMax::ShowPageType('mainpage', $subtype, $strTemplateName, true);?>
 				</div>
 			<?endif;?>
@@ -79,7 +88,7 @@
 		<?if($optionCode == "MIDDLE_ADV"):?>
 			<?global $bShowMiddleAdvBottomBanner, $bMiddleAdvIndexClass;?>
 			<?if($bShowMiddleAdvBottomBanner):?>
-				<div class="drag-block container <?=$optionCode?> <?=$bMiddleAdvIndexClass;?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>">
+				<div class="drag-block container <?=$optionCode?> <?=$bMiddleAdvIndexClass;?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" style="--order-index: <?=$key?>">
 					<?=CMax::ShowPageType('mainpage', $subtype, $strTemplateName);?>
 				</div>
 			<?endif;?>
@@ -89,7 +98,7 @@
 		<?if($optionCode == "FLOAT_BANNERS"):?>
 			<?global $bShowFloatBanners, $bFloatBannersIndexClass;?>
 			<?if($bShowFloatBanners):?>
-				<div class="drag-block container <?=$optionCode?> <?=$bFloatBannersIndexClass;?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>">
+				<div class="drag-block container <?=$optionCode?> <?=$bFloatBannersIndexClass;?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" style="--order-index: <?=$key?>">
 					<?=CMax::ShowPageType('mainpage', $subtype, $strTemplateName);?>
 				</div>
 			<?endif;?>
@@ -99,7 +108,7 @@
 		<?if($optionCode == "SALE"):?>
 			<?global $bShowSale, $bSaleIndexClass;?>
 			<?if($bShowSale):?>
-				<div class="drag-block container grey <?=$optionCode?> <?=$bSaleIndexClass;?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>">
+				<div class="drag-block container grey <?=$optionCode?> <?=$bSaleIndexClass;?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" style="--order-index: <?=$key?>">
 					<?=CMax::ShowPageType('mainpage', $subtype, $strTemplateName, true);?>
 				</div>
 			<?endif;?>
@@ -109,7 +118,7 @@
 		<?if($optionCode == "COLLECTIONS"):?>
 			<?global $bShowCollection, $bCollectionIndexClass;?>
 			<?if($bShowCollection):?>
-				<div class="drag-block container grey <?=$optionCode?> <?=$bCollectionIndexClass;?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>">
+				<div class="drag-block container grey <?=$optionCode?> <?=$bCollectionIndexClass;?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" style="--order-index: <?=$key?>">
 					<?=CMax::ShowPageType('mainpage', $subtype, $strTemplateName, true);?>
 				</div>
 			<?endif;?>
@@ -119,7 +128,7 @@
 		<?if($optionCode == "LOOKBOOKS"):?>
 			<?global $bShowLookbook, $bLookbookIndexClass;?>
 			<?if($bShowLookbook):?>
-				<div class="drag-block container grey <?=$optionCode?> <?=$bLookbookIndexClass;?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>">
+				<div class="drag-block container grey <?=$optionCode?> <?=$bLookbookIndexClass;?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" style="--order-index: <?=$key?>">
 					<?=CMax::ShowPageType('mainpage', $subtype, $strTemplateName, true);?>
 				</div>
 			<?endif;?>
@@ -129,7 +138,7 @@
 		<?if($optionCode == "REVIEWS"):?>
 			<?global $bShowReview, $bReviewIndexClass;?>
 			<?if($bShowReview):?>
-				<div class="drag-block container grey <?=$optionCode?> <?=$bReviewIndexClass;?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>">
+				<div class="drag-block container grey <?=$optionCode?> <?=$bReviewIndexClass;?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" style="--order-index: <?=$key?>">
 					<?=CMax::ShowPageType('mainpage', $subtype, $strTemplateName);?>
 				</div>
 			<?endif;?>
@@ -139,7 +148,7 @@
 		<?if($optionCode == "NEWS"):?>
 			<?global $bShowNews, $bNewsIndexClass;?>
 			<?if($bShowNews):?>
-				<div class="drag-block container grey <?=$optionCode?> <?=$bNewsIndexClass;?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>">
+				<div class="drag-block container grey <?=$optionCode?> <?=$bNewsIndexClass;?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" style="--order-index: <?=$key?>">
 					<?=CMax::ShowPageType('mainpage', $subtype, $strTemplateName, true);?>
 				</div>
 			<?endif;?>
@@ -149,7 +158,7 @@
 		<?if($optionCode == "BLOG"):?>
 			<?global $bShowBlog, $bBlogIndexClass;?>
 			<?if($bShowBlog):?>
-				<div class="drag-block container <?=$optionCode?> <?=$bBlogIndexClass;?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>">
+				<div class="drag-block container <?=$optionCode?> <?=$bBlogIndexClass;?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" style="--order-index: <?=$key?>">
 					<?=CMax::ShowPageType('mainpage', $subtype, $strTemplateName, true);?>
 				</div>
 			<?endif;?>
@@ -159,7 +168,7 @@
 		<?if($optionCode == "GALLERY"):?>
 			<?global $bShowGallery, $bGalleryIndexClass;?>			
 			<?if($bShowGallery):?>
-				<div class="drag-block container <?=$optionCode?> <?=$bGalleryIndexClass;?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>">
+				<div class="drag-block container <?=$optionCode?> <?=$bGalleryIndexClass;?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" style="--order-index: <?=$key?>">
 				<?=CMax::ShowPageType('mainpage', $subtype, $strTemplateName, true);?>
 				</div>
 			<?endif;?>
@@ -169,7 +178,7 @@
 		<?if($optionCode == "BOTTOM_BANNERS"):?>
 			<?global $bShowBottomBanner, $bBottomBannersIndexClass;?>
 			<?if($bShowBottomBanner):?>
-				<div class="drag-block container <?=$optionCode?> <?=$bBottomBannersIndexClass;?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>">
+				<div class="drag-block container <?=$optionCode?> <?=$bBottomBannersIndexClass;?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" style="--order-index: <?=$key?>">
 					<?=CMax::ShowPageType('mainpage', $subtype, $strTemplateName);?>
 				</div>
 			<?endif;?>
@@ -179,7 +188,7 @@
 		<?if($optionCode == "COMPANY_TEXT"):?>
 			<?global $bShowCompany, $bCompanyTextIndexClass;?>
 			<?if($bShowCompany):?>
-				<div class="drag-block container <?=$optionCode?> <?=$bCompanyTextIndexClass;?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>">
+				<div class="drag-block container <?=$optionCode?> <?=$bCompanyTextIndexClass;?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" style="--order-index: <?=$key?>">
 					<?=CMax::ShowPageType('mainpage', $subtype, $strTemplateName);?>
 				</div>
 			<?endif;?>
@@ -189,7 +198,7 @@
 		<?if($optionCode == "MAPS"):?>
 			<?global $bShowMaps, $bMapsIndexClass;?>
 			<?if($bShowMaps):?>
-				<div class="drag-block container <?=$optionCode?> <?=$bMapsIndexClass;?> js-load-block loader_circle" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" data-file="<?=SITE_DIR;?>include/mainpage/components/<?=$subtype;?>/<?=$strTemplateName;?>.php">
+				<div class="drag-block container <?=$optionCode?> <?=$bMapsIndexClass;?> js-load-block loader_circle" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" style="--order-index: <?=$key?>" data-file="<?=SITE_DIR;?>include/mainpage/components/<?=$subtype;?>/<?=$strTemplateName;?>.php">
 					<?=CMax::ShowPageType('mainpage', $subtype, $strTemplateName);?>
 				</div>
 			<?endif;?>
@@ -199,7 +208,7 @@
 		<?if($optionCode == "FAVORIT_ITEM"):?>
 			<?global $bShowFavoritItem, $bFavoritItemIndexClass;?>
 			<?if($bShowFavoritItem):?>
-				<div class="drag-block container <?=$optionCode?> <?=$bFavoritItemIndexClass;?> js-load-block loader_circle" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" data-file="<?=SITE_DIR;?>include/mainpage/components/<?=$subtype;?>/<?=$strTemplateName;?>.php">
+				<div class="drag-block container <?=$optionCode?> <?=$bFavoritItemIndexClass;?> js-load-block loader_circle" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" style="--order-index: <?=$key?>" data-file="<?=SITE_DIR;?>include/mainpage/components/<?=$subtype;?>/<?=$strTemplateName;?>.php">
 					<?=CMax::ShowPageType('mainpage', $subtype, $strTemplateName);?>
 				</div>
 			<?endif;?>
@@ -209,7 +218,7 @@
 		<?if($optionCode == "BRANDS"):?>
 			<?global $bShowBrands, $bBrandsIndexClass;?>
 			<?if($bShowBrands):?>
-				<div class="drag-block container <?=$optionCode?> <?=$bBrandsIndexClass;?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>">
+				<div class="drag-block container <?=$optionCode?> <?=$bBrandsIndexClass;?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" style="--order-index: <?=$key?>">
 					<?=CMax::ShowPageType('mainpage', $subtype, $strTemplateName, true);?>
 				</div>
 			<?endif;?>
@@ -219,7 +228,7 @@
 		<?if($optionCode == "INSTAGRAMM"):?>
 			<?global $bShowInstagramm, $bInstagrammIndexClass;?>
 			<?if($bShowInstagramm):?>
-				<div class="drag-block container <?=$optionCode?> <?=$bInstagrammIndexClass;?> js-load-block loader_circle" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" data-file="<?=SITE_DIR;?>include/mainpage/components/<?=$subtype;?>/<?=$strTemplateName;?>.php">
+				<div class="drag-block container <?=$optionCode?> <?=$bInstagrammIndexClass;?> js-load-block loader_circle" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" style="--order-index: <?=$key?>" data-file="<?=SITE_DIR;?>include/mainpage/components/<?=$subtype;?>/<?=$strTemplateName;?>.php">
 					<?=CMax::ShowPageType('mainpage', $subtype, $strTemplateName);?>
 				</div>
 			<?endif;?>
@@ -229,7 +238,16 @@
 		<?if($optionCode === "VK"):?>
 			<?global $bShowVK, $bVKIndexClass;?>
 			<?if($bShowVK):?>
-				<div class="drag-block container <?=$optionCode?> <?=$bVKIndexClass;?> js-load-block loader_circle" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" data-file="<?=SITE_DIR;?>include/mainpage/components/<?=$subtype;?>/<?=$strTemplateName;?>.php">
+				<div class="drag-block container <?=$optionCode?> <?=$bVKIndexClass;?> js-load-block loader_circle" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" style="--order-index: <?=$key?>" data-file="<?=SITE_DIR;?>include/mainpage/components/<?=$subtype;?>/<?=$strTemplateName;?>.php">
+					<?=CMax::ShowPageType('mainpage', $subtype, $strTemplateName);?>
+				</div>
+			<?endif;?>
+		<?endif;?>
+
+		<?// CUSTOM BLOCKS?>
+		<?if (str_starts_with($optionCode, 'CUSTOM_')):?>
+			<?if ($bShowBlock):?>
+				<div class="drag-block container <?=$optionCode?> <?=$bBlockIndexClass?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" style="--order-index: <?=$key?>" data-file="<?=SITE_DIR;?>include/mainpage/components/<?=$subtype?>/<?=$strTemplateName?>.php">
 					<?=CMax::ShowPageType('mainpage', $subtype, $strTemplateName);?>
 				</div>
 			<?endif;?>

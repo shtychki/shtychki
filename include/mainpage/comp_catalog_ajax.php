@@ -57,6 +57,18 @@ if($bAjaxMode)
 		$arComponentParams['AJAX_REQUEST'] = 'Y';
 	}
 
+	if ($GLOBALS[$arComponentParams["FILTER_NAME"]]['SECTION_ID']) {
+		$arComponentParams['SECTION_ID'] = $GLOBALS[$arComponentParams["FILTER_NAME"]]['SECTION_ID'];
+		unset($arComponentParams['SECTION_CODE']);
+	}
+
+	$arComponentParams['SET_TITLE'] = 'N';
+	$arComponentParams['SET_BROWSER_TITLE'] = 'N';
+	$arComponentParams['SET_META_KEYWORDS'] = 'N';
+	$arComponentParams['SET_META_DESCRIPTION'] = 'N';
+	$arComponentParams['ADD_SECTIONS_CHAIN'] = 'N';
+	$arComponentParams['COMPATIBLE_MODE'] = 'Y';
+	$arComponentParams['DISPLAY_BOTTOM_PAGER'] = 'Y';
 	?>
 	
 	<?$APPLICATION->IncludeComponent(

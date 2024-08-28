@@ -20,34 +20,36 @@ CheckTopMenuDotted = function(){
 
 	if(menu.length)
 	{
-		menu.each(function(){
-			if($(this).hasClass('initied'))
+		menu.each(function () {
+			let _this = $(this);
+			if(_this.hasClass('initied'))
 				return false;
 				
-			var menuMoreItem = $(this).find('td.js-dropdown');
-			if($(this).parents('.collapse').css('display') == 'none'){
+			var menuMoreItem = _this.find('td.js-dropdown');
+			if(_this.parents('.collapse').css('display') == 'none'){
 				return false;
 			}
 
-			var block = $(this).closest('div')[0];
-			var block_w = $(this).closest('div')[0].getBoundingClientRect().width;
+			var block = _this.closest('div')[0];
+			var block_w = _this.closest('div')[0].getBoundingClientRect().width;
 
 			//var block_i = $(this).closest('.menu-row__container').find(".menu-row__icons")[0].getBoundingClientRect().width;
 			/*var block_w = $(this).closest('.menu-row__container').length
 			? $(this).closest('.menu-row__container')[0].getBoundingClientRect().width
 			: $(this).closest('div')[0].getBoundingClientRect().width;*/
 
-			var items = $(this).find("tr>.menu-item");
+			var items = _this.find("tr>.menu-item");
 			var menu_w = 0;
-			var menuTable = $(this).find('table');
+			var menuTable = _this.find('table');
 			menuTable.css('width', 'auto');
 			items.each(function (i, el) {
 			  menu_w += el.getBoundingClientRect().width;
 			});
 			var afterHide = false;
+			let menuItemOldSave, menuItemNewSave;
 
 			while(menu_w > block_w) {
-				menuItemOldSave = $(this).find('td').not('.nosave').last();
+				menuItemOldSave = _this.find('td').not('.nosave').last();
 				if(menuItemOldSave.length){
 					menuMoreItem.show();
 					var oldClass = menuItemOldSave.attr('class');
@@ -83,7 +85,7 @@ CheckTopMenuDotted = function(){
 							var oldClass = menuItemOldSave.attr('data-class');
 							menuItemNewSave = '<td class="' + (oldClass ? oldClass + ' ' : '') + '" data-hidewidth="' + block_w + '"><div class="wrap">' + menuItemOldSave.html() + '</div></td>';
 							menuItemOldSave.remove();
-							$(menuItemNewSave).insertBefore($(this).find('td.js-dropdown'));
+							$(menuItemNewSave).insertBefore(_this.find('td.js-dropdown'));
 							if(!menuItemOldSaveCnt) {
 								menuMoreItem.hide();
 								break;
@@ -97,10 +99,11 @@ CheckTopMenuDotted = function(){
 				}
 				while(menu_w <= block_w);
 			}
-			$(this).find('td').css('visibility', 'visible');
-			$(this).find('td').removeClass('unvisible');
-			$(this).addClass('ovisible');
-			$(this).addClass('initied');
+			let visibleItems = menuTable.find('td');
+			visibleItems.css('visibility', 'visible');
+			visibleItems.removeClass('unvisible');
+			_this.addClass('ovisible');
+			_this.removeClass('unvisible');
 			menuTable.css('width', '');
 		})
 	}

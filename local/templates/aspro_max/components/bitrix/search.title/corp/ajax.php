@@ -17,7 +17,7 @@ if (empty($arResult["CATEGORIES"])) return;
 							<a class="bx_item_block" href="<?=$arItem["URL"]?>">
 								<div class="maxwidth-theme">
 									<div class="bx_img_element">
-										<?if(is_array($arElement["PICTURE"])):?>
+										<?if (isset($arElement["PICTURE"]) && is_array($arElement["PICTURE"])):?>
 											<img src="<?=$arElement["PICTURE"]["src"]?>">
 										<?else:?>
 											<img src="<?=SITE_TEMPLATE_PATH?>/images/svg/noimage_product.svg" width="38" height="38">
@@ -25,7 +25,10 @@ if (empty($arResult["CATEGORIES"])) return;
 									</div>
 									<div class="bx_item_element">
 										<span class="font_sm"><?=$arItem["NAME"]?></span>
-										<?if($arElement["MIN_PRICE"] || $arElement["PRICES"]):?>
+										<?if (
+											(isset($arElement["MIN_PRICE"]) && $arElement["MIN_PRICE"]) 
+											|| (isset($arElement["PRICES"]) && $arElement["PRICES"])
+										):?>
 											<div class="price cost prices font_sxs">
 												<div class="title-search-price">
 													<?if(isset($arElement["MIN_PRICE"]) && $arElement["MIN_PRICE"]){?>

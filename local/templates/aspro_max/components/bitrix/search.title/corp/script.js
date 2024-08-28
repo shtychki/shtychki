@@ -1,20 +1,3 @@
-$(document).ready(function(){
-	var containerHTML = $('.title-search-input_fixed').detach();
-	$('#title-search_fixed').append(containerHTML);
-});
-
-$(document).ready(function(){
-	var containerHTML = $('.title-search-input_fixedtf').detach();
-	$('#title-search_fixedtf').append(containerHTML);
-});
-
-$(document).ready(function(){
-	var containerHTML = $('.title-search-input').detach();
-	$('#title-search').append(containerHTML);
-});
-
-
-
 function JCTitleSearch4(arParams)
 {
 	var _this = this;
@@ -103,13 +86,6 @@ function JCTitleSearch4(arParams)
 			fade.style.display = 'block';
 		}
 
-		
-		$('.bx_searche.scrollbar').mCustomScrollbar({
-			mouseWheel: {
-				scrollAmount: 150,
-				preventDefault: true
-			}
-		});
 	};
 
 	this.onKeyPress = function(keyCode)
@@ -408,7 +384,7 @@ function JCTitleSearch4(arParams)
 		this.CONTAINER = document.getElementById(this.arParams.CONTAINER_ID);
 		BX.addCustomEvent(this.CONTAINER, "OnNodeLayoutChange", this._onContainerLayoutChange);
 
-		this.RESULT = document.body.appendChild(document.createElement("DIV"));
+		this.RESULT = this.CONTAINER.appendChild(document.createElement("DIV"));
 
 		this.RESULT.className = 'title-search-result '+this.arParams.INPUT_ID;
 		this.INPUT = document.getElementById(this.arParams.INPUT_ID);
@@ -418,11 +394,13 @@ function JCTitleSearch4(arParams)
 		});
 		BX.bind(this.INPUT, 'blur', function(e) {
 			if(!$(e.relatedTarget).hasClass('bx_item_block')){
-				setTimeout(function(){
-					if(!$(_this.INPUT).closest('form').find('.dropdown-select.searchtype .dropdown-select__title.opened').length){
-						_this.onFocusLost();
-					}
-				}, 100);
+				if (window.matchMedia("(min-width: 993px)").matches) {
+					setTimeout(function(){
+						if(!$(_this.INPUT).closest('form').find('.dropdown-select.searchtype .dropdown-select__title.opened').length){
+							_this.onFocusLost();
+						}
+					}, 100);
+				}
 			}
 		});
 

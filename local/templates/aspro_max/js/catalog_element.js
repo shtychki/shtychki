@@ -25,7 +25,7 @@ function showCollapsedBlock(detailTextBlock, nodeDetailSpoilerButton) {
 			let _thisButton = $(this);
 			_thisButton.toggleClass('show');
 
-			detailTextBlock.toggleClass('lineclamp-3 opened');
+			detailTextBlock.toggleClass('show-collapsed-js opened');
 		});
 	}
 

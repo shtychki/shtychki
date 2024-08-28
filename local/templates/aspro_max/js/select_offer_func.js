@@ -310,7 +310,7 @@ if (!window.appAspro.sku) {
       if (wrapper.find('input[name=quantity]:first').length)
         window["obSkuQuantys"][obj.ID] = wrapper.find('input[name=quantity]:first').val();
 
-      if (obj.USE_PRICE_COUNT && obj.PRICE_MATRIX) {
+      if (obj.PRICE_MATRIX) {
         currentPriceSelected = this.checkPriceRange(window["obSkuQuantys"][obj.ID], obj);
         if (obj.PRICE_MATRIX_HTML) {
           this.setPriceMatrix(obj.PRICE_MATRIX_HTML, obj, currentPriceSelected, wrapper);

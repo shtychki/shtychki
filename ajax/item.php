@@ -6,6 +6,8 @@ if(!\Bitrix\Main\Loader::includeModule("sale") || !\Bitrix\Main\Loader::includeM
 	echo "failure";
 	return;
 }
+$addResult = [];
+
 if(isset($_REQUEST["type"]) && $_REQUEST["type"] == "multiple")
 {
 	$successfulAdd = true;
@@ -110,19 +112,6 @@ if(isset($_REQUEST["type"]) && $_REQUEST["type"] == "multiple")
 		$addResult = array('STATUS' => 'OK', 'MESSAGE' => 'SUCCESSFUL_ADD', 'MESSAGE_EXT' => $strErrorExt);
 	else
 		$addResult = array('STATUS' => 'ERROR', 'MESSAGE' => $strError, 'MESSAGE_EXT' => $strErrorExt);
-
-	if(class_exists('\Bitrix\Main\Web\Json'))
-	{
-		if(method_exists('\Bitrix\Main\Web\Json', 'encode'))
-			echo \Bitrix\Main\Web\Json::encode($addResult);
-		else
-			echo json_encode($addResult);
-	}
-	else
-	{
-		echo json_encode($addResult);
-	}
-	die();
 }
 else
 {	
@@ -286,19 +275,6 @@ else
 				$addResult = array('STATUS' => 'OK', 'MESSAGE' => 'CATALOG_SUCCESSFUL_ADD_TO_BASKET', 'MESSAGE_EXT' => $strErrorExt);
 			else
 				$addResult = array('STATUS' => 'ERROR', 'MESSAGE' => $strError, 'MESSAGE_EXT' => $strErrorExt);
-
-			if(class_exists('\Bitrix\Main\Web\Json'))
-			{
-				if(method_exists('\Bitrix\Main\Web\Json', 'encode'))
-					echo \Bitrix\Main\Web\Json::encode($addResult);
-				else
-					echo json_encode($addResult);
-			}
-			else
-			{
-				echo json_encode($addResult);
-			}
-			die();
 		}
 	}
 	elseif(!empty($_REQUEST["subscribe_item"]))
@@ -370,7 +346,7 @@ else
 						}
 					}
 				}
-				die();
+				// die();
 			}
 			else{
 				$dbBasketItems = CSaleBasket::GetList(
@@ -452,19 +428,6 @@ else
 				$addResult = array('STATUS' => 'OK', 'MESSAGE' => 'CATALOG_SUCCESSFUL_ADD_TO_BASKET', 'MESSAGE_EXT' => $strErrorExt);
 			else
 				$addResult = array('STATUS' => 'ERROR', 'MESSAGE' => $strError, 'MESSAGE_EXT' => $strErrorExt);
-
-			if(class_exists('\Bitrix\Main\Web\Json'))
-			{
-				if(method_exists('\Bitrix\Main\Web\Json', 'encode'))
-					echo \Bitrix\Main\Web\Json::encode($addResult);
-				else
-					echo json_encode($addResult);
-			}
-			else
-			{
-				echo json_encode($addResult);
-			}
-			die();
 		}
 	}
 	elseif(!empty($_REQUEST["compare_item"]))
@@ -521,7 +484,13 @@ else
 	}
 }
 
-if(\Bitrix\Main\Loader::includeModule('aspro.max'))
-	CMax::clearBasketCounters();
+if($addResult){
+	echo \Bitrix\Main\Web\Json::encode($addResult);
+} else {
+	if(\Bitrix\Main\Loader::includeModule('aspro.max'))
+		CMax::clearBasketCounters();
+}
 
-require($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/epilog_after.php");?>
+\CMain::FinalActions();
+die();
+?>

@@ -236,7 +236,7 @@ if (CModule::IncludeModule("iblock")) {
 	
 		if($bHideNotAvailable)
 		{
-			$arFilter["CATALOG_AVAILABLE"] = "Y";
+			$arFilter[] =  array('LOGIC' => 'OR',array('=CATALOG_AVAILABLE' => false),array('=CATALOG_AVAILABLE' => 'Y'));
 			if($arRegion)
 			{
 				$arStores = array_diff($arRegion["LIST_STORES"], array('component'));
@@ -256,31 +256,15 @@ if (CModule::IncludeModule("iblock")) {
 						$arFilter[] = $arTmpFilter;
 					}
 					*/
-					
-					if(Solution::checkVersionModule('18.6.200', 'iblock')){
+					if($arResult['CATALOG_ELEMENTS']){
 						$arTmpFilter["LOGIC"] = "OR";
 						$arTmpFilter[] = array('TYPE' => array('2','3'));//complects and offers
+						$arTmpFilter[] = array('!ID' => $arResult['CATALOG_ELEMENTS']);//not catalog items
 						$arTmpFilter[] = array(
 							'STORE_NUMBER' => $arStores,
 							'>STORE_AMOUNT' => 0,
-						);						
+						);		
 					}
-					else{
-						if(count($arStores) > 1){
-							$arTmpFilter = array('LOGIC' => 'OR');
-							foreach($arStores as $storeID)
-							{
-								$arTmpFilter[] = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
-							}
-						}
-						else{
-							foreach($arStores as $storeID)
-							{
-								$arTmpFilter = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
-							}
-						}
-					}
-	
 					if($arTmpFilter){
 						$arFilter[] = $arTmpFilter;
 					}

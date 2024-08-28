@@ -325,13 +325,16 @@ function orderActions(e) {
         var $captcha = $(".bx-soa-section-content.reg").find(".bx-captcha");
         if ($captcha.length) {
           $captcha.addClass("captcha_image");
-          $captcha.append('<div class="captcha_reload"></div>');
+          if (!$captcha.find('.captcha_reload').length) {
+            $captcha.append('<div class="captcha_reload"></div>');
+          }
           $captcha
             .closest(".bx-authform-formgroup-container")
             .addClass("captcha-row")
             .find("input[name=captcha_word]")
             .closest(".bx-authform-input-container")
             .addClass("captcha_input");
+          BX.onCustomEvent("onRenderCaptcha");
         }
 
         //update show password
@@ -693,6 +696,33 @@ function orderActions(e) {
               tmpActionData = undefined;
             }
           });
+        }
+      }
+
+      if ($("#bx-soa-order-form .captcha-row").length && window.asproRecaptcha.ver === "3") {
+        if (
+          typeof BX.Sale.OrderAjaxComponent.oldSendRequest === "undefined" &&
+          typeof BX.Sale.OrderAjaxComponent.sendRequest !== "undefined"
+        ) {
+          BX.Sale.OrderAjaxComponent.oldSendRequest = BX.Sale.OrderAjaxComponent.sendRequest;
+          BX.Sale.OrderAjaxComponent.sendRequest = function (action, actionData) {
+            if ($("#bx-soa-order-form .captcha-row").length && typeof grecaptcha != "undefined") {
+              if (window.renderRecaptchaById && window.asproRecaptcha && window.asproRecaptcha.key) {
+                let form = BX("bx-soa-order-form");
+                grecaptcha
+                  .execute(window.asproRecaptcha.key, { action: "maxscore" })
+                  .then(function (token) {
+                    const recaptchaResponse = form.querySelector(".g-recaptcha-response");
+                    if (recaptchaResponse) {
+                      recaptchaResponse.value = token;
+                    }
+                    BX.Sale.OrderAjaxComponent.oldSendRequest(action, actionData);
+                  });
+              }
+            } else {
+              BX.Sale.OrderAjaxComponent.oldSendRequest(action, actionData);
+            }
+          };
         }
       }
     }
