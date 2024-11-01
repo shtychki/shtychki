@@ -12,7 +12,7 @@ if($arRegion)
 			$arParams['STORES'] = $arRegion['LIST_STORES'];
 	}
 
-	if($catalogID = \Bitrix\Main\Config\Option::get("aspro.max", "CATALOG_IBLOCK_ID", \Bitrix\Main\Config\Option::get("aspro.max", "CATALOG_IBLOCK_ID", "#IBLOCK_CATALOG_ID#")))
+	if($catalogID = CMax::GetFrontParametrValue('CATALOG_IBLOCK_ID'))
 	{
 		$GLOBALS['arrProductsSetFilter']['IBLOCK_ID'] = $catalogID;
 		if(($arParams["FILTER_NAME"] == 'arRegionLink' || CMax::GetFrontParametrValue('REGIONALITY_FILTER_CATALOG') == 'Y') && CMax::GetFrontParametrValue('REGIONALITY_FILTER_ITEM') == 'Y'){
@@ -29,7 +29,7 @@ if($arRegion)
 	array(
 		"COMPATIBLE_MODE" => "Y",
 		"IBLOCK_TYPE" => $arParams["IBLOCK_TYPE"],
-		"IBLOCK_ID" => \Bitrix\Main\Config\Option::get("aspro.max", "CATALOG_IBLOCK_ID", "#IBLOCK_CATALOG_ID#"),
+		"IBLOCK_ID" =>  CMax::GetFrontParametrValue('CATALOG_IBLOCK_ID'),
 		"PAGE_ELEMENT_COUNT" => ($arParams["MODULES_ELEMENT_COUNT"] ? $arParams["MODULES_ELEMENT_COUNT"] : 10),
 		"SORT_BY1" => "SORT",
 		"SORT_ORDER1" => "ASC",

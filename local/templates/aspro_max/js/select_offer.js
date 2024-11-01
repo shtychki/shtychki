@@ -1,5 +1,6 @@
 if (!("SelectOfferProp" in window) && typeof window.SelectOfferProp != "function") {
-  SelectOfferProp = function () {
+  SelectOfferProp = function (e) {
+    
     let _this = $(this),
       obParams = {},
       obSelect = {},
@@ -32,6 +33,8 @@ if (!("SelectOfferProp" in window) && typeof window.SelectOfferProp != "function
     };
     /**/
 
+
+
     if ("clear_cache" in objUrl && objUrl.clear_cache == "Y") {
       obParams["CLEAR_CACHE"] = "Y";
     }
@@ -43,8 +46,9 @@ if (!("SelectOfferProp" in window) && typeof window.SelectOfferProp != "function
     /* save selected values */
     for (i = 0; i < depthCount + 1; i++) {
       strName = "PROP_" + container.find(".item_wrapper:eq(" + i + ") > div").data("id");
+      
       if (container.find(".item_wrapper:eq(" + i + ") select").length) {
-        obSelect[strName] = container.find(".item_wrapper:eq(" + i + ") select option:selected").data("onevalue");
+        obSelect[strName] = container.find(".item_wrapper:eq(" + i + ") select option[selected]").data("onevalue");
       } else {
         obSelect[strName] = container.find(".item_wrapper:eq(" + i + ") li.item.active").data("onevalue");
       }
@@ -63,12 +67,20 @@ if (!("SelectOfferProp" in window) && typeof window.SelectOfferProp != "function
       isDetail: !!bDetail
     });
 
+    const prevOfferIndex = appAspro.sku.GetCurrentOfferIndex(offersTree);
+
     /* get sku */
     if (offersTree && typeofExt(offersTree) === "array") {
       appAspro.sku.UpdateSKUInfoByProps(offersTree);
+      const currentOfferIndex = appAspro.sku.GetCurrentOfferIndex(offersTree);
+      
+      if (prevOfferIndex === currentOfferIndex) return;
+
       updatePropsTitle(_this);
-      obParams["SELECTED_OFFER_INDEX"] = appAspro.sku.GetCurrentOfferIndex(offersTree);
+      
+      obParams["SELECTED_OFFER_INDEX"] = currentOfferIndex;
       obParams["SELECTED_OFFER_ID"] = offersTree[obParams["SELECTED_OFFER_INDEX"]]['ID'];
+
       if (appAspro.sku.obOffers[obParams["SELECTED_OFFER_ID"]] && item.is(appAspro.sku.obOffers[obParams["SELECTED_OFFER_ID"]]['item'])) {
         appAspro.sku.ChangeInfo(item, obParams["SELECTED_OFFER_ID"]);
         finalActionSKUInfo(appAspro.sku.obOffers[obParams["SELECTED_OFFER_ID"]], item);
@@ -104,13 +116,13 @@ if (!("SelectOfferProp" in window) && typeof window.SelectOfferProp != "function
 
     function updatePropsTitle(th) {
       var sku_props = th.closest(".sku_props").find(".item_wrapper .item.active, .item_wrapper select.list_values_wrapper");
-
+      
       $.each(sku_props, function (index, value) {
         value = $(value);
         var skuVal = "";
         if (value.attr("title")) {
           skuVal = value.attr("title").split(":")[1].trim();
-        } else if (value.tagName === "SELECT" && typeof value.val() !== "undefined") {
+        } else if (value.prop('tagName') === "SELECT" && typeof value.val() !== "undefined") {
           skuVal = value.val();
         } else {
           var img_row = value.find(" > i");

@@ -272,7 +272,8 @@ if (!window.appAspro.sku) {
           inner.find('.wrapp-one-click').remove();
 
         if (obj.CONFIG.ACTION !== "NOTHING") {
-          inner.append(obj.ONE_CLICK_BUY_HTML);
+          // inner.append(obj.ONE_CLICK_BUY_HTML);
+          $(obj.ONE_CLICK_BUY_HTML).insertAfter(inner.find('.offer_buy_block'));
         }
         else {
           if (inner.find('.wrapp-one-click').length)
@@ -287,7 +288,7 @@ if (!window.appAspro.sku) {
           buyBlock.find('.wrapp-one-click').remove();
 
         if (obj.CONFIG.ACTION !== "NOTHING") {
-          buyBlock.append(obj.ONE_CLICK_BUY_HTML);
+          $(obj.ONE_CLICK_BUY_HTML).insertAfter(buyBlock.find('.counter_wrapp'));
         }
       }
 
@@ -568,9 +569,6 @@ if (!window.appAspro.sku) {
         this.UpdateImages(wrapper, this.obOffers[currentOfferId]);
         this.UpdateName(wrapper, this.obOffers[currentOfferId]);
         this.UpdateLink(wrapper, this.obOffers[currentOfferId]);
-
-        if (wrapper.find('.total_summ').length)
-          wrapper.find('.total_summ').slideUp();
 
         this.setActualDataBlock(wrapper, this.obOffers[currentOfferId]);
 

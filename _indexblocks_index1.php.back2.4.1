@@ -244,36 +244,6 @@
 			<?endif;?>
 		<?endif;?>
 
-		<?//Youtube?>
-		<?if($optionCode === "YOUTUBE"):?>
-			<?global $bShowYoutube, $bYoutubeIndexClass;?>
-			<?if($bShowYoutube):?>
-				<div class="drag-block container <?=$optionCode?> <?=$bYoutubeIndexClass;?> js-load-block loader_circle" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" style="--order-index: <?=$key?>" data-file="<?=SITE_DIR;?>include/mainpage/components/<?=$subtype;?>/<?=$strTemplateName;?>.php">
-					<?=CMax::ShowPageType('mainpage', $subtype, $strTemplateName);?>
-				</div>
-			<?endif;?>
-		<?endif;?>
-
-		<?//VKVideo?>
-		<?if($optionCode === "VK_VIDEO"):?>
-			<?global $bShowVKVideo, $bVKVideoIndexClass;?>
-			<?if($bShowVKVideo):?>
-				<div class="drag-block container <?=$optionCode?> <?=$bVKVideoIndexClass;?> js-load-block loader_circle" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" style="--order-index: <?=$key?>" data-file="<?=SITE_DIR;?>include/mainpage/components/<?=$subtype;?>/<?=$strTemplateName;?>.php">
-					<?=CMax::ShowPageType('mainpage', $subtype, $strTemplateName);?>
-				</div>
-			<?endif;?>
-		<?endif;?>
-
-		<?//Rutube?>
-		<?if($optionCode === "RUTUBE"):?>
-			<?global $bShowRutube, $bRutubeIndexClass;?>
-			<?if($bShowRutube):?>
-				<div class="drag-block container <?=$optionCode?> <?=$bRutubeIndexClass;?> js-load-block loader_circle" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" style="--order-index: <?=$key?>" data-file="<?=SITE_DIR;?>include/mainpage/components/<?=$subtype;?>/<?=$strTemplateName;?>.php">
-					<?=CMax::ShowPageType('mainpage', $subtype, $strTemplateName);?>
-				</div>
-			<?endif;?>
-		<?endif;?>
-
 		<?// CUSTOM BLOCKS?>
 		<?if (str_starts_with($optionCode, 'CUSTOM_')):?>
 			<?if ($bShowBlock):?>

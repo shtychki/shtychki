@@ -20,7 +20,7 @@ if($arRegion)
 	array(
 		"COMPATIBLE_MODE" => "Y",
 		"IBLOCK_TYPE" => $arParams["IBLOCK_TYPE"],
-		"IBLOCK_ID" => \Bitrix\Main\Config\Option::get("aspro.max", "CATALOG_IBLOCK_ID", "#IBLOCK_CATALOG_ID#"),
+		"IBLOCK_ID" => CMax::GetFrontParametrValue('CATALOG_IBLOCK_ID'),
 		// "IBLOCK_ID" => $arParams["IBLOCK_ID"],
 		"PAGE_ELEMENT_COUNT" => "20",
 		"ELEMENT_COUNT" => ($arParams["LINKED_ELEMENST_PAGE_COUNT"] ? $arParams["LINKED_ELEMENST_PAGE_COUNT"] : 20),

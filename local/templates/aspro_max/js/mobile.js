@@ -31,6 +31,7 @@ $(document).ready(function () {
           if (
             !$(e.target).closest(".flexslider").length &&
             !$(e.target).closest(".swipeignore").length &&
+            !$(e.target).closest(".mobile-scrolled").length &&
             !$(e.target).closest(".jqmWindow.popup").length
           ) {
             var partWindowWidth = document.documentElement.clientWidth / 3;
@@ -45,6 +46,7 @@ $(document).ready(function () {
           if (
             !$(e.target).closest(".flexslider").length &&
             !$(e.target).closest(".swipeignore").length &&
+            !$(e.target).closest(".mobile-scrolled").length &&
             !$(e.target).closest(".jqmWindow.popup").length
           ) {
             CloseMobileMenu();

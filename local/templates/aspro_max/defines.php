@@ -24,8 +24,8 @@ $bHideLeftBlockByHeader = ($arTheme['HEADER_TYPE']['VALUE'] == 28 || $arTheme['H
 
 $isBasketPage = CSite::InDir($arTheme["BASKET_PAGE_URL"]['VALUE']);
 
-global $bBigBannersIndexClass, $bTizersIndexClass, $bCatalogSectionsIndexClass, $bCatalogTabIndexClass, $bMiddleAdvIndexClass, $bTopAdvIndexClass, $bFloatBannerIndexClass, $bSaleIndexClass, $bBlogIndexClass, $bBottomBannersIndexClass, $bCompanyTextIndexClass, $bBrandsIndexClass, $bNewsIndexClass, $bMapsIndexClass, $bReviewIndexClass, $bCollectionIndexClass, $bLookbookIndexClass, $bStoriesIndexClass, $bInstagrammIndexClass, $bFloatBannersIndexClass, $bFavoritItemIndexClass;
-global $bShowBigBanners, $bShowTizers, $bShowCatalogSections, $bShowCatalogTab, $bShowMiddleAdvBottomBanner, $bShowTopAdvBanner, $bShowFloatBanner, $bShowSale, $bShowReview, $bShowCollection, $bShowLookbook, $bShowStories, $bShowBlog, $bShowBottomBanner, $bShowCompany, $bShowBrands, $bShowNews, $bShowMaps, $bShowInstagramm, $bShowVK, $bShowFloatBanners, $bShowFavoritItem, $bShowSimple;
+global $bBigBannersIndexClass, $bTizersIndexClass, $bCatalogSectionsIndexClass, $bCatalogTabIndexClass, $bMiddleAdvIndexClass, $bTopAdvIndexClass, $bFloatBannerIndexClass, $bSaleIndexClass, $bBlogIndexClass, $bBottomBannersIndexClass, $bCompanyTextIndexClass, $bBrandsIndexClass, $bNewsIndexClass, $bMapsIndexClass, $bReviewIndexClass, $bCollectionIndexClass, $bLookbookIndexClass, $bStoriesIndexClass, $bInstagrammIndexClass, $bFloatBannersIndexClass, $bFavoritItemIndexClass, $bGalleryIndexClass, $bYoutubeIndexClass;
+global $bShowBigBanners, $bShowTizers, $bShowCatalogSections, $bShowCatalogTab, $bShowMiddleAdvBottomBanner, $bShowTopAdvBanner, $bShowFloatBanner, $bShowSale, $bShowReview, $bShowCollection, $bShowLookbook, $bShowStories, $bShowBlog, $bShowBottomBanner, $bShowCompany, $bShowBrands, $bShowNews, $bShowMaps, $bShowInstagramm, $bShowVK, $bShowFloatBanners, $bShowFavoritItem, $bShowSimple, $bShowGallery, $bShowYoutube;
 
 $bActiveTheme = ($arTheme["THEME_SWITCHER"]["VALUE"] == 'Y');
 
@@ -77,6 +77,10 @@ $bShowBlog = ($bActiveTheme || ($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$indexType]
 $bBlogIndexClass = ($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$indexType]["BLOG"]["VALUE"] == 'Y' ? '' : 'hidden');
 $bBlogIndexClass .= ($arTheme["FON_PARAMS"]["fon".$indexType."BLOG"] == 'Y' ? ' grey_block' : '');
 
+$bShowGallery = ($bActiveTheme || ($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$indexType]["GALLERY"]["VALUE"] != "N"));
+$bGalleryIndexClass = ($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$indexType]["GALLERY"]["VALUE"] == 'Y' ? '' : 'hidden');
+$bGalleryIndexClass .= ($arTheme["FON_PARAMS"]["fon".$indexType."GALLERY"] == 'Y' ? ' grey_block' : '');
+
 $bShowNews = ($bActiveTheme || ($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$indexType]["NEWS"]["VALUE"] != "N"));
 $bNewsIndexClass = ($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$indexType]["NEWS"]["VALUE"] == 'Y' ? '' : 'hidden');
 $bNewsIndexClass .= ($arTheme["FON_PARAMS"]["fon".$indexType."NEWS"] == 'Y' ? ' grey_block' : '');
@@ -109,22 +113,34 @@ $bShowVK = ($bActiveTheme || ($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$indexType]["
 $bVKIndexClass = ($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$indexType]["VK"]["VALUE"] == 'Y' ? '' : 'hidden');
 $bVKIndexClass .= ($arTheme["FON_PARAMS"]["fon".$indexType."VK"] == 'Y' ? ' grey_block' : '');
 
+$bShowYoutube = ($bActiveTheme || ($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$indexType]["YOUTUBE"]["VALUE"] != "N"));
+$bYoutubeIndexClass = ($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$indexType]["YOUTUBE"]["VALUE"] == 'Y' ? '' : 'hidden');
+$bYoutubeIndexClass .= ($arTheme["FON_PARAMS"]["fon".$indexType."YOUTUBE"] == 'Y' ? ' grey_block' : '');
+
+$bShowVKVideo = ($bActiveTheme || ($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$indexType]["VK_VIDEO"]["VALUE"] != "N"));
+$bVKVideoIndexClass = ($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$indexType]["VK_VIDEO"]["VALUE"] == 'Y' ? '' : 'hidden');
+$bVKVideoIndexClass .= ($arTheme["FON_PARAMS"]["fon".$indexType."VK_VIDEO"] == 'Y' ? ' grey_block' : '');
+
+$bShowRutube = ($bActiveTheme || ($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$indexType]["RUTUBE"]["VALUE"] != "N"));
+$bRutubeIndexClass = ($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$indexType]["RUTUBE"]["VALUE"] == 'Y' ? '' : 'hidden');
+$bRutubeIndexClass .= ($arTheme["FON_PARAMS"]["fon".$indexType."RUTUBE"] == 'Y' ? ' grey_block' : '');
+
 $bShowSimple = (CMax::IsBasketPage() || CMax::IsOrderPage()) && $arTheme['SIMPLE_BASKET']['VALUE'] == 'Y';
 
 global $arRegion;
 if($isIndex)
-    $_SESSION['ASPRO_FILTER']['arRegionLinkFront'] = $GLOBALS['arRegionLinkFront'] = array('PROPERTY_SHOW_ON_INDEX_PAGE_VALUE' => 'Y');
+	$_SESSION['ASPRO_FILTER']['arRegionLinkFront'] = $GLOBALS['arRegionLinkFront'] = array('PROPERTY_SHOW_ON_INDEX_PAGE_VALUE' => 'Y');
 
 
 if($arRegion && $arTheme['USE_REGIONALITY']['DEPENDENT_PARAMS']['REGIONALITY_FILTER_ITEM']['VALUE'] == 'Y')
 {
-    $_SESSION['ASPRO_FILTER']['arRegionLink'] = $GLOBALS['arRegionLink'] = $GLOBALS['arSideRegionLink'] = array('PROPERTY_LINK_REGION' => $arRegion['ID']);
-    if($isIndex)
-        $_SESSION['ASPRO_FILTER']['arRegionLinkFront'] = $GLOBALS['arRegionLinkFront']['PROPERTY_LINK_REGION'] = $arRegion['ID'];
+	$_SESSION['ASPRO_FILTER']['arRegionLink'] = $GLOBALS['arRegionLink'] = $GLOBALS['arSideRegionLink'] = array('PROPERTY_LINK_REGION' => $arRegion['ID']);
+	if($isIndex)
+		$_SESSION['ASPRO_FILTER']['arRegionLinkFront'] = $GLOBALS['arRegionLinkFront']['PROPERTY_LINK_REGION'] = $arRegion['ID'];
 }
 else
 {
-    unset($_SESSION['ASPRO_FILTER']);
+	unset($_SESSION['ASPRO_FILTER']);
 }
 
 $GLOBALS['arSideRegionLink']['PROPERTY_SHOW_SIDE_BLOCK_VALUE'] = 'Y';
@@ -133,21 +149,21 @@ $_SESSION['ASPRO_FILTER']['arSideRegionLink'] = $GLOBALS['arSideRegionLink'];
 /*filter for contacts*/
 if($arRegion)
 {
-    if($arRegion['LIST_STORES'] && !in_array('component', $arRegion['LIST_STORES']))
-    {
-        if($arTheme['STORES_SOURCE']['VALUE'] != 'IBLOCK')
-            $_SESSION['ASPRO_FILTER']['arRegionality'] = $GLOBALS['arRegionality'] = array('ID' => $arRegion['LIST_STORES']);
-        else
-            $_SESSION['ASPRO_FILTER']['arRegionality'] = $GLOBALS['arRegionality'] = array('PROPERTY_STORE_ID' => $arRegion['LIST_STORES']);
-    }
-    else
-    {
-        unset($_SESSION['ASPRO_FILTER']['arRegionality']);
-    }
+	if($arRegion['LIST_STORES'] && !in_array('component', $arRegion['LIST_STORES']))
+	{
+		if($arTheme['STORES_SOURCE']['VALUE'] != 'IBLOCK')
+			$_SESSION['ASPRO_FILTER']['arRegionality'] = $GLOBALS['arRegionality'] = array('ID' => $arRegion['LIST_STORES']);
+		else
+			$_SESSION['ASPRO_FILTER']['arRegionality'] = $GLOBALS['arRegionality'] = array('PROPERTY_STORE_ID' => $arRegion['LIST_STORES']);
+	}
+	else
+	{
+		unset($_SESSION['ASPRO_FILTER']['arRegionality']);
+	}
 }
 if($isIndex)
 {
-    $_SESSION['ASPRO_FILTER']['arrPopularSections'] = $GLOBALS['arrPopularSections'] = array('UF_POPULAR' => 1);
-    $GLOBALS['arrFrontElements'] = array('PROPERTY_SHOW_ON_INDEX_PAGE_VALUE' => 'Y');
+	$_SESSION['ASPRO_FILTER']['arrPopularSections'] = $GLOBALS['arrPopularSections'] = array('UF_POPULAR' => 1);
+	$GLOBALS['arrFrontElements'] = array('PROPERTY_SHOW_ON_INDEX_PAGE_VALUE' => 'Y');
 }
 ?>

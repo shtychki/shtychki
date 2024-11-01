@@ -68,18 +68,20 @@
     if ($props.length) {
       container.find(".js-prop").remove();
       if (obj["DISPLAY_PROPERTIES"]) {
+        const maxVisibleProps = $props.data('visible_prop_count') || Infinity;
+          let propIterator = container.find(".js-prop-replace").length;
+
         if (!Object.keys(obj["DISPLAY_PROPERTIES"]).length) {
+          checkPropsBlockVisibility(container[0], propIterator, maxVisibleProps);
           return;
         }
+
         if (!window["propTemplate"]) {
-          let $clone = $props.clone();
-          $clone.find("> *:not(:first-child)").remove();
-          $clone.find(".js-prop-replace").removeClass("js-prop-replace").addClass("js-prop");
-          $clone.find(".js-prop-title").text("#PROP_TITLE#");
-          $clone.find(".js-prop-value").text("#PROP_VALUE#");
-          $clone.find(".hint").remove();
-          let cloneHtml = $clone.html();
-          window["propTemplate"] = cloneHtml;
+          window['propTemplate'] = container.closest('.catalog-items, .container, #fast_view_item').find('.props-template').html();
+						if (!window['propTemplate']) {
+							console.error('Unable to find property <template> tag');
+							return;
+						}
         }
 
         let html = "";
@@ -87,14 +89,33 @@
           let title = obj["DISPLAY_PROPERTIES"][key]["NAME"];
           let value = obj["DISPLAY_PROPERTIES"][key]["DISPLAY_VALUE"];
 
+          if (obj["DISPLAY_PROPERTIES"][key]['HINT']) {
+            title += ' <div class="hint hint--down">' +
+              '<span class="icon colored_theme_hover_bg"><i>?</i></span>' +
+              '<div class="tooltip">' + obj["DISPLAY_PROPERTIES"][key]['HINT'] + '</div>' +
+              '</div>'
+          }
+
           let str = window["propTemplate"].replace("#PROP_TITLE#", title).replace("#PROP_VALUE#", value);
 
           html += str;
+
+          propIterator++;
         }
+
+        checkPropsBlockVisibility(container[0], propIterator, maxVisibleProps);
+
         if (html) {
           $props[0].insertAdjacentHTML("beforeend", html);
         }
       }
+    }
+  }
+
+  function checkPropsBlockVisibility (wrapper, propIterator, maxVisibleProps) {
+    const nodePropsContainer = wrapper.querySelectorAll('.char-toggle-visible');
+    if (nodePropsContainer.length > 0) {
+      nodePropsContainer.forEach((node) => node.classList.toggle('hidden', !propIterator));
     }
   }
 

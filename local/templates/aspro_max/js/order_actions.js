@@ -334,7 +334,7 @@ function orderActions(e) {
             .find("input[name=captcha_word]")
             .closest(".bx-authform-input-container")
             .addClass("captcha_input");
-          BX.onCustomEvent("onRenderCaptcha");
+            BX.onCustomEvent("onRenderCaptcha");
         }
 
         //update show password
