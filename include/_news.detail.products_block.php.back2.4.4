@@ -21,6 +21,7 @@ if($arRegion)
 		"COMPATIBLE_MODE" => "Y",
 		"IBLOCK_TYPE" => $arParams["IBLOCK_TYPE"],
 		"IBLOCK_ID" => CMax::GetFrontParametrValue('CATALOG_IBLOCK_ID'),
+		// "IBLOCK_ID" => $arParams["IBLOCK_ID"],
 		"PAGE_ELEMENT_COUNT" => "20",
 		"ELEMENT_COUNT" => ($arParams["LINKED_ELEMENST_PAGE_COUNT"] ? $arParams["LINKED_ELEMENST_PAGE_COUNT"] : 20),
 		"SORT_BY1" => "SORT",
@@ -106,11 +107,9 @@ if($arRegion)
 		"DISPLAY_WISH_BUTTONS" => $arParams["DISPLAY_WISH_BUTTONS"],
 		"COMPOSITE_FRAME_MODE" => "A",
 		"COMPOSITE_FRAME_TYPE" => "AUTO",
-
-	    'CURRENT_BASE_PAGE' => Aspro\Max\CacheableUrl::get(),
-        'PAGER_BASE_LINK' => Aspro\Max\CacheableUrl::get(),
-        'PAGER_BASE_LINK_ENABLE' => 'Y',
-
+		"CURRENT_BASE_PAGE" => $APPLICATION->GetCurPage(false),
+		"PAGER_BASE_LINK" => $APPLICATION->GetCurPage(false),
+		"PAGER_BASE_LINK_ENABLE" => "Y",
 	),
 	false, array("HIDE_ICONS" => "Y")
 );?>

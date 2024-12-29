@@ -137,11 +137,11 @@ if($arRegion)
 		"SET_SKU_TITLE" => ((CMax::GetFrontParametrValue("TYPE_SKU") == "TYPE_1" && CMax::GetFrontParametrValue("CHANGE_TITLE_ITEM_LIST") == "Y") ? "Y" : ""),
 		"COMPOSITE_FRAME_TYPE" => "AUTO",
 
-		'CURRENT_BASE_PAGE' => Aspro\Max\CacheableUrl::get(),
-        'PAGER_BASE_LINK' => Aspro\Max\CacheableUrl::get(),
+		'CURRENT_BASE_PAGE' => TSolution\CacheableUrl::get(),
+        'PAGER_BASE_LINK' => TSolution\CacheableUrl::get(),
         'PAGER_BASE_LINK_ENABLE' => 'Y',
 
-		
+
 	),
 	false, array("HIDE_ICONS" => "Y")
 );?>

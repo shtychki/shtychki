@@ -2,66 +2,88 @@
 use Bitrix\Main\Loader;
 
 include_once('const.php');
-require($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_before.php");
+require($_SERVER['DOCUMENT_ROOT'].'/bitrix/modules/main/include/prolog_before.php');
 
+Loader::includeModule('sale');
 Loader::includeModule('aspro.max');
 
 $context = \Bitrix\Main\Application::getInstance()->getContext();
 $request = $context->getRequest();
 
-if ($request["CLEAR_ALL"] === "Y") {
-	Bitrix\Main\Page\Frame::getInstance()->startDynamicWithID("basket-allitems-block");
-	Loader::includeModule('sale');
-	
-	$type = "BASKET";
-	if ($request["TYPE"]) {
-		switch ($request["TYPE"]) {
-			case 2:
-				$type="DELAY";
-				break;
-			case 3:
-				$type="SUBSCRIBE";
-				break;
-			case 4:
-				$type="NOT_AVAILABLE";
-				break;			
-			default:
-				
-				break;
-		}
-	}
+if ('Y' === $request['CLEAR_ALL']) {
+    Bitrix\Main\Page\Frame::getInstance()->startDynamicWithID('basket-allitems-block');
 
-	$arItems = CMax::getBasketItems($iblockID, "ID");
-	if ($request["TYPE"] == "all" || $request["CLEAR_ALL"] == "Y")
-	{
-		foreach ($arItems as $key => $arItem)
-		{
-			
-			foreach ($arItem as $id){
-				if ($key === 'SERVICES') {
-					CSaleBasket::Delete($id["item_id"]);
-				}
-				else {
-					CSaleBasket::Delete($id);
-				}
-			}
-		}
-	}
-	else
-	{
-		foreach ($arItems[$type] as $id)
-		{
-			CSaleBasket::Delete($id);
-		}
-	}
+    $arBasketItems = CMax::getBasketItems(0, 'ID');
 
-	Bitrix\Main\Page\Frame::getInstance()->finishDynamicWithID("basket-allitems-block", "");
+    $type = 'BASKET';
+    if ($request['TYPE']) {
+        switch ($request['TYPE']) {
+            case 'all':
+                $type = 'all';
+                break;
+
+            case 2:
+                $type = 'DELAY';
+                break;
+
+            // case 3:
+            //  $type = 'SUBSCRIBE'; // not used
+            //  break;
+
+            case 4:
+                $type = 'NOT_AVAILABLE';
+                break;  
+
+            default:
+                break;
+        }
+    }
+
+    $arIDs2Delete = [];
+    if ('all' === $type) {
+        foreach ($arBasketItems as $key => $arItems) {
+            if (
+                'BASKET' === $key
+                || 'NOT_AVAILABLE' === $key
+                || 'SERVICES' === $key
+                || 'DELAY' === $key // not used
+                // || 'SUBSCRIBE' === $key // not used
+            ) {
+                if ('SERVICES' === $key) {
+                    $arIDs2Delete = array_merge($arIDs2Delete, array_column($arItems, 'item_id'));
+                }
+                else {
+                    $arIDs2Delete = array_merge($arIDs2Delete, $arItems);
+                }
+            }
+        }
+    }
+    elseif ($type && $arBasketItems[$type]) {
+        foreach ($arBasketItems[$type] as $id) {
+            $id = intval($id);
+            if ($id > 0) {
+                $arIDs2Delete[] = $id;
+            }
+        }
+    }
+
+    $arIDs2Delete = CMax::checkUserCurrentBasketItems($arIDs2Delete);
+    if ($arIDs2Delete) {
+        foreach ($arIDs2Delete as $id) {
+            CSaleBasket::Delete($id);
+        }
+    }
+
+    Bitrix\Main\Page\Frame::getInstance()->finishDynamicWithID('basket-allitems-block', '');
 }
-elseif ($request["delete_top_item"]=="Y") {
-	Loader::includeModule('sale');
-	CSaleBasket::Delete($request["delete_top_item_id"]);
+elseif ('Y' === $request['delete_top_item']) {
+    $id = empty($request['delete_top_item_id']) ? 0 : $request['delete_top_item_id'];
+        
+    $arIDs2Delete = CMax::checkUserCurrentBasketItems($id);
+    foreach ($arIDs2Delete as $id) {
+        CSaleBasket::Delete($id);
+    }
 }
 
 CMaxCache::ClearCacheByTag('sale_basket');
 CMax::clearBasketCounters();
-

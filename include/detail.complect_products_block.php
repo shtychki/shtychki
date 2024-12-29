@@ -121,9 +121,11 @@ if($arRegion)
 		"COMPOSITE_FRAME_TYPE" => "AUTO",
 		"COMPLECT_MODE" => "Y",
 		"OFFER_TREE_PROPS" => $arParams["OFFER_TREE_PROPS"],
-		"CURRENT_BASE_PAGE" => $APPLICATION->GetCurPage(false),
-		"PAGER_BASE_LINK" => $APPLICATION->GetCurPage(false),
-		"PAGER_BASE_LINK_ENABLE" => "Y",
+
+		'CURRENT_BASE_PAGE' => Aspro\Max\CacheableUrl::get(),
+        'PAGER_BASE_LINK' => Aspro\Max\CacheableUrl::get(),
+        'PAGER_BASE_LINK_ENABLE' => 'Y',
+
 	),
 	false, array("HIDE_ICONS" => "Y")
 );?>
