@@ -277,7 +277,7 @@
 		<?// CUSTOM BLOCKS?>
 		<?if (str_starts_with($optionCode, 'CUSTOM_')):?>
 			<?if ($bShowBlock):?>
-				<div class="drag-block container <?=$optionCode?> <?=$bBlockIndexClass?> <?=$APPLICATION->ShowProperty('CUSTOM_BLOCK_CLASS/'.$subtype.'/'.$strTemplateName);?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" style="--order-index: <?=$key?>" data-file="<?=SITE_DIR;?>include/mainpage/components/<?=$subtype?>/<?=$strTemplateName?>.php">
+				<div class="drag-block container <?=$optionCode?> <?=$bBlockIndexClass?> <?=$APPLICATION->ShowProperty('CUSTOM_BLOCK_CLASS/'.$subtype.'/'.$strTemplateName);?> loader_circle" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>" style="--order-index: <?=$key?>" data-file="<?=SITE_DIR;?>include/mainpage/components/<?=$subtype?>/<?=$strTemplateName?>.php">
 					<?=CMax::ShowPageType('mainpage', $subtype, $strTemplateName);?>
 				</div>
 			<?endif;?>

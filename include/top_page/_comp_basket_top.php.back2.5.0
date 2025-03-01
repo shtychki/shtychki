@@ -45,7 +45,7 @@ $arCounters = CMax::getBasketCounters();;?>
 						<div class="count <?=($arCounters['COMPARE']['COUNT'] ? '' : 'empty_items');?>">
 							<span class="colored_theme_bg">
 								<span class="items">
-									<span class="js-count"><?=$arCounters['COMPARE']['COUNT'];?></span>
+									<span><?=$arCounters['COMPARE']['COUNT'];?></span>
 								</span>
 							</span>
 						</div>

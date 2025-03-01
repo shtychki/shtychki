@@ -21,6 +21,7 @@ echo CUtil::PHPToJSObject($arResult, true);
 
 // some fixes from component.php, becouse there are some included components before filter, which will add their scripts in edit mode
 $json = ob_get_contents();
+\Aspro\Max\SearchQuery::replaceUrls($json);
 $APPLICATION->RestartBuffer();
 while(ob_end_clean());
 header('Content-Type: application/x-javascript; charset='.LANG_CHARSET);
